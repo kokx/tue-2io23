@@ -27,11 +27,18 @@ class ChatServer {
 
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
-        String userInput;
+        String last = "";
 
-        while ((userInput = stdIn.readLine()) != null) {
-            out.println(userInput);
-            System.out.println("echo: " + in.readLine());
+        while (true) {
+            if (stdIn.ready()) {
+                out.println(stdIn.readLine());
+            }
+            if (in.ready()) {
+                System.out.println("echo: " + in.readLine());
+            }
+            if (last == "end") {
+                break;
+            }
         }
 
         out.close();
