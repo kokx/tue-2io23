@@ -55,8 +55,10 @@ class ChatServer {
 
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
-        new Thread(new ReadWriteRun(stdIn, out, "")).start();
-        new Thread(new ReadWriteRun(in, System.out, "echo: ")).start();
+        ReadWriteRun write = new ReadWriteRun(stdIn, out, "");
+        ReadWriteRun read = new ReadWriteRun(in, System.out, "echo: ");
+        new Thread(write).start();
+        new Thread(read).start();
 
         while (true) {
             try {
