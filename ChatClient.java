@@ -2,6 +2,32 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
+class ReadWriteRun implements Runnable {
+    PrintStream out;
+    BufferedReader in;
+    String prefix;
+
+    public ReadWriteRun(BufferedReader in, PrintStream out, String prefix)
+    {
+        this.in = in;
+        this.out = out;
+        this.prefix = prefix;
+    }
+
+    public void run()
+    {
+        String input = "";
+
+        try {
+            while ((input = in.readLine()) != null) {
+                out.println(prefix + input);
+            }
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+}
+
 class ChatClient {
 
     public final static int PORT = 25665;
@@ -11,11 +37,11 @@ class ChatClient {
     void run(String ip) throws IOException
     {
         Socket s = null;
-        PrintWriter out = null;
+        PrintStream out = null;
         BufferedReader in = null;
         try {
             s = new Socket(InetAddress.getByName(ip), PORT);
-            out = new PrintWriter(s.getOutputStream(), true);
+            out = new PrintStream(s.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
         } catch (UnknownHostException e) {
             // error
@@ -27,24 +53,16 @@ class ChatClient {
 
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
-        String last = "";
+        new Thread(new ReadWriteRun(stdIn, out, "")).start();
+        new Thread(new ReadWriteRun(in, System.out, "echo: ")).start();
 
         while (true) {
-            if (stdIn.ready()) {
-                out.println(stdIn.readLine());
-            }
-            if (in.ready()) {
-                System.out.println("echo: " + in.readLine());
-            }
-            if (last == "end") {
-                break;
+            try {
+                Thread.sleep(Long.MAX_VALUE);
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         }
-
-        out.close();
-        in.close();
-        stdIn.close();
-        s.close();
     }
 
     public static void main(String args[]) throws IOException {

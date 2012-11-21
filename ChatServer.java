@@ -2,6 +2,32 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
+class ReadWriteRun implements Runnable {
+    PrintStream out;
+    BufferedReader in;
+    String prefix;
+
+    public ReadWriteRun(BufferedReader in, PrintStream out, String prefix)
+    {
+        this.in = in;
+        this.out = out;
+        this.prefix = prefix;
+    }
+
+    public void run()
+    {
+        String input = "";
+
+        try {
+            while ((input = in.readLine()) != null) {
+                out.println(prefix + input);
+            }
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+}
+
 class ChatServer {
 
     public final static int PORT = 25665;
@@ -12,13 +38,15 @@ class ChatServer {
     {
         ServerSocket server = null;
         Socket client = null;
-        PrintWriter out = null;
+        PrintStream out = null;
         BufferedReader in = null;
         try {
             server = new ServerSocket(PORT);
             client = server.accept();
 
-            out = new PrintWriter(client.getOutputStream(), true);
+            System.out.println("Client connected");
+
+            out = new PrintStream(client.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
         } catch (IOException e) {
             System.err.println("NO I/O");
@@ -27,25 +55,16 @@ class ChatServer {
 
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
-        String last = "";
+        new Thread(new ReadWriteRun(stdIn, out, "")).start();
+        new Thread(new ReadWriteRun(in, System.out, "echo: ")).start();
 
         while (true) {
-            if (stdIn.ready()) {
-                out.println(stdIn.readLine());
-            }
-            if (in.ready()) {
-                System.out.println("echo: " + in.readLine());
-            }
-            if (last == "end") {
-                break;
+            try {
+                Thread.sleep(Long.MAX_VALUE);
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         }
-
-        out.close();
-        in.close();
-        stdIn.close();
-        client.close();
-        server.close();
     }
 
     public static void main(String args[]) throws IOException {
