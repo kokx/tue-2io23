@@ -22,25 +22,16 @@ class ChatClient {
             System.err.println("CANNOT CONNECT");
         } catch (IOException e) {
             System.err.println("NO I/O");
+            System.exit(-1);
         }
 
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
-        while (true) {
-            String userInput = stdIn.readLine();
-            String sInput = stdIn.readLine();
+        String userInput;
 
-            if (userInput != null || sInput != null) {
-                if (userInput != null) {
-                    out.println(userInput);
-                    System.out.println(userInput);
-                }
-                if (sInput != null) {
-                    System.out.println(sInput);
-                }
-            } else {
-                break;
-            }
+        while ((userInput = stdIn.readLine()) != null) {
+            out.println(userInput);
+            System.out.println("echo: " + in.readLine());
         }
 
         out.close();

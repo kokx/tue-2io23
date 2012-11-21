@@ -5,4 +5,4 @@ then
 else
     d='ChatServer'
 fi
-javac $d.java && java $d $1
+javac $d.java && java $d $2
