@@ -708,6 +708,10 @@ public final class ChatProto {
     // required int32 port = 2;
     boolean hasPort();
     int getPort();
+    
+    // required bool init = 3;
+    boolean hasInit();
+    boolean getInit();
   }
   public static final class ConnectTo extends
       com.google.protobuf.GeneratedMessage
@@ -758,9 +762,20 @@ public final class ChatProto {
       return port_;
     }
     
+    // required bool init = 3;
+    public static final int INIT_FIELD_NUMBER = 3;
+    private boolean init_;
+    public boolean hasInit() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    public boolean getInit() {
+      return init_;
+    }
+    
     private void initFields() {
       ip_ = com.google.protobuf.ByteString.EMPTY;
       port_ = 0;
+      init_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -772,6 +787,10 @@ public final class ChatProto {
         return false;
       }
       if (!hasPort()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasInit()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -787,6 +806,9 @@ public final class ChatProto {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt32(2, port_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBool(3, init_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -804,6 +826,10 @@ public final class ChatProto {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, port_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, init_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -933,6 +959,8 @@ public final class ChatProto {
         bitField0_ = (bitField0_ & ~0x00000001);
         port_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
+        init_ = false;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       
@@ -979,6 +1007,10 @@ public final class ChatProto {
           to_bitField0_ |= 0x00000002;
         }
         result.port_ = port_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.init_ = init_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1001,6 +1033,9 @@ public final class ChatProto {
         if (other.hasPort()) {
           setPort(other.getPort());
         }
+        if (other.hasInit()) {
+          setInit(other.getInit());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -1011,6 +1046,10 @@ public final class ChatProto {
           return false;
         }
         if (!hasPort()) {
+          
+          return false;
+        }
+        if (!hasInit()) {
           
           return false;
         }
@@ -1048,6 +1087,11 @@ public final class ChatProto {
             case 16: {
               bitField0_ |= 0x00000002;
               port_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              init_ = input.readBool();
               break;
             }
           }
@@ -1097,6 +1141,27 @@ public final class ChatProto {
       public Builder clearPort() {
         bitField0_ = (bitField0_ & ~0x00000002);
         port_ = 0;
+        onChanged();
+        return this;
+      }
+      
+      // required bool init = 3;
+      private boolean init_ ;
+      public boolean hasInit() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      public boolean getInit() {
+        return init_;
+      }
+      public Builder setInit(boolean value) {
+        bitField0_ |= 0x00000004;
+        init_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearInit() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        init_ = false;
         onChanged();
         return this;
       }
@@ -2328,11 +2393,11 @@ public final class ChatProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\017ChatProto.proto\"\024\n\004Init\022\014\n\004port\030\001 \002(\005\"" +
-      "\025\n\005Reply\022\014\n\004done\030\001 \002(\010\"%\n\tConnectTo\022\n\n\002i" +
-      "p\030\001 \002(\014\022\014\n\004port\030\002 \002(\005\"n\n\005Token\022\037\n\007messag" +
-      "e\030\001 \003(\0132\016.Token.Message\022\016\n\006lastId\030\002 \002(\005\032" +
-      "4\n\007Message\022\n\n\002id\030\001 \002(\005\022\014\n\004name\030\002 \002(\t\022\017\n\007" +
-      "message\030\003 \002(\t"
+      "\025\n\005Reply\022\014\n\004done\030\001 \002(\010\"3\n\tConnectTo\022\n\n\002i" +
+      "p\030\001 \002(\014\022\014\n\004port\030\002 \002(\005\022\014\n\004init\030\003 \002(\010\"n\n\005T" +
+      "oken\022\037\n\007message\030\001 \003(\0132\016.Token.Message\022\016\n" +
+      "\006lastId\030\002 \002(\005\0324\n\007Message\022\n\n\002id\030\001 \002(\005\022\014\n\004" +
+      "name\030\002 \002(\t\022\017\n\007message\030\003 \002(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2360,7 +2425,7 @@ public final class ChatProto {
           internal_static_ConnectTo_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ConnectTo_descriptor,
-              new java.lang.String[] { "Ip", "Port", },
+              new java.lang.String[] { "Ip", "Port", "Init", },
               ChatProto.ConnectTo.class,
               ChatProto.ConnectTo.Builder.class);
           internal_static_Token_descriptor =

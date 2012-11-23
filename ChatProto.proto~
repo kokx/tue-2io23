@@ -9,7 +9,6 @@ message ConnectTo {
     // send from server to client
     required bytes ip = 1;
     required int32 port = 2;
-    required bool init = 3;
 }
 
 message Token {

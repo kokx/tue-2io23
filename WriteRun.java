@@ -23,7 +23,7 @@ class WriteRun implements Runnable {
         };
     }
 
-    void writeToOutputStream(ChatProto.Message message)
+    void writeToOutputStream(ChatProto.Token.Message message)
     {
         try {
             int len = message.toByteArray().length;
@@ -50,7 +50,7 @@ class WriteRun implements Runnable {
 
         try {
             while ((input = in.readLine()) != null) {
-                ChatProto.Message message = ChatProto.Message.newBuilder()
+                ChatProto.Token.Message message = ChatProto.Token.Message.newBuilder()
                     .setMessage(input)
                     .build();
                 writeToOutputStream(message);

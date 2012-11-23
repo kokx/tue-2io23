@@ -4,15 +4,13 @@ import java.net.*;
 import java.math.*;
 
 class ReadRun implements Runnable {
-    PrintStream out;
     InputStream in;
-    String prefix;
+    
+    public boolean reply = false;
 
-    public ReadRun(InputStream in, PrintStream out, String prefix)
+    public ReadRun(InputStream in)
     {
         this.in = in;
-        this.out = out;
-        this.prefix = prefix;
     }
 
     // assuming MSB is first (Big Endian)
@@ -34,14 +32,14 @@ class ReadRun implements Runnable {
         byte[] input = new byte[4];
 
         try {
-            while (in.read(input, 0, 4) == 4) {
+            if (in.read(input, 0, 4) == 4) {
                 int len = byteArrayToInt(input);
 
                 byte data[] = new byte[len];
                 in.read(data, 0, len);
-                ChatProto.Message m = ChatProto.Message.parseFrom(data);
-
-                out.println(prefix + m.getMessage());
+                ChatProto.Reply m = ChatProto.Reply.parseFrom(data);
+                reply = true;
+                
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
