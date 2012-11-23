@@ -30,6 +30,48 @@ class ChatClient {
         }
     }
     
+    void chat(boolean init, 
+              InputStream prev_in, OutputStream prev_out, 
+              InputStream next_in, OutputStream next_out)
+              throws InterruptedException, IOException{
+        
+        if(init){
+            ChatProto.Token token = ChatProto.Token
+                                    .newBuilder()
+                                    .setLastId(0)
+                                    .build();
+            writeToOutputStream(token, next_out);
+            //System.out.println("Sent First Token");
+        }
+        System.out.println("in Chat now");
+        ReadRun read;
+        
+        int i = 0;
+        final int RUNS = 4;
+        
+        while(i < RUNS){
+            read = new ReadRun(prev_in);
+            new Thread(read).start();
+            System.out.println("Reading");
+            while(!read.wasRead){
+                Thread.sleep(10);
+            }
+            //System.out.println("Received Token");
+            ChatProto.Token token = ChatProto.Token.parseFrom(read.data);
+            
+            List<ChatProto.Token.Message> list = token.getMessageList();
+            int lastId = token.getLastId();
+            System.out.println("Received LastId: " + lastId);
+            
+            token = ChatProto.Token.newBuilder().setLastId(lastId+1).build();
+            
+            writeToOutputStream(token, next_out);
+            
+            i++;
+        }
+        
+    }
+    
     void run(String serverip) throws IOException, InterruptedException
     {
         Socket s = null;
@@ -88,7 +130,7 @@ class ChatClient {
         int port = info.getPort();
         boolean init = info.getInit();
         
-        System.out.println("Received Connection Info Now");
+        System.out.println("Received Connection Info Now: " + init);
         
         /* Potentieel Probleem: Als new Socket() en server.accept() allebei 
          *              Blocking Calls zijn, dan krijg je nooit een verbinding.
@@ -97,13 +139,13 @@ class ChatClient {
         
         // The next person. You only send to him (and maybe receive aknowledge)
         Socket next;
-        InputStream next_in;
-        OutputStream next_out;
+        InputStream next_in = null;
+        OutputStream next_out = null;
         
         try {
             next = new Socket(InetAddress.getByAddress(ip), port);
-            next_out = s.getOutputStream();
-            next_in = s.getInputStream();
+            next_out = next.getOutputStream();
+            next_in = next.getInputStream();
         } catch (UnknownHostException e) {
             // error
             System.err.println("CANNOT CONNECT TO NEXT");
@@ -114,8 +156,8 @@ class ChatClient {
         
         // the previous person: You only receive from him (and maybe acknowledge)
         Socket prev;
-        InputStream prev_in;
-        OutputStream prev_out;
+        InputStream prev_in = null;
+        OutputStream prev_out = null;
         try {
             if((prev = server.accept()) != null) {
                 System.out.println("Client connected");
@@ -131,6 +173,9 @@ class ChatClient {
         
         writeToOutputStream(reply, out);
         System.out.println("Peer-to-Peer connection set up");
+        
+        
+        chat(init, prev_in, prev_out, next_in, next_out);
     }
 
     public static void main(String args[]) throws IOException, InterruptedException {

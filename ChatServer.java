@@ -5,7 +5,7 @@ import java.net.*;
 class ChatServer {
 
     public final static int PORT = 25665;
-    public final static int MAX_CLIENTS = 2;
+    public final static int MAX_CLIENTS = 3;
     public final static int TIME_POLL = 100;
     
     static byte[] intToByteArray(int value)
@@ -85,6 +85,7 @@ class ChatServer {
         System.out.println("Writing Peer-to-Peer connection info to Clients now");
         // write ports and ip's to listen to all clients
         for(int i = 0; i < clients; i++){
+            System.out.println("Linking " + i + "  and  " + (i+1)%clients);
             byte[] ip = client[(i + 1) % clients].getInetAddress().getAddress();
             ChatProto.ConnectTo message = ChatProto.ConnectTo.newBuilder()
                     .setIp(com.google.protobuf.ByteString.copyFrom(ip))

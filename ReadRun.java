@@ -6,7 +6,7 @@ import java.math.*;
 public class ReadRun implements Runnable {
     InputStream in;
     
-    public boolean wasRead = false;
+    public boolean wasRead;
     
     // Hij slaat niet meer de message op, maar de data. Zo kan deze class
     // gebruikt worden voor alle messages. Je moet alleen zelf de .parseFrom()
@@ -16,6 +16,7 @@ public class ReadRun implements Runnable {
     public ReadRun(InputStream in)
     {
         this.in = in;
+        this.wasRead = false;
     }
 
     // assuming MSB is first (Big Endian)
