@@ -4,13 +4,12 @@ import java.net.*;
 import java.math.*;
 
 class WriteRun implements Runnable {
-    OutputStream out;
+    List<OutputStream> outStreams = new LinkedList<OutputStream>();
     BufferedReader in;
 
-    public WriteRun(BufferedReader in, OutputStream out)
+    public WriteRun(BufferedReader in)
     {
         this.in = in;
-        this.out = out;
     }
 
     // assuming MSB is first (Big Endian)
@@ -30,13 +29,19 @@ class WriteRun implements Runnable {
             int len = message.toByteArray().length;
             byte[] length = intToByteArray(len);
 
-            out.write(length);
-
-            message.writeTo(out);
+            for (OutputStream out : outStreams) {
+                out.write(length);
+                message.writeTo(out);
+            }
         } catch (IOException e) {
             System.out.println("I/O Error");
             System.exit(-1);
         }
+    }
+
+    void addOutputStream(OutputStream out)
+    {
+        outStreams.add(out);
     }
 
     public void run()

@@ -1,3 +1,10 @@
-message Message {
-    required string message = 1;
+
+
+message Token {
+    message Message {
+        required int32 id = 1;
+        required string name = 2;
+        required string message = 3;
+    }
+    repeated Message message = 2;
 }

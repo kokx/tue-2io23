@@ -8,36 +8,38 @@ class ChatServer {
 
     static Scanner sc;
 
+    BufferedReader stdIn;
+
+    WriteRun writeRunner;
+
+    void addClient(Socket client) throws IOException
+    {
+        OutputStream out = client.getOutputStream();
+        InputStream in = client.getInputStream();
+
+        new Thread(new ReadRun(in, System.out, "echo: ")).start();
+        writeRunner.addOutputStream(out);
+    }
+
     void run() throws IOException
     {
         ServerSocket server = null;
         Socket client = null;
-        OutputStream out = null;
-        InputStream in = null;
+        stdIn = new BufferedReader(new InputStreamReader(System.in));
+
+        writeRunner = new WriteRun(stdIn);
+        new Thread(writeRunner).start();
+
         try {
             server = new ServerSocket(PORT);
-            client = server.accept();
 
-            System.out.println("Client connected");
-
-            out = client.getOutputStream();
-            in = client.getInputStream();
+            while ((client = server.accept()) != null) {
+                addClient(client);
+                System.out.println("Client connected");
+            }
         } catch (IOException e) {
             System.err.println("NO I/O");
             System.exit(-1);
-        }
-
-        BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-
-        new Thread(new WriteRun(stdIn, out)).start();
-        new Thread(new ReadRun(in, System.out, "echo: ")).start();
-
-        while (true) {
-            try {
-                Thread.sleep(Long.MAX_VALUE);
-            } catch(InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
         }
     }
 

@@ -27,7 +27,9 @@ class ChatClient {
 
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
-        new Thread(new WriteRun(stdIn, out)).start();
+        WriteRun writeRunner = new WriteRun(stdIn);
+        writeRunner.addOutputStream(out);
+        new Thread(writeRunner).start();
         new Thread(new ReadRun(in, System.out, "echo: ")).start();
 
         while (true) {
