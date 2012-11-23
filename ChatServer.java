@@ -32,7 +32,7 @@ class ChatServer {
         }
     }
     
-    void run() throws IOException
+    void run() throws IOException, InterruptedException
     {
         ServerSocket server = null;
         Socket client[] = new Socket[MAX_CLIENTS];
@@ -55,13 +55,15 @@ class ChatServer {
             System.exit(-1);
         }
         
+        System.out.println("Writing Ports to set up Servers to Clients now");
         // write ports to open to all clients 
         for(int i = 0; i < clients; i++){
             // port = PORT + i;
-            ChatProto.Init init = ChatProto.Init.newBuilder().setPort(PORT+i).build();
+            ChatProto.Init init = ChatProto.Init.newBuilder().setPort(PORT+1+i).build();
             writeToOutputStream(init, outputs[i]);
         }
         
+        System.out.println("Reading Acknowledge from Clients now");
         // read from all clients
         ReadRun[] reads = new ReadRun[clients];
         for(int i = 0; i < clients; i++){
@@ -80,16 +82,18 @@ class ChatServer {
             }
         }
         
+        System.out.println("Writing Peer-to-Peer connection info to Clients now");
         // write ports and ip's to listen to all clients
         for(int i = 0; i < clients; i++){
             byte[] ip = client[(i + 1) % clients].getInetAddress().getAddress();
             ChatProto.ConnectTo message = ChatProto.ConnectTo.newBuilder()
                     .setIp(com.google.protobuf.ByteString.copyFrom(ip))
-                    .setPort((i+1)%clients+PORT)
+                    .setPort((i+1)%clients+PORT+1)
                     .setInit(i==0).build();
             writeToOutputStream(message, outputs[i]);
         }
         
+        System.out.println("Reading Acknowledge from Clients now");
         // check for all messages to be received
         for(int i = 0; i < clients; i++){
             reads[i] = new ReadRun(inputs[i]);
@@ -107,10 +111,11 @@ class ChatServer {
             }
         }
         
+        System.out.println("All Acknowledges Received. Terminating Main UDP Server Now");
         
     }
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, InterruptedException {
         new ChatServer().run();
     }
 }
