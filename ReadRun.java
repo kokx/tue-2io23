@@ -41,7 +41,7 @@ class ReadRun implements Runnable {
                 in.read(data, 0, len);
                 ChatProto.Message m = ChatProto.Message.parseFrom(data);
 
-                out.println(m.getMessage());
+                out.println(prefix + m.getMessage());
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
