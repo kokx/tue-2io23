@@ -1,3 +1,3 @@
 #!/bin/sh
-./compile.sh
-java ChatClient $1
+source ./compile.sh
+java -classpath "$path" ChatClient $1

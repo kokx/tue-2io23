@@ -12,16 +12,16 @@ class ChatServer {
     {
         ServerSocket server = null;
         Socket client = null;
-        PrintStream out = null;
-        BufferedReader in = null;
+        OutputStream out = null;
+        InputStream in = null;
         try {
             server = new ServerSocket(PORT);
             client = server.accept();
 
             System.out.println("Client connected");
 
-            out = new PrintStream(client.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            out = client.getOutputStream();
+            in = client.getInputStream();
         } catch (IOException e) {
             System.err.println("NO I/O");
             System.exit(-1);
@@ -29,10 +29,8 @@ class ChatServer {
 
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
-        ReadWriteRun write = new ReadWriteRun(stdIn, out, "");
-        ReadWriteRun read = new ReadWriteRun(in, System.out, "echo: ");
-        new Thread(write).start();
-        new Thread(read).start();
+        new Thread(new WriteRun(stdIn, out)).start();
+        new Thread(new ReadRun(in, System.out, "echo: ")).start();
 
         while (true) {
             try {

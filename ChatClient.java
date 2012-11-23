@@ -11,12 +11,12 @@ class ChatClient {
     void run(String ip) throws IOException
     {
         Socket s = null;
-        PrintStream out = null;
-        BufferedReader in = null;
+        OutputStream out = null;
+        InputStream in = null;
         try {
             s = new Socket(InetAddress.getByName(ip), PORT);
-            out = new PrintStream(s.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out = s.getOutputStream();
+            in = s.getInputStream();
         } catch (UnknownHostException e) {
             // error
             System.err.println("CANNOT CONNECT");
@@ -27,8 +27,8 @@ class ChatClient {
 
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 
-        new Thread(new ReadWriteRun(stdIn, out, "")).start();
-        new Thread(new ReadWriteRun(in, System.out, "echo: ")).start();
+        new Thread(new WriteRun(stdIn, out)).start();
+        new Thread(new ReadRun(in, System.out, "echo: ")).start();
 
         while (true) {
             try {
