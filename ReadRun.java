@@ -3,11 +3,16 @@ import java.util.*;
 import java.net.*;
 import java.math.*;
 
-class ReadRun implements Runnable {
+public class ReadRun implements Runnable {
     InputStream in;
     
-    public boolean reply = false;
-
+    public boolean wasRead = false;
+    
+    // Hij slaat niet meer de message op, maar de data. Zo kan deze class
+    // gebruikt worden voor alle messages. Je moet alleen zelf de .parseFrom()
+    // method aanroepen. Modularity FTW!
+    byte[] data;
+    
     public ReadRun(InputStream in)
     {
         this.in = in;
@@ -35,10 +40,9 @@ class ReadRun implements Runnable {
             if (in.read(input, 0, 4) == 4) {
                 int len = byteArrayToInt(input);
 
-                byte data[] = new byte[len];
+                data = new byte[len];
                 in.read(data, 0, len);
-                ChatProto.Reply m = ChatProto.Reply.parseFrom(data);
-                reply = true;
+                wasRead = true;
                 
             }
         } catch (IOException e) {

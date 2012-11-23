@@ -65,7 +65,8 @@ class ChatServer {
         // read from all clients
         ReadRun[] reads = new ReadRun[clients];
         for(int i = 0; i < clients; i++){
-            reads[i] = new Thread(new ReadRun(inputs[i])).start();
+            reads[i] = new ReadRun(inputs[i]);
+            new Thread(reads[i]).start();
         }
         
         // check for all messages to be received
@@ -75,7 +76,7 @@ class ChatServer {
             
             readAll = true;
             for(int i = 0; i < clients; i++){
-                readAll = readAll && reads[i].reply;
+                readAll = readAll && reads[i].wasRead;
             }
         }
         
@@ -91,8 +92,9 @@ class ChatServer {
         
         // check for all messages to be received
         for(int i = 0; i < clients; i++){
-            ReadRun bla = new ReadRun(inputs[i]);
-            reads[i] = new Thread(bla).start();
+            reads[i] = new ReadRun(inputs[i]);
+            new Thread(reads[i]).start();
+            
         }
         
         readAll = false;
@@ -101,7 +103,7 @@ class ChatServer {
             
             readAll = true;
             for(int i = 0; i < clients; i++){
-                readAll = readAll && reads[i].reply;
+                readAll = readAll && reads[i].wasRead;
             }
         }
         
