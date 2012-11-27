@@ -4,7 +4,6 @@ import java.net.*;
 
 import com.google.protobuf.ByteString;
 
-
 class ChatServer {
 
     static byte[] intToByteArray(int value)
@@ -146,7 +145,7 @@ class ChatServer {
     }
 
     public final static int PORT = 25665;
-    public final static int MAX_CLIENTS = 3;
+    public final static int MAX_CLIENTS = 2;
     public final static int TIME_POLL = 100;
 
     // real stuff

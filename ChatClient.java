@@ -1,11 +1,42 @@
 import java.io.*;
 import java.util.*;
 import java.net.*;
+import java.util.concurrent.*;
+
+/**
+ * Read input into a buffer.
+ */
+class InputReaderRunnable implements Runnable
+{
+    BufferedReader in;
+
+    Queue<String> buffer;
+
+    InputReaderRunnable(InputStream in)
+    {
+        this.in = new BufferedReader(new InputStreamReader(in));
+        buffer = new ConcurrentLinkedQueue<String>();
+    }
+
+    public void run()
+    {
+        String line;
+        try {
+            while ((line = in.readLine()) != null) {
+                buffer.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("I/O Error");
+            System.exit(1);
+        }
+    }
+}
 
 class ChatClient {
 
     public final static int PORT = 25665;
 
+    // assuming MSB is first (Big Endian)
     static byte[] intToByteArray(int value)
     {
         return new byte[] {
@@ -16,179 +47,303 @@ class ChatClient {
         };
     }
 
-    void writeToOutputStream(com.google.protobuf.GeneratedMessage message, OutputStream out)
+    // assuming MSB is first (Big Endian)
+    static int byteArrayToInt(byte[] array)
     {
-        try {
-            int len = message.toByteArray().length;
-            byte[] length = intToByteArray(len);
+        if (array.length > 4) {
+            return -1;
+        }
 
-            out.write(length);
-            message.writeTo(out);
-        } catch (IOException e) {
-            System.out.println("I/O Error");
-            System.exit(-1);
+        int value = 0;
+        for (int i = 0; i < array.length; i++) {
+            value += (value << 8) + (array[i] & 0xFF);
+        }
+        return value;
+    }
+
+    class PeerInfo
+    {
+        int port;
+        InetAddress ip;
+        boolean init;
+    }
+
+    abstract class Peer
+    {
+        Socket sock;
+
+        InputStream in;
+        OutputStream out;
+
+        protected void initIO() throws IOException
+        {
+            in = sock.getInputStream();
+            out = sock.getOutputStream();
+        }
+
+        /**
+         * Write a message.
+         */
+        void write(com.google.protobuf.GeneratedMessage message)
+        {
+            try {
+                int len = message.toByteArray().length;
+                byte[] length = intToByteArray(len);
+
+                out.write(length);
+                message.writeTo(out);
+            } catch (IOException e) {
+                System.out.println("I/O Error");
+                System.exit(-1);
+            }
+        }
+
+        /**
+         * Read a message.
+         */
+        byte[] read() throws IOException
+        {
+            byte[] input = new byte[4];
+            if (in.read(input, 0, 4) == 4) {
+                int len = byteArrayToInt(input);
+
+                byte[] data = new byte[len];
+                in.read(data, 0, len);
+                return data;
+            }
+            return null;
         }
     }
 
+    class InitServer extends Peer
+    {
 
-    /* Test the connection by reading and writing the Token 4 times */
-    void chat(boolean init,
-            InputStream prev_in, OutputStream prev_out,
-            InputStream next_in, OutputStream next_out)
-        throws InterruptedException, IOException{
+        InitServer(String ip, int port) throws UnknownHostException, IOException
+        {
+            sock = new Socket(InetAddress.getByName(ip), port);
+            initIO();
+        }
 
-        if(init){
-            ChatProto.Token token = ChatProto.Token
-                .newBuilder()
+        /**
+         * Send a reply.
+         */
+        void reply(boolean reply)
+        {
+            ChatProto.Reply rep = ChatProto.Reply.newBuilder()
+                .setDone(reply)
+                .build();
+            write(rep);
+        }
+
+        /**
+         * Get the port on which we need to setup a server.
+         */
+        int getPort() throws IOException
+        {
+            return ChatProto.Init.parseFrom(read()).getPort();
+        }
+
+        /**
+         * Get the info of the peer we need to connect to.
+         */
+        PeerInfo getConnectTo() throws IOException
+        {
+            ChatProto.ConnectTo connectTo = ChatProto.ConnectTo.parseFrom(read());
+            PeerInfo peer = new PeerInfo();
+            peer.port = connectTo.getPort();
+            peer.init = connectTo.getInit();
+            peer.ip = InetAddress.getByAddress(connectTo.getIp().toByteArray());
+            return peer;
+        }
+    }
+
+    /**
+     * Server for p2p communication.
+     */
+    class Server extends Peer
+    {
+        ServerSocket serverSock = null;
+
+        Server(int port) throws IOException
+        {
+            serverSock = new ServerSocket(port);
+        }
+
+        boolean accept() throws IOException
+        {
+            boolean ret = (sock = serverSock.accept()) != null;
+            initIO();
+            return ret;
+        }
+    }
+
+    /**
+     * Client for p2p communication.
+     */
+    class Client extends Peer
+    {
+        PeerInfo peer;
+
+        Client(PeerInfo peer) throws UnknownHostException, IOException
+        {
+            this.peer = peer;
+            sock = new Socket(peer.ip, peer.port);
+            initIO();
+        }
+    }
+
+    /**
+     * Chat.
+     */
+    class Chat
+    {
+        Peer prev;
+        Peer next;
+
+        InputReaderRunnable inputReader;
+
+        int nextId = 0;
+
+        Chat(Peer prev, Peer next)
+        {
+            this.prev = prev;
+            this.next = next;
+            inputReader = new InputReaderRunnable(System.in);
+            new Thread(inputReader).start();
+        }
+
+        ChatProto.Token getToken() throws IOException
+        {
+            return ChatProto.Token.parseFrom(prev.read());
+        }
+
+        /**
+         * Copy the token.
+         */
+        ChatProto.Token.Builder copyToken(ChatProto.Token token)
+        {
+            ChatProto.Token.Builder builder = ChatProto.Token.newBuilder();
+
+            builder.mergeFrom(token);
+            /*
+            ChatProto.Token.Builder builder = ChatProto.Token.newBuilder();
+
+            builder.setLastId(token.getLastId());
+
+            // copy all messages
+            for (ChatProto.Token.Message message : token.getMessageList()) {
+                ChatProto.Token.Message newMessage = ChatProto.Token.Message.newBuilder()
+                    .setId(message.getId())
+                    .setName(message.getName())
+                    .setMessage(message.getMessage())
+                    .build();
+                builder.addMessage(newMessage);
+            }
+            */
+
+            return builder;
+        }
+
+        public void init()
+        {
+            ChatProto.Token token = ChatProto.Token.newBuilder()
                 .setLastId(0)
                 .build();
-            writeToOutputStream(token, next_out);
-            //System.out.println("Sent First Token");
+            next.write(token);
         }
-        System.out.println("in Chat now");
-        ReadRun read;
 
-        int i = 0;
-        final int RUNS = 4;
+        /**
+         * Get messages from the input reader.
+         */
+        public Iterable<ChatProto.Token.Message> getMessages()
+        {
+            LinkedList<ChatProto.Token.Message> messages = new LinkedList<ChatProto.Token.Message>();
 
-        while(i < RUNS){
-            read = new ReadRun(prev_in);
-            new Thread(read).start();
-            System.out.println("Reading");
-            while(!read.wasRead){
-                Thread.sleep(10);
+            String line;
+            while ((line = inputReader.buffer.poll()) != null) {
+                ChatProto.Token.Message message = ChatProto.Token.Message.newBuilder()
+                    .setId(nextId)
+                    .setName("kokx")
+                    .setMessage(line)
+                    .build();
+                messages.add(message);
+                nextId++;
             }
-            //System.out.println("Received Token");
-            ChatProto.Token token = ChatProto.Token.parseFrom(read.data);
 
-            List<ChatProto.Token.Message> list = token.getMessageList();
-            int lastId = token.getLastId();
-            System.out.println("Received LastId: " + lastId);
-
-            token = ChatProto.Token.newBuilder().setLastId(lastId+1).build();
-
-            writeToOutputStream(token, next_out);
-
-            i++;
+            return messages;
         }
 
+        public void chat() throws IOException
+        {
+            ChatProto.Token token = getToken();
+
+            // get all messages
+            List<ChatProto.Token.Message> messages = token.getMessageList();
+
+            for (ChatProto.Token.Message message : messages) {
+                if (message.getId() >= nextId) {
+                    System.out.println(message.getName() + ": " + message.getMessage());
+                    nextId = message.getId() + 1;
+                }
+            }
+
+            // build a new token, and send it
+            ChatProto.Token.Builder builder = copyToken(token);
+
+            builder.addAllMessage(getMessages());
+
+            builder.setLastId(nextId);
+
+            // write the message
+            next.write(builder.build());
+        }
     }
 
-    void run(String serverip) throws IOException, InterruptedException
+    void run(String serverIp) throws IOException, InterruptedException
     {
-        Socket s = null;
-        OutputStream out = null;
-        InputStream in = null;
-        /* Connect to main server with port PORT and ip serverip */
+        InitServer init = null;
         try {
-            s = new Socket(InetAddress.getByName(serverip), PORT);
-            out = s.getOutputStream();
-            in = s.getInputStream();
+            init = new InitServer(serverIp, PORT);
         } catch (UnknownHostException e) {
             // error
             System.err.println("CANNOT CONNECT");
+            System.exit(-1);
         } catch (IOException e) {
             System.err.println("NO I/O");
             System.exit(-1);
         }
 
-        System.out.println("Connected to server");
+        int port = init.getPort();
 
-        System.out.println("Reading Port Info from Server now");
-        /* Start new ReadRun thread to read from the input we get from the Server */
-        ReadRun read = new ReadRun(in);
-        new Thread(read).start();
+        // setup a server with the given port
+        Server server = new Server(port);
 
-        while (!read.wasRead) {
-            Thread.sleep(100);
+        // tell the server we got the message and started a server
+        init.reply(true);
+
+        // create a connection to the given peer
+        PeerInfo info = init.getConnectTo();
+
+        Client client = new Client(info);
+
+        // let the server accept a connection
+        server.accept();
+
+        // tell the init server we're done
+        init.reply(true);
+
+        // start the chat
+        Chat chat = new Chat(server, client);
+
+        if (info.init) {
+            chat.init();
         }
 
-        /* Manually parse the read data and read the port we should open ourselves for the one-to-one connection */
-        int serverPort = ChatProto.Init.parseFrom(read.data).getPort();
+        // TODO: also, make a thread that puts messages in a buffer
 
-        ServerSocket server = null;
-
-        System.out.println("Setting up Server for Peer-to-Peer now");
-        /* Actually open the socket */
-        try {
-            server = new ServerSocket(serverPort);
-        } catch (IOException e) {
-            System.err.println("NO I/O");
-            System.exit(-1);
+        while (true) {
+            chat.chat();
         }
-
-        /* Generate a reply to the Main Server */
-        ChatProto.Reply reply = ChatProto.Reply.newBuilder().setDone(true).build();
-
-        System.out.println("Writing Acknowledge now");
-        /* Write the reply to the Main Server */
-        writeToOutputStream(reply, out);
-
-        System.out.println("Reading Connection info now");
-
-        /* Start a new ReadRun thread to read the input from the server about which other server to connect to. */
-        read = new ReadRun(in);
-        new Thread(read).start();
-
-        /* Wait for the input to be read */
-        while(!read.wasRead){
-            Thread.sleep(100);
-        }
-
-        /* Parse data to collect the info on the port IP address and whether we should send the first token */
-        ChatProto.ConnectTo info = ChatProto.ConnectTo.parseFrom(read.data);
-
-        /* Read the info from the message */
-        byte[] ip = info.getIp().toByteArray();
-        int port = info.getPort();
-        boolean init = info.getInit();
-
-        System.out.println("Received Connection Info Now: " + init);
-
-        // The next person. You only send to him (and maybe receive aknowledge)
-        Socket next;
-        InputStream next_in = null;
-        OutputStream next_out = null;
-
-        /* Open the socket to the next client */
-        try {
-            next = new Socket(InetAddress.getByAddress(ip), port);
-            next_out = next.getOutputStream();
-            next_in = next.getInputStream();
-        } catch (UnknownHostException e) {
-            // error
-            System.err.println("CANNOT CONNECT TO NEXT");
-        } catch (IOException e) {
-            System.err.println("NO I/O");
-            System.exit(-1);
-        }
-
-        // the previous person: You only receive from him (and maybe acknowledge)
-        Socket prev;
-        InputStream prev_in = null;
-        OutputStream prev_out = null;
-
-        /* Accept the connection from the previous client */
-        try {
-            if((prev = server.accept()) != null) {
-                System.out.println("Client connected");
-                prev_out = prev.getOutputStream();
-                prev_in = prev.getInputStream();
-            }
-        } catch (IOException e) {
-            System.err.println("NO I/O");
-            System.exit(-1);
-        }
-
-        /* Build a reply to the server to acknowledge that the connection has been established */
-        reply = ChatProto.Reply.newBuilder().setDone(true).build();
-
-        /* Write to output stream */
-        writeToOutputStream(reply, out);
-        System.out.println("Peer-to-Peer connection set up");
-
-        /* Test method */
-        chat(init, prev_in, prev_out, next_in, next_out);
     }
 
     public static void main(String args[]) throws IOException, InterruptedException {
