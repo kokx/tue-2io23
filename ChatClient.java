@@ -335,6 +335,9 @@ class ChatClient {
         // create a connection to the given peer
         PeerInfo info = init.getConnectTo();
 
+        System.err.println("Port: " + port);
+        System.err.println("IP: " + info.ip.toString() + " Port: " + info.port);
+
         // get the thread
         new Thread(new ServerConnectionListenRunnable(server)).start();
 
