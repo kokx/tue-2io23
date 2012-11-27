@@ -2,23 +2,60 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
-class ChatServer {
+import com.google.protobuf.ByteString;
 
-    public final static int PORT = 25665;
-    public final static int MAX_CLIENTS = 3;
-    public final static int TIME_POLL = 100;
-    
+// represents a connection to a client
+class Client
+{
+    Socket sock;
+
+    OutputStream out;
+    InputStream in;
+
+    // reader
+    ReadRun read;
+
     static byte[] intToByteArray(int value)
     {
         return new byte[] {
             (byte)(value >>> 24),
-            (byte)(value >>> 16),
-            (byte)(value >>> 8),
-            (byte)value
+                (byte)(value >>> 16),
+                (byte)(value >>> 8),
+                (byte)value
         };
     }
-    
-    void writeToOutputStream(com.google.protobuf.GeneratedMessage message, OutputStream out)
+
+    public Client(ServerSocket server) throws Exception
+    {
+        if ((sock = server.accept()) == null) {
+            throw new Exception("Connection failed.");
+        }
+
+        out = sock.getOutputStream();
+        in = sock.getInputStream();
+    }
+
+    /**
+     * Get the IP address from this client.
+     */
+    byte[] getIp()
+    {
+        return sock.getInetAddress().getAddress();
+    }
+
+    // expect a reply
+    void expectReply()
+    {
+        read = new ReadRun(in);
+        new Thread(read).start();
+    }
+
+    boolean hasReply()
+    {
+        return read.wasRead;
+    }
+
+    void write(com.google.protobuf.GeneratedMessage message)
     {
         try {
             int len = message.toByteArray().length;
@@ -31,92 +68,110 @@ class ChatServer {
             System.exit(-1);
         }
     }
-    
-    void run() throws IOException, InterruptedException
+}
+
+// represents the server
+class Server {
+
+    ServerSocket sock = null;
+
+    ArrayList<Client> clients = new ArrayList<Client>();
+
+    /**
+     * Constructor.
+     */
+    public Server(int port) throws IOException
     {
-        ServerSocket server = null;
-        Socket client[] = new Socket[MAX_CLIENTS];
-        int clients = 0;
-        
-        OutputStream[] outputs = new OutputStream[MAX_CLIENTS];
-        InputStream[] inputs = new InputStream[MAX_CLIENTS];
-        
-        // open connection with all clients
-        try {
-            server = new ServerSocket(PORT);
-            while ((clients < MAX_CLIENTS) && (client[clients] = server.accept()) != null) {
-                System.out.println("Client connected");
-                outputs[clients] = client[clients].getOutputStream();
-                inputs[clients] = client[clients].getInputStream();
-                clients++;
-            }
-        } catch (IOException e) {
-            System.err.println("NO I/O");
-            System.exit(-1);
-        }
-        
-        System.out.println("Writing Ports to set up Servers to Clients now");
-        // write ports to open to all clients 
-        for(int i = 0; i < clients; i++){
-            // port = PORT + i;
-            ChatProto.Init init = ChatProto.Init.newBuilder().setPort(PORT+1+i).build();
-            writeToOutputStream(init, outputs[i]);
-        }
-        
-        System.out.println("Reading Acknowledge from Clients now");
-        // read from all clients
-        ReadRun[] reads = new ReadRun[clients];
-        for(int i = 0; i < clients; i++){
-            reads[i] = new ReadRun(inputs[i]);
-            new Thread(reads[i]).start();
-        }
-        
-        // check for all messages to be received
-        boolean readAll = false;
-        while(!readAll){
-            Thread.sleep(TIME_POLL);
-            
-            readAll = true;
-            for(int i = 0; i < clients; i++){
-                readAll = readAll && reads[i].wasRead;
-            }
-        }
-        
-        System.out.println("Writing Peer-to-Peer connection info to Clients now");
-        // write ports and ip's to listen to all clients
-        for(int i = 0; i < clients; i++){
-            System.out.println("Linking " + i + "  and  " + (i+1)%clients);
-            byte[] ip = client[(i + 1) % clients].getInetAddress().getAddress();
-            ChatProto.ConnectTo message = ChatProto.ConnectTo.newBuilder()
-                    .setIp(com.google.protobuf.ByteString.copyFrom(ip))
-                    .setPort((i+1)%clients+PORT+1)
-                    .setInit(i==0).build();
-            writeToOutputStream(message, outputs[i]);
-        }
-        
-        System.out.println("Reading Acknowledge from Clients now");
-        // check for all messages to be received
-        for(int i = 0; i < clients; i++){
-            reads[i] = new ReadRun(inputs[i]);
-            new Thread(reads[i]).start();
-            
-        }
-        
-        readAll = false;
-        while(!readAll){
-            Thread.sleep(TIME_POLL);
-            
-            readAll = true;
-            for(int i = 0; i < clients; i++){
-                readAll = readAll && reads[i].wasRead;
-            }
-        }
-        
-        System.out.println("All Acknowledges Received. Terminating Main UDP Server Now");
-        
+        sock = new ServerSocket(port);
     }
 
-    public static void main(String args[]) throws IOException, InterruptedException {
+    /**
+     * Wait for a client to connect.
+     */
+    public void connectClient() throws Exception
+    {
+        clients.add(new Client(sock));
+    }
+
+    public void waitClientReply() throws InterruptedException
+    {
+        // wait for all clients to have a reply
+        boolean readAll = false;
+        while (!readAll) {
+            Thread.sleep(ChatServer.TIME_POLL);
+
+            readAll = true;
+            for (Client c : clients) {
+                readAll = readAll && c.hasReply();
+            }
+        }
+    }
+
+    /**
+     * Initialize the token ring.
+     */
+    public void init(int initialPort) throws InterruptedException
+    {
+        // give everyone the proper port number
+        for (int i = 0; i < clients.size(); i++) {
+            // create the message
+            ChatProto.Init init = ChatProto.Init.newBuilder()
+                                                .setPort(initialPort + i)
+                                                .build();
+            clients.get(i).write(init);
+
+            clients.get(i).expectReply();
+        }
+
+        waitClientReply();
+
+        // link all clients
+        for (int i = 0; i < clients.size(); i++) {
+            ByteString ip = ByteString.copyFrom(clients.get(i).getIp());
+            ChatProto.ConnectTo message = ChatProto.ConnectTo.newBuilder()
+                .setIp(ip)
+                .setPort((i + 1) % clients.size() + initialPort)
+                .setInit(i == 0)
+                .build();
+            clients.get(i).write(message);
+
+            clients.get(i).expectReply();
+        }
+
+        waitClientReply();
+    }
+}
+
+class ChatServer {
+
+    public final static int PORT = 25665;
+    public final static int MAX_CLIENTS = 3;
+    public final static int TIME_POLL = 100;
+
+    // real stuff
+    ServerSocket server = null;
+    Socket clients[] = new Socket[MAX_CLIENTS];
+    int lastClient = 0;
+
+    OutputStream[] clientOut;
+    InputStream[] clientIn;
+
+    void run() throws Exception, IOException, InterruptedException
+    {
+        // create a server
+        Server server = new Server(PORT);
+
+        // wait for MAX_CLIENTS clients to connect
+        for (int i = 0; i < MAX_CLIENTS; i++) {
+            server.connectClient();
+        }
+
+        server.init(PORT + 1);
+
+        System.out.println("All Acknowledges Received. Terminating Main UDP Server Now");
+    }
+
+    public static void main(String args[]) throws Exception, IOException, InterruptedException {
         new ChatServer().run();
     }
 }

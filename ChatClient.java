@@ -10,9 +10,9 @@ class ChatClient {
     {
         return new byte[] {
             (byte)(value >>> 24),
-            (byte)(value >>> 16),
-            (byte)(value >>> 8),
-            (byte)value
+                (byte)(value >>> 16),
+                (byte)(value >>> 8),
+                (byte)value
         };
     }
 
@@ -29,17 +29,19 @@ class ChatClient {
             System.exit(-1);
         }
     }
+
+
     /* Test the connection by reading and writing the Token 4 times */
     void chat(boolean init,
-              InputStream prev_in, OutputStream prev_out,
-              InputStream next_in, OutputStream next_out)
-              throws InterruptedException, IOException{
+            InputStream prev_in, OutputStream prev_out,
+            InputStream next_in, OutputStream next_out)
+        throws InterruptedException, IOException{
 
         if(init){
             ChatProto.Token token = ChatProto.Token
-                                    .newBuilder()
-                                    .setLastId(0)
-                                    .build();
+                .newBuilder()
+                .setLastId(0)
+                .build();
             writeToOutputStream(token, next_out);
             //System.out.println("Sent First Token");
         }
@@ -77,7 +79,7 @@ class ChatClient {
         Socket s = null;
         OutputStream out = null;
         InputStream in = null;
-     	/* Connect to main server with port PORT and ip serverip */
+        /* Connect to main server with port PORT and ip serverip */
         try {
             s = new Socket(InetAddress.getByName(serverip), PORT);
             out = s.getOutputStream();
@@ -90,24 +92,24 @@ class ChatClient {
             System.exit(-1);
         }
 
-        System.out.println("Server connected");
+        System.out.println("Connected to server");
 
         System.out.println("Reading Port Info from Server now");
-	/* Start new ReadRun thread to read from the input we get from the Server */
+        /* Start new ReadRun thread to read from the input we get from the Server */
         ReadRun read = new ReadRun(in);
         new Thread(read).start();
 
-        while(!read.wasRead){
+        while (!read.wasRead) {
             Thread.sleep(100);
         }
 
-	/* Manually parse the read data and read the port we should open ourselves for the one-to-one connection */
+        /* Manually parse the read data and read the port we should open ourselves for the one-to-one connection */
         int serverPort = ChatProto.Init.parseFrom(read.data).getPort();
-	/* the serversocket we try to open */
+
         ServerSocket server = null;
 
         System.out.println("Setting up Server for Peer-to-Peer now");
-	/* Actually open the socket */
+        /* Actually open the socket */
         try {
             server = new ServerSocket(serverPort);
         } catch (IOException e) {
@@ -115,28 +117,28 @@ class ChatClient {
             System.exit(-1);
         }
 
-	/* Generate a reply to the Main Server */
+        /* Generate a reply to the Main Server */
         ChatProto.Reply reply = ChatProto.Reply.newBuilder().setDone(true).build();
 
         System.out.println("Writing Acknowledge now");
-	/* Write the reply to the Main Server */
+        /* Write the reply to the Main Server */
         writeToOutputStream(reply, out);
 
         System.out.println("Reading Connection info now");
 
-	/* Start a new ReadRun thread to read the input from the server about which other server to connect to. */
+        /* Start a new ReadRun thread to read the input from the server about which other server to connect to. */
         read = new ReadRun(in);
         new Thread(read).start();
 
-	/* Wait for the input to be read */
+        /* Wait for the input to be read */
         while(!read.wasRead){
             Thread.sleep(100);
         }
 
-	/* Parse data to collect the info on the port IP address and whether we should send the first token */
+        /* Parse data to collect the info on the port IP address and whether we should send the first token */
         ChatProto.ConnectTo info = ChatProto.ConnectTo.parseFrom(read.data);
 
-	/* Read the info from the message */
+        /* Read the info from the message */
         byte[] ip = info.getIp().toByteArray();
         int port = info.getPort();
         boolean init = info.getInit();
@@ -148,7 +150,7 @@ class ChatClient {
         InputStream next_in = null;
         OutputStream next_out = null;
 
-	/* Open the socket to the next client */
+        /* Open the socket to the next client */
         try {
             next = new Socket(InetAddress.getByAddress(ip), port);
             next_out = next.getOutputStream();
@@ -166,7 +168,7 @@ class ChatClient {
         InputStream prev_in = null;
         OutputStream prev_out = null;
 
-	/* Accept the connection from the previous client */
+        /* Accept the connection from the previous client */
         try {
             if((prev = server.accept()) != null) {
                 System.out.println("Client connected");
@@ -178,10 +180,10 @@ class ChatClient {
             System.exit(-1);
         }
 
-	/* Build a reply to the server to acknowledge that the connection has been established */
+        /* Build a reply to the server to acknowledge that the connection has been established */
         reply = ChatProto.Reply.newBuilder().setDone(true).build();
 
-	/* Write to output stream */
+        /* Write to output stream */
         writeToOutputStream(reply, out);
         System.out.println("Peer-to-Peer connection set up");
 

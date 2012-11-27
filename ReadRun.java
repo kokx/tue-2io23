@@ -5,14 +5,14 @@ import java.math.*;
 
 public class ReadRun implements Runnable {
     InputStream in;
-    
+
     public boolean wasRead;
-    
+
     // Hij slaat niet meer de message op, maar de data. Zo kan deze class
     // gebruikt worden voor alle messages. Je moet alleen zelf de .parseFrom()
     // method aanroepen. Modularity FTW!
     byte[] data;
-    
+
     public ReadRun(InputStream in)
     {
         this.in = in;
@@ -44,7 +44,6 @@ public class ReadRun implements Runnable {
                 data = new byte[len];
                 in.read(data, 0, len);
                 wasRead = true;
-                
             }
         } catch (IOException e) {
             System.err.println(e.getMessage());
