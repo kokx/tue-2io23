@@ -225,21 +225,6 @@ class ChatClient {
             ChatProto.Token.Builder builder = ChatProto.Token.newBuilder();
 
             builder.mergeFrom(token);
-            /*
-            ChatProto.Token.Builder builder = ChatProto.Token.newBuilder();
-
-            builder.setLastId(token.getLastId());
-
-            // copy all messages
-            for (ChatProto.Token.Message message : token.getMessageList()) {
-                ChatProto.Token.Message newMessage = ChatProto.Token.Message.newBuilder()
-                    .setId(message.getId())
-                    .setName(message.getName())
-                    .setMessage(message.getMessage())
-                    .build();
-                builder.addMessage(newMessage);
-            }
-            */
 
             return builder;
         }
@@ -317,6 +302,7 @@ class ChatClient {
 
         // setup a server with the given port
         Server server = new Server(port);
+        Client client;
 
         // tell the server we got the message and started a server
         init.reply(true);
@@ -324,10 +310,16 @@ class ChatClient {
         // create a connection to the given peer
         PeerInfo info = init.getConnectTo();
 
-        Client client = new Client(info);
+        if (info.init) {
+            // wait some time to give everyone the chance to setup their server
+            Thread.sleep(200);
+            client = new Client(info);
 
-        // let the server accept a connection
-        server.accept();
+            server.accept();
+        } else {
+            server.accept();
+            client = new Client(info);
+        }
 
         // tell the init server we're done
         init.reply(true);
