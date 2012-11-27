@@ -72,12 +72,12 @@ class ChatClient {
     {
         Socket sock;
 
-        InputStream in;
+        DataInputStream in;
         OutputStream out;
 
         protected void initIO() throws IOException
         {
-            in = sock.getInputStream();
+            in = new DataInputStream(sock.getInputStream());
             out = sock.getOutputStream();
         }
 
@@ -104,14 +104,13 @@ class ChatClient {
         byte[] read() throws IOException
         {
             byte[] input = new byte[4];
-            if (in.read(input, 0, 4) == 4) {
-                int len = byteArrayToInt(input);
+            in.readFully(input, 0, 4);
 
-                byte[] data = new byte[len];
-                in.read(data, 0, len);
-                return data;
-            }
-            return null;
+            int len = byteArrayToInt(input);
+
+            byte[] data = new byte[len];
+            in.readFully(data, 0, len);
+            return data;
         }
     }
 

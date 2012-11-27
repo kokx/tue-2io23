@@ -129,7 +129,7 @@ class ChatServer {
 
             // link all clients
             for (int i = 0; i < clients.size(); i++) {
-                ByteString ip = ByteString.copyFrom(clients.get(i).getIp());
+                ByteString ip = ByteString.copyFrom(clients.get((i + 1) % clients.size()).getIp());
                 ChatProto.ConnectTo message = ChatProto.ConnectTo.newBuilder()
                     .setIp(ip)
                     .setPort((i + 1) % clients.size() + initialPort)
