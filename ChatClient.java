@@ -158,11 +158,35 @@ class ChatClient {
     }
 
     /**
+     * Thread to wait for a server connection.
+     */
+    class ServerConnectionListenRunnable implements Runnable
+    {
+        Server server;
+
+        ServerConnectionListenRunnable(Server server)
+        {
+            this.server = server;
+        }
+
+        public void run()
+        {
+            try {
+                server.accept();
+            } catch (IOException e) {
+                System.err.println("I/O not working");
+                System.exit(-1);
+            }
+        }
+    }
+
+    /**
      * Server for p2p communication.
      */
     class Server extends Peer
     {
         ServerSocket serverSock = null;
+        boolean connected = false;
 
         Server(int port) throws IOException
         {
@@ -173,6 +197,7 @@ class ChatClient {
         {
             boolean ret = (sock = serverSock.accept()) != null;
             initIO();
+            connected = true;
             return ret;
         }
     }
@@ -310,15 +335,14 @@ class ChatClient {
         // create a connection to the given peer
         PeerInfo info = init.getConnectTo();
 
-        if (info.init) {
-            // wait some time to give everyone the chance to setup their server
-            Thread.sleep(200);
-            client = new Client(info);
+        // get the thread
+        new Thread(new ServerConnectionListenRunnable(server)).start();
 
-            server.accept();
-        } else {
-            server.accept();
-            client = new Client(info);
+        client = new Client(info);
+
+        // wait until connected
+        while (!server.connected) {
+            Thread.sleep(100);
         }
 
         // tell the init server we're done
