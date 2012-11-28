@@ -10,7 +10,7 @@ class InputReaderRunnable implements Runnable
 {
     BufferedReader in;
 
-    Queue<String> buffer;
+    ConcurrentLinkedQueue<String> buffer;
 
     InputReaderRunnable(InputStream in)
     {
@@ -24,6 +24,7 @@ class InputReaderRunnable implements Runnable
         try {
             while ((line = in.readLine()) != null) {
                 buffer.add(line);
+                System.err.println("Added: " + line);
             }
         } catch (IOException e) {
             System.err.println("I/O Error");
@@ -41,24 +42,16 @@ class ChatClient {
     {
         return new byte[] {
             (byte)(value >>> 24),
-                (byte)(value >>> 16),
-                (byte)(value >>> 8),
-                (byte)value
+            (byte)(value >>> 16 & 0xFF),
+            (byte)(value >>> 8 & 0xFF),
+            (byte)(value & 0xFF)
         };
     }
 
     // assuming MSB is first (Big Endian)
     static int byteArrayToInt(byte[] array)
     {
-        if (array.length > 4) {
-            return -1;
-        }
-
-        int value = 0;
-        for (int i = 0; i < array.length; i++) {
-            value += (value << 8) + (array[i] & 0xFF);
-        }
-        return value;
+        return java.nio.ByteBuffer.wrap(array).getInt();
     }
 
     class PeerInfo
@@ -77,7 +70,7 @@ class ChatClient {
 
         protected void initIO() throws IOException
         {
-            in = new DataInputStream(sock.getInputStream());
+            in = new DataInputStream(new BufferedInputStream(sock.getInputStream()));
             out = sock.getOutputStream();
         }
 
@@ -275,6 +268,7 @@ class ChatClient {
                     .setName("kokx")
                     .setMessage(line)
                     .build();
+                    System.err.println("Sent: " + line + " ID: " + nextId);
                 messages.add(message);
                 nextId++;
             }
@@ -291,7 +285,7 @@ class ChatClient {
 
             for (ChatProto.Token.Message message : messages) {
                 if (message.getId() >= nextId) {
-                    System.out.println(message.getName() + ": " + message.getMessage());
+                    System.out.println(message.getName() + " (" + message.getId() + "/" + nextId + "): " + message.getMessage());
                     nextId = message.getId() + 1;
                 }
             }

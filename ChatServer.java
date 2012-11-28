@@ -6,13 +6,14 @@ import com.google.protobuf.ByteString;
 
 class ChatServer {
 
+    // assuming MSB is first (Big Endian)
     static byte[] intToByteArray(int value)
     {
         return new byte[] {
             (byte)(value >>> 24),
-                (byte)(value >>> 16),
-                (byte)(value >>> 8),
-                (byte)value
+            (byte)(value >>> 16 & 0xFF),
+            (byte)(value >>> 8 & 0xFF),
+            (byte)(value & 0xFF)
         };
     }
 

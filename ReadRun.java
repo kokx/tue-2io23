@@ -22,15 +22,7 @@ public class ReadRun implements Runnable {
     // assuming MSB is first (Big Endian)
     static int byteArrayToInt(byte[] array)
     {
-        if (array.length > 4) {
-            return -1;
-        }
-
-        int value = 0;
-        for (int i = 0; i < array.length; i++) {
-            value += (value << 8) + (array[i] & 0xFF);
-        }
-        return value;
+        return java.nio.ByteBuffer.wrap(array).getInt();
     }
 
     public void run()
