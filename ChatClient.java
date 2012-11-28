@@ -24,7 +24,6 @@ class InputReaderRunnable implements Runnable
         try {
             while ((line = in.readLine()) != null) {
                 buffer.add(line);
-                System.err.println("Added: " + line);
             }
         } catch (IOException e) {
             System.err.println("I/O Error");
@@ -268,7 +267,6 @@ class ChatClient {
                     .setName("kokx")
                     .setMessage(line)
                     .build();
-                    System.err.println("Sent: " + line + " ID: " + nextId);
                 messages.add(message);
                 nextId++;
             }
@@ -285,7 +283,7 @@ class ChatClient {
 
             for (ChatProto.Token.Message message : messages) {
                 if (message.getId() >= nextId) {
-                    System.out.println(message.getName() + " (" + message.getId() + "/" + nextId + "): " + message.getMessage());
+                    System.out.println(message.getName() + ": " + message.getMessage());
                     nextId = message.getId() + 1;
                 }
             }
@@ -328,7 +326,8 @@ class ChatClient {
         // create a connection to the given peer
         PeerInfo info = init.getConnectTo();
 
-        System.err.println("Port: " + port);
+        //System.err.println("Port: " + port);
+        System.err.println("Connected to: ");
         System.err.println("IP: " + info.ip.toString() + " Port: " + info.port);
 
         // get the thread
@@ -350,8 +349,6 @@ class ChatClient {
         if (info.init) {
             chat.init();
         }
-
-        // TODO: also, make a thread that puts messages in a buffer
 
         while (true) {
             chat.chat();

@@ -67,7 +67,7 @@ class ChatServer {
                 out.write(length);
                 message.writeTo(out);
             } catch (IOException e) {
-                System.out.println("I/O Error");
+                System.err.println("I/O Error");
                 System.exit(-1);
             }
         }
