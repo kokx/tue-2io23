@@ -36,6 +36,9 @@ class ChatClient {
 
     public final static int PORT = 25665;
 
+    long tokenCount = 0L;
+    long starttime = 0L;
+
     // assuming MSB is first (Big Endian)
     static byte[] intToByteArray(int value)
     {
@@ -297,6 +300,15 @@ class ChatClient {
 
             // write the message
             next.write(builder.build());
+
+            // fix the token stuff
+            tokenCount++;
+            if ((tokenCount % 1001L) == 0) {
+                int time = (int) ((System.currentTimeMillis() - starttime) / 1000L);
+                if (time != 0) {
+                    System.out.println("T/S: " + tokenCount / time);
+                }
+            }
         }
     }
 
@@ -350,12 +362,44 @@ class ChatClient {
             chat.init();
         }
 
+        starttime = System.currentTimeMillis();
         while (true) {
             chat.chat();
         }
     }
 
+    /**
+     * Try to obtain the current IP address.
+     */
+    public static InetAddress getLocalIp()
+    {
+        try {
+            Enumeration<NetworkInterface> nifs = NetworkInterface.getNetworkInterfaces();
+
+            while (nifs.hasMoreElements()) {
+                NetworkInterface nif = nifs.nextElement();
+
+                Enumeration<InetAddress> adrs = nif.getInetAddresses();
+
+                if (!nif.isLoopback() && nif.isUp() && !nif.isVirtual()) {
+                    while (adrs.hasMoreElements()) {
+                        InetAddress adr = adrs.nextElement();
+
+                        if (adr != null && !adr.isLoopbackAddress() && (nif.isPointToPoint() || !adr.isLinkLocalAddress())) {
+                            return adr;
+                        }
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            System.err.println("No IP found");
+            System.exit(-1);
+        }
+        return null;
+    }
+
     public static void main(String args[]) throws IOException, InterruptedException {
+        //System.err.println("IP: " + getLocalIp().toString());
         new ChatClient().run(args[0]);
     }
 }

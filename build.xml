@@ -1,0 +1,38 @@
+<project>
+
+    <target name="clean">
+        <delete dir="build" />
+    </target>
+
+    <target name="compile">
+        <mkdir dir="build/classes" />
+        <javac srcdir="src" destdir="build/classes" classpath=".:protobuf-java-2.4.1.jar" />
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="build/jar" />
+        <jar destfile="build/jar/ChatClient.jar" basedir="build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="ChatClient" />
+                <attribute name="Class-Path" value="protobuf.jar" />
+            </manifest>
+        </jar>
+        <jar destfile="build/jar/ChatServer.jar" basedir="build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="ChatServer" />
+                <attribute name="Class-Path" value="protobuf.jar" />
+            </manifest>
+        </jar>
+        <copy file="protobuf-java-2.4.1.jar" tofile="build/jar/protobuf.jar" />
+    </target>
+
+    <target name="client" depends="jar">
+        <java jar="build/jar/ChatClient.jar" classpath=".:build/jar/protobuf.jar" fork="yes">
+            <arg value="127.0.0.1" />
+        </java>
+    </target>
+
+    <target name="server" depends="jar">
+        <java jar="build/jar/ChatServer.jar" fork="yes" />
+    </target>
+</project>
