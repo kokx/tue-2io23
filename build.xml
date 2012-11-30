@@ -4,7 +4,14 @@
         <delete dir="build" />
     </target>
 
-    <target name="compile">
+    <target name="protobuf">
+        <exec executable="/usr/bin/protoc">
+            <arg value="--java_out=src/" />
+            <arg value="proto/ChatProto.proto" />
+        </exec>
+    </target>
+
+    <target name="compile" depends="protobuf">
         <mkdir dir="build/classes" />
         <javac srcdir="src" destdir="build/classes" classpath=".:protobuf-java-2.4.1.jar" />
     </target>

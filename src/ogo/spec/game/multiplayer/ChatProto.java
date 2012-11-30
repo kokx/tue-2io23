@@ -35,12 +35,12 @@ public final class ChatProto {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ogo.spec.game.multiplayer.ChatProto.internal_static_Init_descriptor;
+      return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Init_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ogo.spec.game.multiplayer.ChatProto.internal_static_Init_fieldAccessorTable;
+      return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Init_fieldAccessorTable;
     }
     
     private int bitField0_;
@@ -186,12 +186,12 @@ public final class ChatProto {
        implements ogo.spec.game.multiplayer.ChatProto.InitOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return ogo.spec.game.multiplayer.ChatProto.internal_static_Init_descriptor;
+        return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Init_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return ogo.spec.game.multiplayer.ChatProto.internal_static_Init_fieldAccessorTable;
+        return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Init_fieldAccessorTable;
       }
       
       // Construct using ogo.spec.game.multiplayer.ChatProto.Init.newBuilder()
@@ -343,7 +343,7 @@ public final class ChatProto {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:Init)
+      // @@protoc_insertion_point(builder_scope:ogo_spec_game.Init)
     }
     
     static {
@@ -351,7 +351,7 @@ public final class ChatProto {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:Init)
+    // @@protoc_insertion_point(class_scope:ogo_spec_game.Init)
   }
   
   public interface ReplyOrBuilder
@@ -381,12 +381,12 @@ public final class ChatProto {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ogo.spec.game.multiplayer.ChatProto.internal_static_Reply_descriptor;
+      return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Reply_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ogo.spec.game.multiplayer.ChatProto.internal_static_Reply_fieldAccessorTable;
+      return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Reply_fieldAccessorTable;
     }
     
     private int bitField0_;
@@ -532,12 +532,12 @@ public final class ChatProto {
        implements ogo.spec.game.multiplayer.ChatProto.ReplyOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return ogo.spec.game.multiplayer.ChatProto.internal_static_Reply_descriptor;
+        return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Reply_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return ogo.spec.game.multiplayer.ChatProto.internal_static_Reply_fieldAccessorTable;
+        return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Reply_fieldAccessorTable;
       }
       
       // Construct using ogo.spec.game.multiplayer.ChatProto.Reply.newBuilder()
@@ -689,7 +689,7 @@ public final class ChatProto {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:Reply)
+      // @@protoc_insertion_point(builder_scope:ogo_spec_game.Reply)
     }
     
     static {
@@ -697,7 +697,7 @@ public final class ChatProto {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:Reply)
+    // @@protoc_insertion_point(class_scope:ogo_spec_game.Reply)
   }
   
   public interface ConnectToOrBuilder
@@ -735,12 +735,12 @@ public final class ChatProto {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ogo.spec.game.multiplayer.ChatProto.internal_static_ConnectTo_descriptor;
+      return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_ConnectTo_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ogo.spec.game.multiplayer.ChatProto.internal_static_ConnectTo_fieldAccessorTable;
+      return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_ConnectTo_fieldAccessorTable;
     }
     
     private int bitField0_;
@@ -930,12 +930,12 @@ public final class ChatProto {
        implements ogo.spec.game.multiplayer.ChatProto.ConnectToOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return ogo.spec.game.multiplayer.ChatProto.internal_static_ConnectTo_descriptor;
+        return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_ConnectTo_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return ogo.spec.game.multiplayer.ChatProto.internal_static_ConnectTo_fieldAccessorTable;
+        return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_ConnectTo_fieldAccessorTable;
       }
       
       // Construct using ogo.spec.game.multiplayer.ChatProto.ConnectTo.newBuilder()
@@ -1168,7 +1168,7 @@ public final class ChatProto {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:ConnectTo)
+      // @@protoc_insertion_point(builder_scope:ogo_spec_game.ConnectTo)
     }
     
     static {
@@ -1176,13 +1176,13 @@ public final class ChatProto {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:ConnectTo)
+    // @@protoc_insertion_point(class_scope:ogo_spec_game.ConnectTo)
   }
   
   public interface TokenOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
-    // repeated .Token.Message message = 1;
+    // repeated .ogo_spec_game.Token.Message message = 1;
     java.util.List<ogo.spec.game.multiplayer.ChatProto.Token.Message> 
         getMessageList();
     ogo.spec.game.multiplayer.ChatProto.Token.Message getMessage(int index);
@@ -1216,12 +1216,12 @@ public final class ChatProto {
     
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return ogo.spec.game.multiplayer.ChatProto.internal_static_Token_descriptor;
+      return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Token_descriptor;
     }
     
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return ogo.spec.game.multiplayer.ChatProto.internal_static_Token_fieldAccessorTable;
+      return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Token_fieldAccessorTable;
     }
     
     public interface MessageOrBuilder
@@ -1259,12 +1259,12 @@ public final class ChatProto {
       
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return ogo.spec.game.multiplayer.ChatProto.internal_static_Token_Message_descriptor;
+        return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Token_Message_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return ogo.spec.game.multiplayer.ChatProto.internal_static_Token_Message_fieldAccessorTable;
+        return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Token_Message_fieldAccessorTable;
       }
       
       private int bitField0_;
@@ -1498,12 +1498,12 @@ public final class ChatProto {
          implements ogo.spec.game.multiplayer.ChatProto.Token.MessageOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-          return ogo.spec.game.multiplayer.ChatProto.internal_static_Token_Message_descriptor;
+          return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Token_Message_descriptor;
         }
         
         protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return ogo.spec.game.multiplayer.ChatProto.internal_static_Token_Message_fieldAccessorTable;
+          return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Token_Message_fieldAccessorTable;
         }
         
         // Construct using ogo.spec.game.multiplayer.ChatProto.Token.Message.newBuilder()
@@ -1763,7 +1763,7 @@ public final class ChatProto {
           onChanged();
         }
         
-        // @@protoc_insertion_point(builder_scope:Token.Message)
+        // @@protoc_insertion_point(builder_scope:ogo_spec_game.Token.Message)
       }
       
       static {
@@ -1771,11 +1771,11 @@ public final class ChatProto {
         defaultInstance.initFields();
       }
       
-      // @@protoc_insertion_point(class_scope:Token.Message)
+      // @@protoc_insertion_point(class_scope:ogo_spec_game.Token.Message)
     }
     
     private int bitField0_;
-    // repeated .Token.Message message = 1;
+    // repeated .ogo_spec_game.Token.Message message = 1;
     public static final int MESSAGE_FIELD_NUMBER = 1;
     private java.util.List<ogo.spec.game.multiplayer.ChatProto.Token.Message> message_;
     public java.util.List<ogo.spec.game.multiplayer.ChatProto.Token.Message> getMessageList() {
@@ -1952,12 +1952,12 @@ public final class ChatProto {
        implements ogo.spec.game.multiplayer.ChatProto.TokenOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return ogo.spec.game.multiplayer.ChatProto.internal_static_Token_descriptor;
+        return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Token_descriptor;
       }
       
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return ogo.spec.game.multiplayer.ChatProto.internal_static_Token_fieldAccessorTable;
+        return ogo.spec.game.multiplayer.ChatProto.internal_static_ogo_spec_game_Token_fieldAccessorTable;
       }
       
       // Construct using ogo.spec.game.multiplayer.ChatProto.Token.newBuilder()
@@ -2142,7 +2142,7 @@ public final class ChatProto {
       
       private int bitField0_;
       
-      // repeated .Token.Message message = 1;
+      // repeated .ogo_spec_game.Token.Message message = 1;
       private java.util.List<ogo.spec.game.multiplayer.ChatProto.Token.Message> message_ =
         java.util.Collections.emptyList();
       private void ensureMessageIsMutable() {
@@ -2349,7 +2349,7 @@ public final class ChatProto {
         return this;
       }
       
-      // @@protoc_insertion_point(builder_scope:Token)
+      // @@protoc_insertion_point(builder_scope:ogo_spec_game.Token)
     }
     
     static {
@@ -2357,34 +2357,34 @@ public final class ChatProto {
       defaultInstance.initFields();
     }
     
-    // @@protoc_insertion_point(class_scope:Token)
+    // @@protoc_insertion_point(class_scope:ogo_spec_game.Token)
   }
   
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_Init_descriptor;
+    internal_static_ogo_spec_game_Init_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Init_fieldAccessorTable;
+      internal_static_ogo_spec_game_Init_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_Reply_descriptor;
+    internal_static_ogo_spec_game_Reply_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Reply_fieldAccessorTable;
+      internal_static_ogo_spec_game_Reply_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_ConnectTo_descriptor;
+    internal_static_ogo_spec_game_ConnectTo_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_ConnectTo_fieldAccessorTable;
+      internal_static_ogo_spec_game_ConnectTo_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_Token_descriptor;
+    internal_static_ogo_spec_game_Token_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Token_fieldAccessorTable;
+      internal_static_ogo_spec_game_Token_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_Token_Message_descriptor;
+    internal_static_ogo_spec_game_Token_Message_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_Token_Message_fieldAccessorTable;
+      internal_static_ogo_spec_game_Token_Message_fieldAccessorTable;
   
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -2394,56 +2394,57 @@ public final class ChatProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\025proto/ChatProto.proto\"\024\n\004Init\022\014\n\004port\030" +
-      "\001 \002(\005\"\025\n\005Reply\022\014\n\004done\030\001 \002(\010\"3\n\tConnectT" +
-      "o\022\n\n\002ip\030\001 \002(\014\022\014\n\004port\030\002 \002(\005\022\014\n\004init\030\003 \002(" +
-      "\010\"n\n\005Token\022\037\n\007message\030\001 \003(\0132\016.Token.Mess" +
-      "age\022\016\n\006lastId\030\002 \002(\005\0324\n\007Message\022\n\n\002id\030\001 \002" +
-      "(\005\022\014\n\004name\030\002 \002(\t\022\017\n\007message\030\003 \002(\tB\033\n\031ogo" +
-      ".spec.game.multiplayer"
+      "\n\025proto/ChatProto.proto\022\rogo_spec_game\"\024" +
+      "\n\004Init\022\014\n\004port\030\001 \002(\005\"\025\n\005Reply\022\014\n\004done\030\001 " +
+      "\002(\010\"3\n\tConnectTo\022\n\n\002ip\030\001 \002(\014\022\014\n\004port\030\002 \002" +
+      "(\005\022\014\n\004init\030\003 \002(\010\"|\n\005Token\022-\n\007message\030\001 \003" +
+      "(\0132\034.ogo_spec_game.Token.Message\022\016\n\006last" +
+      "Id\030\002 \002(\005\0324\n\007Message\022\n\n\002id\030\001 \002(\005\022\014\n\004name\030" +
+      "\002 \002(\t\022\017\n\007message\030\003 \002(\tB\033\n\031ogo.spec.game." +
+      "multiplayer"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;
-          internal_static_Init_descriptor =
+          internal_static_ogo_spec_game_Init_descriptor =
             getDescriptor().getMessageTypes().get(0);
-          internal_static_Init_fieldAccessorTable = new
+          internal_static_ogo_spec_game_Init_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Init_descriptor,
+              internal_static_ogo_spec_game_Init_descriptor,
               new java.lang.String[] { "Port", },
               ogo.spec.game.multiplayer.ChatProto.Init.class,
               ogo.spec.game.multiplayer.ChatProto.Init.Builder.class);
-          internal_static_Reply_descriptor =
+          internal_static_ogo_spec_game_Reply_descriptor =
             getDescriptor().getMessageTypes().get(1);
-          internal_static_Reply_fieldAccessorTable = new
+          internal_static_ogo_spec_game_Reply_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Reply_descriptor,
+              internal_static_ogo_spec_game_Reply_descriptor,
               new java.lang.String[] { "Done", },
               ogo.spec.game.multiplayer.ChatProto.Reply.class,
               ogo.spec.game.multiplayer.ChatProto.Reply.Builder.class);
-          internal_static_ConnectTo_descriptor =
+          internal_static_ogo_spec_game_ConnectTo_descriptor =
             getDescriptor().getMessageTypes().get(2);
-          internal_static_ConnectTo_fieldAccessorTable = new
+          internal_static_ogo_spec_game_ConnectTo_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_ConnectTo_descriptor,
+              internal_static_ogo_spec_game_ConnectTo_descriptor,
               new java.lang.String[] { "Ip", "Port", "Init", },
               ogo.spec.game.multiplayer.ChatProto.ConnectTo.class,
               ogo.spec.game.multiplayer.ChatProto.ConnectTo.Builder.class);
-          internal_static_Token_descriptor =
+          internal_static_ogo_spec_game_Token_descriptor =
             getDescriptor().getMessageTypes().get(3);
-          internal_static_Token_fieldAccessorTable = new
+          internal_static_ogo_spec_game_Token_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Token_descriptor,
+              internal_static_ogo_spec_game_Token_descriptor,
               new java.lang.String[] { "Message", "LastId", },
               ogo.spec.game.multiplayer.ChatProto.Token.class,
               ogo.spec.game.multiplayer.ChatProto.Token.Builder.class);
-          internal_static_Token_Message_descriptor =
-            internal_static_Token_descriptor.getNestedTypes().get(0);
-          internal_static_Token_Message_fieldAccessorTable = new
+          internal_static_ogo_spec_game_Token_Message_descriptor =
+            internal_static_ogo_spec_game_Token_descriptor.getNestedTypes().get(0);
+          internal_static_ogo_spec_game_Token_Message_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_Token_Message_descriptor,
+              internal_static_ogo_spec_game_Token_Message_descriptor,
               new java.lang.String[] { "Id", "Name", "Message", },
               ogo.spec.game.multiplayer.ChatProto.Token.Message.class,
               ogo.spec.game.multiplayer.ChatProto.Token.Message.Builder.class);
