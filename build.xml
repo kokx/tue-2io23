@@ -1,30 +1,40 @@
 <project>
 
+    <property name="main.dir" location="." />
+    <property name="src.dir" value="${main.dir}/src" />
+    <property name="proto.dir" value="${main.dir}/proto" />
+    <property name="build.dir" value="${main.dir}/build" />
+    <property name="classes.dir" value="${build.dir}/classes" />
+    <property name="jar.dir" value="${build.dir}/jar" />
+
     <target name="clean">
         <delete dir="build" />
     </target>
 
     <target name="protobuf">
-        <exec executable="/usr/bin/protoc">
-            <arg value="--java_out=src/" />
-            <arg value="proto/ChatProto.proto" />
-        </exec>
+        <apply executable="protoc">
+            <arg value="--java_out=${src.dir}" />
+            <arg value="--proto_path=${proto.dir}" />
+            <fileset dir="${proto.dir}">
+                <include name="**/*.proto" />
+            </fileset>
+        </apply>
     </target>
 
     <target name="compile" depends="protobuf">
-        <mkdir dir="build/classes" />
-        <javac srcdir="src" destdir="build/classes" classpath=".:protobuf-java-2.4.1.jar" />
+        <mkdir dir="${classes.dir}" />
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpath=".:protobuf-java-2.4.1.jar" />
     </target>
 
     <target name="jar" depends="compile">
-        <mkdir dir="build/jar" />
-        <jar destfile="build/jar/ChatClient.jar" basedir="build/classes">
+        <mkdir dir="${jar.dir}" />
+        <jar destfile="${jar.dir}/ChatClient.jar" basedir="build/classes">
             <manifest>
                 <attribute name="Main-Class" value="ogo.spec.game.multiplayer.client.ChatClient" />
                 <attribute name="Class-Path" value="protobuf.jar" />
             </manifest>
         </jar>
-        <jar destfile="build/jar/ChatServer.jar" basedir="build/classes">
+        <jar destfile="${jar.dir}/ChatServer.jar" basedir="build/classes">
             <manifest>
                 <attribute name="Main-Class" value="ogo.spec.game.multiplayer.initserver.ChatServer" />
                 <attribute name="Class-Path" value="protobuf.jar" />
@@ -34,12 +44,12 @@
     </target>
 
     <target name="client" depends="jar">
-        <java jar="build/jar/ChatClient.jar" classpath=".:build/jar/protobuf.jar" fork="yes">
+        <java jar="${jar.dir}/ChatClient.jar" classpath=".:${jar.dir}/protobuf.jar" fork="yes">
             <arg value="192.168.1.1" />
         </java>
     </target>
 
     <target name="server" depends="jar">
-        <java jar="build/jar/ChatServer.jar" fork="yes" />
+        <java jar="${jar.dir}/ChatServer.jar" fork="yes" />
     </target>
 </project>
