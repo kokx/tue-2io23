@@ -10,12 +10,11 @@ class InputReaderRunnable implements Runnable
 {
     BufferedReader in;
 
-    ConcurrentLinkedQueue<String> buffer;
+    ConcurrentLinkedQueue<String> buffer = new ConcurrentLinkedQueue<String>();
 
     InputReaderRunnable(InputStream in)
     {
         this.in = new BufferedReader(new InputStreamReader(in));
-        buffer = new ConcurrentLinkedQueue<String>();
     }
 
     public void run()
@@ -32,12 +31,39 @@ class InputReaderRunnable implements Runnable
     }
 }
 
+/**
+ * Runnable for receiving UDP packets.
+ */
+class PacketReceiverRunnable implements Runnable
+{
+    DatagramSocket sock;
+
+    ConcurrentLinkedQueue<DatagramPacket> buffer = new ConcurrentLinkedQueue<DatagramPacket>();
+
+    PacketReceiverRunnable(DatagramSocket sock)
+    {
+        this.sock = sock;
+    }
+
+    public void run()
+    {
+        /*
+        while (true) {
+            DatagramPacket p = new DatagramPacket();
+
+            sock.receive(p);
+
+            buffer.add(p);
+        }
+        */
+    }
+}
+
 class ChatClient {
 
     public final static int PORT = 25665;
-
-    long tokenCount = 0L;
-    long starttime = 0L;
+    public final static int INIT_PORT = 25345; // this is a UDP port
+    public final static int INIT_LISTEN_PORT = 25344; // this is a UDP port
 
     // assuming MSB is first (Big Endian)
     static byte[] intToByteArray(int value)
@@ -54,6 +80,40 @@ class ChatClient {
     static int byteArrayToInt(byte[] array)
     {
         return java.nio.ByteBuffer.wrap(array).getInt();
+    }
+
+    /**
+     * Try to obtain the current IP address(es).
+     */
+    public static List<InetAddress> getLocalIps()
+    {
+        ArrayList<InetAddress> ips = new ArrayList<InetAddress>();
+        try {
+            Enumeration<NetworkInterface> nifs = NetworkInterface.getNetworkInterfaces();
+
+            while (nifs.hasMoreElements()) {
+                NetworkInterface nif = nifs.nextElement();
+
+                Enumeration<InetAddress> adrs = nif.getInetAddresses();
+
+                // FIXME: we should not broadcast on loopback!
+                if (/*!nif.isLoopback() &&*/ nif.isUp() && !nif.isVirtual()) {
+                    while (adrs.hasMoreElements()) {
+                        InetAddress adr = adrs.nextElement();
+
+                        // FIXME: we should not broadcast on loopback!
+                        if (adr != null/* && !adr.isLoopbackAddress() && (nif.isPointToPoint() || !adr.isLinkLocalAddress())*/) {
+                            ips.add(adr);
+                        }
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            System.err.println("No IP found");
+            System.exit(-1);
+        }
+
+        return ips;
     }
 
     class PeerInfo
@@ -300,19 +360,10 @@ class ChatClient {
 
             // write the message
             next.write(builder.build());
-
-            // fix the token stuff
-            tokenCount++;
-            if ((tokenCount % 1001L) == 0) {
-                int time = (int) ((System.currentTimeMillis() - starttime) / 1000L);
-                if (time != 0) {
-                    System.out.println("T/S: " + tokenCount / time);
-                }
-            }
         }
     }
 
-    void run(String serverIp) throws IOException, InterruptedException
+    void connect(String serverIp) throws IOException, InterruptedException
     {
         InitServer init = null;
         try {
@@ -362,44 +413,43 @@ class ChatClient {
             chat.init();
         }
 
-        starttime = System.currentTimeMillis();
         while (true) {
             chat.chat();
         }
     }
 
-    /**
-     * Try to obtain the current IP address.
-     */
-    public static InetAddress getLocalIp()
+    /*
+    void run()
     {
-        try {
-            Enumeration<NetworkInterface> nifs = NetworkInterface.getNetworkInterfaces();
+        // we will simply broadcast to 255.255.255.255
+        // this might not be the best thing, find that out later
 
-            while (nifs.hasMoreElements()) {
-                NetworkInterface nif = nifs.nextElement();
+        List<InetAddress> ips = getLocalIps();
 
-                Enumeration<InetAddress> adrs = nif.getInetAddresses();
+        InetAddress broadcast = InetAddress.getByName("255.255.255.255");
 
-                if (!nif.isLoopback() && nif.isUp() && !nif.isVirtual()) {
-                    while (adrs.hasMoreElements()) {
-                        InetAddress adr = adrs.nextElement();
+        DatagramSocket sock = new DatagramSocket(INIT_LISTEN_PORT);
 
-                        if (adr != null && !adr.isLoopbackAddress() && (nif.isPointToPoint() || !adr.isLinkLocalAddress())) {
-                            return adr;
-                        }
-                    }
-                }
-            }
-        } catch (SocketException e) {
-            System.err.println("No IP found");
-            System.exit(-1);
+        // just broadcast a 1
+        byte[] data = new byte[1];
+        data[0] = 1;
+
+        DatagramPacket packet = new DatagramPacket(data, 1, broadcast, INIT_PORT);
+        sock.send(packet);
+
+        // check if there is a reply
+        PacketReceiverRunnable packetReceiver = new PacketReceiverRunnable(sock);
+        new Thread(packetReceiver).start();
+
+        Thread.sleep(1000);
+
+        while ((packet = packetReceiver.buffer.poll()) != null) {
+            System.out.println(packet.getAddress().toString());
         }
-        return null;
     }
+    */
 
     public static void main(String args[]) throws IOException, InterruptedException {
-        //System.err.println("IP: " + getLocalIp().toString());
-        new ChatClient().run(args[0]);
+        new ChatClient().connect(args[0]);
     }
 }

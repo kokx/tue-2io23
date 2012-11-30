@@ -28,7 +28,7 @@
 
     <target name="client" depends="jar">
         <java jar="build/jar/ChatClient.jar" classpath=".:build/jar/protobuf.jar" fork="yes">
-            <arg value="127.0.0.1" />
+            <arg value="192.168.1.1" />
         </java>
     </target>
 
