@@ -1,9 +1,13 @@
+package ogo.spec.game.multiplayer.initserver;
+
 import java.io.*;
 import java.util.*;
 import java.net.*;
 import java.util.concurrent.*;
 
 import com.google.protobuf.ByteString;
+
+import ogo.spec.game.multiplayer.*;
 
 /**
  * UDP thread
@@ -29,8 +33,6 @@ class BroadcastReceiverRunnable implements Runnable
 
                 buffer.add(p);
 
-                System.out.println("IP: " + p.getAddress().toString());
-
                 // simply send a packet back
                 byte[] data = new byte[1];
                 data[0] = 1;
@@ -53,24 +55,9 @@ class ChatServer {
     public final static int MAX_CLIENTS = 2;
     public final static int TIME_POLL = 100;
 
-    // assuming MSB is first (Big Endian)
-    static byte[] intToByteArray(int value)
-    {
-        return new byte[] {
-            (byte)(value >>> 24),
-            (byte)(value >>> 16 & 0xFF),
-            (byte)(value >>> 8 & 0xFF),
-            (byte)(value & 0xFF)
-        };
-    }
-
     // represents a connection to a client
-    class Client
+    class Client extends Peer
     {
-        Socket sock;
-
-        OutputStream out;
-        InputStream in;
 
         // reader
         ReadRun read;
@@ -81,8 +68,7 @@ class ChatServer {
                 throw new Exception("Connection failed.");
             }
 
-            out = sock.getOutputStream();
-            in = sock.getInputStream();
+            initIO();
         }
 
         /**
@@ -104,24 +90,11 @@ class ChatServer {
         {
             return read.wasRead;
         }
-
-        void write(com.google.protobuf.GeneratedMessage message)
-        {
-            try {
-                int len = message.toByteArray().length;
-                byte[] length = intToByteArray(len);
-
-                out.write(length);
-                message.writeTo(out);
-            } catch (IOException e) {
-                System.err.println("I/O Error");
-                System.exit(-1);
-            }
-        }
     }
 
     // represents the server
-    class Server {
+    class Server
+    {
 
         ServerSocket sock = null;
 

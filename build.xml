@@ -13,13 +13,13 @@
         <mkdir dir="build/jar" />
         <jar destfile="build/jar/ChatClient.jar" basedir="build/classes">
             <manifest>
-                <attribute name="Main-Class" value="ChatClient" />
+                <attribute name="Main-Class" value="ogo.spec.game.multiplayer.client.ChatClient" />
                 <attribute name="Class-Path" value="protobuf.jar" />
             </manifest>
         </jar>
         <jar destfile="build/jar/ChatServer.jar" basedir="build/classes">
             <manifest>
-                <attribute name="Main-Class" value="ChatServer" />
+                <attribute name="Main-Class" value="ogo.spec.game.multiplayer.initserver.ChatServer" />
                 <attribute name="Class-Path" value="protobuf.jar" />
             </manifest>
         </jar>

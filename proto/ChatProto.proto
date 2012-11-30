@@ -1,3 +1,5 @@
+option java_package = "ogo.spec.game.multiplayer";
+
 message Init {
     // send from server to client
     required int32 port = 1;

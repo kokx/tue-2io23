@@ -1,3 +1,5 @@
+package ogo.spec.game.multiplayer;
+
 import java.io.*;
 import java.util.*;
 import java.net.*;

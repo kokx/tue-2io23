@@ -1,7 +1,11 @@
+package ogo.spec.game.multiplayer.client;
+
 import java.io.*;
 import java.util.*;
 import java.net.*;
 import java.util.concurrent.*;
+
+import ogo.spec.game.multiplayer.*;
 
 /**
  * Read input into a buffer.
@@ -67,58 +71,11 @@ class ChatClient {
     public final static int PORT = 25665;
     public final static int INIT_PORT = 25345; // this is a UDP port
     public final static int INIT_LISTEN_PORT = 25344; // this is a UDP port
-
-    // assuming MSB is first (Big Endian)
-    static byte[] intToByteArray(int value)
-    {
-        return new byte[] {
-            (byte)(value >>> 24),
-            (byte)(value >>> 16 & 0xFF),
-            (byte)(value >>> 8 & 0xFF),
-            (byte)(value & 0xFF)
-        };
-    }
-
-    // assuming MSB is first (Big Endian)
-    static int byteArrayToInt(byte[] array)
-    {
-        return java.nio.ByteBuffer.wrap(array).getInt();
-    }
+    public final static String BROADCAST_IP = "192.168.1.255";
 
     /**
-     * Try to obtain the current IP address(es).
+     * Information of a peer.
      */
-    public static List<InetAddress> getLocalIps()
-    {
-        ArrayList<InetAddress> ips = new ArrayList<InetAddress>();
-        try {
-            Enumeration<NetworkInterface> nifs = NetworkInterface.getNetworkInterfaces();
-
-            while (nifs.hasMoreElements()) {
-                NetworkInterface nif = nifs.nextElement();
-
-                Enumeration<InetAddress> adrs = nif.getInetAddresses();
-
-                // FIXME: we should not broadcast on loopback!
-                if (/*!nif.isLoopback() &&*/ nif.isUp() && !nif.isVirtual()) {
-                    while (adrs.hasMoreElements()) {
-                        InetAddress adr = adrs.nextElement();
-
-                        // FIXME: we should not broadcast on loopback!
-                        if (adr != null/* && !adr.isLoopbackAddress() && (nif.isPointToPoint() || !adr.isLinkLocalAddress())*/) {
-                            ips.add(adr);
-                        }
-                    }
-                }
-            }
-        } catch (SocketException e) {
-            System.err.println("No IP found");
-            System.exit(-1);
-        }
-
-        return ips;
-    }
-
     class PeerInfo
     {
         int port;
@@ -126,51 +83,6 @@ class ChatClient {
         boolean init;
     }
 
-    abstract class Peer
-    {
-        Socket sock;
-
-        DataInputStream in;
-        OutputStream out;
-
-        protected void initIO() throws IOException
-        {
-            in = new DataInputStream(new BufferedInputStream(sock.getInputStream()));
-            out = sock.getOutputStream();
-        }
-
-        /**
-         * Write a message.
-         */
-        void write(com.google.protobuf.GeneratedMessage message)
-        {
-            try {
-                int len = message.toByteArray().length;
-                byte[] length = intToByteArray(len);
-
-                out.write(length);
-                message.writeTo(out);
-            } catch (IOException e) {
-                System.out.println("I/O Error");
-                System.exit(-1);
-            }
-        }
-
-        /**
-         * Read a message.
-         */
-        byte[] read() throws IOException
-        {
-            byte[] input = new byte[4];
-            in.readFully(input, 0, 4);
-
-            int len = byteArrayToInt(input);
-
-            byte[] data = new byte[len];
-            in.readFully(data, 0, len);
-            return data;
-        }
-    }
 
     class InitServer extends Peer
     {
@@ -423,12 +335,9 @@ class ChatClient {
 
     void run() throws IOException, InterruptedException
     {
-        // we will simply broadcast to 255.255.255.255
-        // this might not be the best thing, find that out later
-
         Scanner sc = new Scanner(System.in);
 
-        InetAddress broadcast = InetAddress.getByName("192.168.1.255");
+        InetAddress broadcast = InetAddress.getByName(BROADCAST_IP);
 
         DatagramSocket sock = new DatagramSocket(INIT_LISTEN_PORT);
 
