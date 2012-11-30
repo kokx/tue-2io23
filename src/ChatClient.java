@@ -175,9 +175,9 @@ class ChatClient {
     class InitServer extends Peer
     {
 
-        InitServer(String ip, int port) throws UnknownHostException, IOException
+        InitServer(InetAddress ip, int port) throws UnknownHostException, IOException
         {
-            sock = new Socket(InetAddress.getByName(ip), port);
+            sock = new Socket(ip, port);
             initIO();
         }
 
@@ -366,7 +366,7 @@ class ChatClient {
         }
     }
 
-    void connect(String serverIp) throws IOException, InterruptedException
+    void connect(InetAddress serverIp) throws IOException, InterruptedException
     {
         InitServer init = null;
         try {
@@ -426,6 +426,8 @@ class ChatClient {
         // we will simply broadcast to 255.255.255.255
         // this might not be the best thing, find that out later
 
+        Scanner sc = new Scanner(System.in);
+
         InetAddress broadcast = InetAddress.getByName("192.168.1.255");
 
         DatagramSocket sock = new DatagramSocket(INIT_LISTEN_PORT);
@@ -443,13 +445,23 @@ class ChatClient {
 
         Thread.sleep(1000);
 
+        ArrayList<InetAddress> ips = new ArrayList<InetAddress>();
+
+        System.out.println("The following servers are available:");
+
         while ((packet = packetReceiver.buffer.poll()) != null) {
-            System.out.println("IP: " + packet.getAddress().toString());
+            ips.add(packet.getAddress());
+            System.out.println("IP: (" + ips.size() + ") " + packet.getAddress().toString());
         }
+
+        System.out.println("Please type in the server number to which you want to connect:");
+
+        int num = sc.nextInt();
+
+        connect(ips.get(num - 1));
     }
 
     public static void main(String args[]) throws IOException, InterruptedException {
         new ChatClient().run();
-        //new ChatClient().connect(args[0]);
     }
 }
