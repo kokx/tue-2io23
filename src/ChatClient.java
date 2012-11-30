@@ -47,15 +47,18 @@ class PacketReceiverRunnable implements Runnable
 
     public void run()
     {
-        /*
-        while (true) {
-            DatagramPacket p = new DatagramPacket();
+        try {
+            while (true) {
+                DatagramPacket p = new DatagramPacket(new byte[1], 1);
 
-            sock.receive(p);
+                sock.receive(p);
 
-            buffer.add(p);
+                buffer.add(p);
+            }
+        } catch (IOException e) {
+            System.err.println("I/O Error");
+            System.exit(1);
         }
-        */
     }
 }
 
@@ -418,15 +421,12 @@ class ChatClient {
         }
     }
 
-    /*
-    void run()
+    void run() throws IOException, InterruptedException
     {
         // we will simply broadcast to 255.255.255.255
         // this might not be the best thing, find that out later
 
-        List<InetAddress> ips = getLocalIps();
-
-        InetAddress broadcast = InetAddress.getByName("255.255.255.255");
+        InetAddress broadcast = InetAddress.getByName("192.168.1.255");
 
         DatagramSocket sock = new DatagramSocket(INIT_LISTEN_PORT);
 
@@ -444,12 +444,12 @@ class ChatClient {
         Thread.sleep(1000);
 
         while ((packet = packetReceiver.buffer.poll()) != null) {
-            System.out.println(packet.getAddress().toString());
+            System.out.println("IP: " + packet.getAddress().toString());
         }
     }
-    */
 
     public static void main(String args[]) throws IOException, InterruptedException {
-        new ChatClient().connect(args[0]);
+        new ChatClient().run();
+        //new ChatClient().connect(args[0]);
     }
 }
