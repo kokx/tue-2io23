@@ -13,6 +13,8 @@ import ogo.spec.game.multiplayer.*;
 class Server
 {
 
+    public final static int TIME_POLL = 100;
+
     ServerSocket sock = null;
 
     ArrayList<Client> clients = new ArrayList<Client>();
@@ -38,7 +40,7 @@ class Server
         // wait for all clients to have a reply
         boolean readAll = false;
         while (!readAll) {
-            Thread.sleep(ChatServer.TIME_POLL);
+            Thread.sleep(TIME_POLL);
 
             readAll = true;
             for (Client c : clients) {
