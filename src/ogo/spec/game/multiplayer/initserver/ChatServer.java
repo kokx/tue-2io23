@@ -59,11 +59,6 @@ class ChatServer {
 
     // real stuff
     ServerSocket server = null;
-    Socket clients[] = new Socket[MAX_CLIENTS];
-    int lastClient = 0;
-
-    OutputStream[] clientOut;
-    InputStream[] clientIn;
 
     void run() throws Exception, IOException, InterruptedException
     {
