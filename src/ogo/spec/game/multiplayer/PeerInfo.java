@@ -1,4 +1,4 @@
-package ogo.spec.game.multiplayer.client;
+package ogo.spec.game.multiplayer;
 
 import java.io.*;
 import java.util.*;
@@ -11,9 +11,9 @@ import ogo.spec.game.multiplayer.*;
  */
 public class PeerInfo
 {
-    int port;
-    InetAddress ip;
-    boolean init;
+    public int port;
+    public InetAddress ip;
+    public boolean init;
 
     public PeerInfo(int port, InetAddress ip, boolean init)
     {

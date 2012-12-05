@@ -13,7 +13,7 @@ When we create a game:
 InitServer server = new InitServer();
 
 // get the list of clients
-List<ClientInfo> clients = server.getClients();
+List<PeerInfo> clients = server.getClients();
 
 // start the game, and hand control to the token ring
 server.start();
@@ -28,8 +28,8 @@ When we join a game:
 Client client = new Client();
 
 // find servers (BLOCKS! MAYBE FOR SEVERAL SECONDS!)
-List<ServerInfo> servers = client.getServers();
+List<PeerInfo> servers = client.findServers();
 
 // connect to a server, and start the token ring
-client.connect(Server server);
+client.connect(PeerInfo server);
 ```

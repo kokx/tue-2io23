@@ -1,4 +1,4 @@
-package ogo.spec.game.multiplayer.client;
+package ogo.spec.game.multiplayer.client.peer;
 
 import java.io.*;
 import java.util.*;
@@ -11,12 +11,12 @@ import ogo.spec.game.multiplayer.*;
 /**
  * Server for p2p communication.
  */
-public class Server extends Peer
+public class PeerServer extends Peer
 {
-    ServerSocket serverSock = null;
-    boolean connected = false;
+    protected ServerSocket serverSock = null;
+    protected boolean connected = false;
 
-    public Server(int port) throws IOException
+    public PeerServer(int port) throws IOException
     {
         serverSock = new ServerSocket(port);
     }
@@ -27,5 +27,10 @@ public class Server extends Peer
         initIO();
         connected = true;
         return ret;
+    }
+
+    public boolean isConnected()
+    {
+        return connected;
     }
 }

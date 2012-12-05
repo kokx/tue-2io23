@@ -1,4 +1,4 @@
-package ogo.spec.game.multiplayer.client;
+package ogo.spec.game.multiplayer.client.peer;
 
 import java.io.*;
 import java.util.*;

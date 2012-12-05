@@ -6,6 +6,35 @@ import java.net.*;
 import java.util.concurrent.*;
 
 import ogo.spec.game.multiplayer.*;
+import ogo.spec.game.multiplayer.client.peer.*;
+
+/**
+ * Read input into a buffer.
+ */
+class InputReaderRunnable implements Runnable
+{
+    BufferedReader in;
+
+    ConcurrentLinkedQueue<String> buffer = new ConcurrentLinkedQueue<String>();
+
+    InputReaderRunnable(InputStream in)
+    {
+        this.in = new BufferedReader(new InputStreamReader(in));
+    }
+
+    public void run()
+    {
+        String line;
+        try {
+            while ((line = in.readLine()) != null) {
+                buffer.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("I/O Error");
+            System.exit(1);
+        }
+    }
+}
 
 /**
  * Chat.
