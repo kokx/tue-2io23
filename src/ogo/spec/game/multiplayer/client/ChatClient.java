@@ -7,9 +7,94 @@ import java.util.concurrent.*;
 
 import ogo.spec.game.multiplayer.*;
 import ogo.spec.game.multiplayer.client.peer.*;
+import ogo.spec.game.multiplayer.ChatProto.*;
 
+/**
+ * Read input into a buffer.
+ */
+class InputReaderRunnable implements Runnable
+{
+    BufferedReader in;
 
-class ChatClient {
+    ConcurrentLinkedQueue<String> buffer = new ConcurrentLinkedQueue<String>();
+
+    InputReaderRunnable(InputStream in)
+    {
+        this.in = new BufferedReader(new InputStreamReader(in));
+    }
+
+    public void run()
+    {
+        String line;
+        try {
+            while ((line = in.readLine()) != null) {
+                buffer.add(line);
+            }
+        } catch (IOException e) {
+            System.err.println("I/O Error");
+            System.exit(1);
+        }
+    }
+}
+
+class ChatClient implements TokenChangeListener
+{
+
+    InputReaderRunnable reader;
+    int nextId = 0;
+
+    Token.Builder copyToken(Token token)
+    {
+        Token.Builder builder = Token.newBuilder();
+
+        builder.mergeFrom(token);
+
+        return builder;
+    }
+
+    // print messages
+    void printMessages(List<Token.Message> messages) {
+        for (Token.Message message : messages) {
+            if (message.getId() >= nextId) {
+                System.out.println(message.getName() + ": " + message.getMessage());
+                nextId = message.getId() + 1;
+            }
+        }
+    }
+
+    /**
+     * Get messages from the input reader.
+     */
+    public Iterable<Token.Message> getMessages()
+    {
+        LinkedList<Token.Message> messages = new LinkedList<Token.Message>();
+
+        String line;
+        while ((line = reader.buffer.poll()) != null) {
+            Token.Message message = Token.Message.newBuilder()
+                .setId(nextId)
+                .setName("kokx")
+                .setMessage(line)
+                .build();
+            messages.add(message);
+            nextId++;
+        }
+
+        return messages;
+    }
+
+    public Token tokenChanged(Token token)
+    {
+        printMessages(token.getMessageList());
+
+        Token.Builder builder = copyToken(token);
+
+        builder.addAllMessage(getMessages());
+
+        builder.setLastId(nextId);
+
+        return builder.build();
+    }
 
     void run() throws IOException, InterruptedException, UnknownHostException
     {
@@ -28,6 +113,12 @@ class ChatClient {
         System.out.println("Please type in the server number to which you want to connect:");
 
         int num = sc.nextInt() - 1;
+
+        // start the input reader
+        reader = new InputReaderRunnable(System.in);
+        new Thread(reader).start();
+
+        client.setTokenChangeListener(this);
 
         client.connect(servers.get(num));
     }
