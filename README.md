@@ -30,6 +30,9 @@ Client client = new Client();
 // find servers (BLOCKS! MAYBE FOR SEVERAL SECONDS!)
 List<PeerInfo> servers = client.findServers();
 
+// set the TokenChangeListener, this should receive the token, change it, and return the changed token
+client.setTokenChangeListener(listener);
+
 // connect to a server, and start the token ring
 client.connect(PeerInfo server);
 ```
