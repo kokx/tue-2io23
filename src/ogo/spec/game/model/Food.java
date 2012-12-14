@@ -1,6 +1,5 @@
 package ogo.spec.game.model;
 
-class Food
+public class Food extends Inhabitant
 {
-    
 }

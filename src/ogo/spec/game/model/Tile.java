@@ -49,6 +49,7 @@ public class Tile
      */
     public boolean isAdjacent(Tile t)
     {
-        return (t.x == x && (t.y - 1 == y || t.y + 1 == y)) || (t.y == y && (t.x - 1 == x || t.x + 1 == x));
+        return (t.x == x && (t.y - 1 == y || t.y + 1 == y))
+            || (t.y == y && (t.x - 1 == x || t.x + 1 == x));
     }
 }
