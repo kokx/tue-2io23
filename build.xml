@@ -52,10 +52,16 @@
     <target name="client" depends="jar">
         <java jar="${jar.dir}/ChatClient.jar" classpath=".:${jar.dir}/protobuf.jar" fork="yes">
             <arg value="192.168.1.1" />
+            <assertions>
+                <enable />
+            </assertions>
         </java>
     </target>
 
     <target name="server" depends="jar">
         <java jar="${jar.dir}/ChatServer.jar" fork="yes" />
+            <assertions>
+                <enable />
+            </assertions>
     </target>
 </project>
