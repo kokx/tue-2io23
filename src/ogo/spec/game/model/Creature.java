@@ -2,6 +2,7 @@ package ogo.spec.game.model;
 
 public abstract class Creature
 {
+    private Creature attackingCreature;
     private int life;
     
     protected int moveCooldown;
