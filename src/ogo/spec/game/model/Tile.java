@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 public class Tile
 {
-    private Set<Inhabitant> inhabitants = new HashSet<Inhabitant>();
+    private Inhabitant inhabitant;
     private TileType type;
 
     protected int x, y;
@@ -18,22 +18,22 @@ public class Tile
     }
 
     /**
-     * Add an inhabitant to this tile.
+     * Set an inhabitant to this tile.
      *
      * This method also calls the setTile() method on the inhabitant.
      */
-    public void addInhabitant(Inhabitant i)
+    public void setInhabitant(Inhabitant i)
     {
-        inhabitants.add(i);
+        this.inhabitant = i;
         i.setCurrentTile(this);
     }
 
     /**
      * Does this tile have this inhabitant.
      */
-    public boolean hasInhabitant(Inhabitant i)
+    public boolean hasInhabitant()
     {
-        return inhabitants.contains(i);
+        return (this.inhabitant != null);
     }
 
     /**
