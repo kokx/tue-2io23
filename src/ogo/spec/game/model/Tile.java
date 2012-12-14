@@ -1,6 +1,9 @@
 package ogo.spec.game.model;
 
-class Tile
-{
+import java.util.Set;
 
+public class Tile
+{
+    private Set<Inhabitant> inhabitants;
+    private TileType type;
 }
