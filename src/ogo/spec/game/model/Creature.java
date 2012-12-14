@@ -1,6 +1,6 @@
 package ogo.spec.game.model;
 
-public class Creature
+public abstract class Creature
 {
     private int life;
     
