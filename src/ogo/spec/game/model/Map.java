@@ -74,7 +74,16 @@ public class Map
      */
     public List<Tile> getNeighbours(Tile tile)
     {
-        return new LinkedList<Tile>();
+        LinkedList<Tile> neighbours = new LinkedList<Tile>();
+        for (int x = tile.x - 1; x >= 0 && x < tiles.length; x++) {
+            for (int y = tile.y - 1; y >= 0 && y < tiles[0].length; y++) {
+                if (x == tile.x && y == tile.y) {
+                    continue;
+                }
+                neighbours.add(tiles[x][y]);
+            }
+        }
+        return neighbours;
     }
 
     /**
