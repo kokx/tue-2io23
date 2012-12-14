@@ -40,6 +40,12 @@
                 <attribute name="Class-Path" value="protobuf.jar" />
             </manifest>
         </jar>
+        <jar destfile="${jar.dir}/game.jar" basedir="build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="ogo.spec.game.model.Game" />
+                <attribute name="Class-Path" value="protobuf.jar" />
+            </manifest>
+        </jar>
         <copy file="protobuf-java-2.4.1.jar" tofile="build/jar/protobuf.jar" />
     </target>
 
