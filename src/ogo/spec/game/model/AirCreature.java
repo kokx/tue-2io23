@@ -7,6 +7,7 @@ public class AirCreature extends Creature
     @Override
     public void tick()
     {
+        energyTick();
         super.tick();
     }
     

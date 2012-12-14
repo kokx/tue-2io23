@@ -1,17 +1,26 @@
 package ogo.spec.game.model;
 
-public abstract class Creature
+public abstract class Creature extends Inhabitant
 {
     private Creature attackingCreature;
     private int life;
     
     protected int moveCooldown;
-    protected int attaackCooldown;
+    protected int attackCooldown;
     protected int lifeCooldown;
+    
+    public Creature()
+    {
+        this.moveCooldown = -1;
+        this.attackCooldown = 0;
+        this.lifeCooldown = 0;
+    }
     
     public void tick()
     {
-        
+        this.lifeTick();
+        this.attackTick();
+        this.moveTick();
     }
     
     private void moveTick()
@@ -26,7 +35,13 @@ public abstract class Creature
     
     private void lifeTick()
     {
-        
+        if(this.lifeCooldown == 0)
+        {
+            this.dealDamage(1);
+            //informal specs say life should decrease with 1 every 5seconds.
+            this.lifeCooldown = 5000 / Game.TICK_TIME_IN_MS;
+        }
+        this.lifeCooldown--;
     }
     
     protected void die()
