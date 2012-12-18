@@ -3,7 +3,7 @@ package ogo.spec.game.model;
 public abstract class Creature extends Inhabitant {
 
     public static final int ATTACK_COOLDOWN_TICKS = 200;
-    private Creature attackingCreature;
+    protected Creature attackingCreature;
     private int life;
     private CreaturePath path;
     protected int moveCooldown;
@@ -14,6 +14,10 @@ public abstract class Creature extends Inhabitant {
         this.moveCooldown = -1;
         this.attackCooldown = 0;
         this.lifeCooldown = 0;
+    }
+
+    public int getLife() {
+        return life;
     }
 
     public void tick() {
