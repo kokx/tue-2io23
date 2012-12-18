@@ -6,3 +6,4 @@ build/
 *.war
 *.ear
 /nbproject
+/dist/

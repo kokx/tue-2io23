@@ -1,5 +1,6 @@
 package ogo.spec.game.graphics.view;
 
+import ogo.spec.game.model.*;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Color;
 import java.awt.Point;
@@ -20,7 +21,6 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLDrawable;
 import javax.media.opengl.GLException;
 import javax.media.opengl.awt.GLJPanel;
-import ogo.spec.game.model.*;
 
 public class GUI extends Base {
 
@@ -57,7 +57,7 @@ public class GUI extends Base {
         gl.glEnable(GL_DEPTH_TEST);
         gl.glDepthFunc(GL_LESS);
 
-        // Enable textures.
+        // Enable textures. 
         gl.glEnable(GL_TEXTURE_2D);
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
@@ -266,7 +266,7 @@ public class GUI extends Base {
                         new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                     }
                     gl.glPopMatrix();
-
+                
                 gl.glPopAttrib();
                 gl.glPopMatrix();
 
