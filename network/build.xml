@@ -40,21 +40,7 @@
                 <attribute name="Class-Path" value="protobuf.jar" />
             </manifest>
         </jar>
-        <jar destfile="${jar.dir}/game.jar" basedir="build/classes">
-            <manifest>
-                <attribute name="Main-Class" value="ogo.spec.game.model.Game" />
-                <attribute name="Class-Path" value="protobuf.jar" />
-            </manifest>
-        </jar>
-        <jar destfile="${jar.dir}/graphics.jar" basedir="build/classes">
-            <manifest>
-                <attribute name="Main-Class" value="ogo.spec.game.graphics.view.GUI" />
-                <attribute name="Class-Path" value="protobuf.jar:jogl-all.jar:gluegen-rt.jar" />
-            </manifest>
-        </jar>
         <copy file="lib/protobuf-java-2.4.1.jar" tofile="build/jar/protobuf.jar" />
-        <copy file="lib/jogl-all.jar" tofile="build/jar/jogl-all.jar" />
-        <copy file="lib/gluegen-rt.jar" tofile="build/jar/gluegen-rt.jar" />
     </target>
 
     <target name="client" depends="jar">
@@ -68,14 +54,6 @@
 
     <target name="server" depends="jar">
         <java jar="${jar.dir}/ChatServer.jar" fork="yes">
-            <assertions>
-                <enable />
-            </assertions>
-        </java>
-    </target>
-    
-    <target name="run-graphics" depends="jar">
-        <java jar="${jar.dir}/Graphics.jar" fork="yes">
             <assertions>
                 <enable />
             </assertions>
