@@ -5,12 +5,21 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class CreaturePath
 {
 
+    /**
+     * The current path of the creature.
+     *
+     * This is a queue of the next tiles to visit.
+     */
     ConcurrentLinkedQueue<Tile> path = new ConcurrentLinkedQueue<Tile>();
 
-    // the map
+    /**
+     * Game map.
+     */
     GameMap map;
 
-    // current and previous tile
+    /**
+     * Current and previous position.
+     */
     Tile current, previous;
 
     /**
@@ -55,11 +64,6 @@ public class CreaturePath
         previous = current;
         current = path.poll();
         return current;
-    }
-
-    public final static void main(String[] args)
-    {
-        System.err.println("test");
     }
 
     /**
