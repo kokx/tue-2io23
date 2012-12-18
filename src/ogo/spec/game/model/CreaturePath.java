@@ -26,7 +26,7 @@ public class CreaturePath
     /**
      * Get the current tile.
      */
-    public Tile getCurrentTile()
+    synchronized public Tile getCurrentTile()
     {
         return current;
     }
@@ -34,7 +34,7 @@ public class CreaturePath
     /**
      * Get the previous tile.
      */
-    public Tile getPreviousTile()
+    synchronized public Tile getPreviousTile()
     {
         return previous;
     }
@@ -42,7 +42,7 @@ public class CreaturePath
     /**
      * Get the next tile.
      */
-    public Tile getNextTile()
+    synchronized public Tile getNextTile()
     {
         return path.peek();
     }
@@ -50,9 +50,16 @@ public class CreaturePath
     /**
      * Go to the next tile.
      */
-    public Tile step()
+    synchronized public Tile step()
     {
-        return path.poll();
+        previous = current;
+        current = path.poll();
+        return current;
+    }
+
+    public final static void main(String[] args)
+    {
+        System.err.println("test");
     }
 
     /**
@@ -60,8 +67,7 @@ public class CreaturePath
      *
      * This method uses the A* algorithm.
      */
-    public Tile calculatePath(Tile tile)
+    public void calculatePath(Tile tile)
     {
-        return tile;
     }
 }

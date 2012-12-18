@@ -82,9 +82,16 @@ public class GameMap
      */
     public List<Tile> calculatePath(Tile source, Tile target, Set<TileType> allowedTypes)
     {
-        AyStar(source, target, allowedTypes);
+        Node link = AyStar(source, target, allowedTypes);
 
-        return new LinkedList<Tile>();
+        // now traverse the path
+        LinkedList<Tile> path = new LinkedList<Tile>();
+
+        do {
+            path.addFirst(link.tile);
+        } while ((link = link.prev) != null);
+
+        return path;
     }
 
     /**
@@ -117,7 +124,7 @@ public class GameMap
     /**
      * A* algorithm.
      */
-    private void AyStar(Tile source, Tile target, Set<TileType> allowedTypes)
+    private Node AyStar(Tile source, Tile target, Set<TileType> allowedTypes)
     {
         Set<Tile> done = new HashSet<Tile>();
         HashMap<Tile,Node> open = new HashMap<Tile,Node>();
@@ -133,8 +140,8 @@ public class GameMap
 
         Node current;
         while ((current = Q.poll()) != null) {
-            if (current.equals(target)) {
-                return;
+            if (current.tile == target) {
+                return current;
             }
 
             open.remove(current.tile);
@@ -165,5 +172,7 @@ public class GameMap
                 }
             }
         }
+        // nothing found
+        return null;
     }
 }
