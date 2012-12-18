@@ -10,7 +10,16 @@ public class LandCreature extends Creature
 
     @Override
     protected int getEatValue(Creature creature) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        assert !(creature instanceof LandCreature);
+        if(creature instanceof AirCreature)
+        {
+            return 4;
+        }
+        if(creature instanceof SeaCreature)
+        {   
+            return 6;
+        }
+        return 0;
     }
     
 }
