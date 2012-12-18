@@ -25,7 +25,8 @@ public class Tile
     public void setInhabitant(Inhabitant i)
     {
         inhabitant = i;
-        i.setCurrentTile(this);
+        if(i != null)
+            i.setCurrentTile(this);
     }
 
     /**
@@ -60,6 +61,11 @@ public class Tile
     public boolean isAdjacent(Tile t)
     {
         return (Math.abs(this.x - t.x) <= 1) && (Math.abs(this.y - t.y) <=1);
+    }
+    
+    public boolean isDiagonal(Tile t)
+    {
+        return (this.isAdjacent(t) && this.x != t.x && this.y != t.y);
     }
 
     /**

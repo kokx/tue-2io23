@@ -2,10 +2,19 @@ package ogo.spec.game.model;
 
 public class LandCreature extends Creature
 {
-
+    
     @Override
     protected int getMoveSpeed(TileType tileType) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        assert (tileType != TileType.DEEP_WATER);
+        if(tileType == TileType.LAND)
+        {
+            return Creature.TICKS_PER_TILE_FAST;
+        }
+        if(tileType == TileType.SHALLOW_WATER)
+        {
+            return Creature.TICKS_PER_TILE_SLOW;
+        }
+        return -1;
     }
 
     @Override

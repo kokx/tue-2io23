@@ -5,7 +5,8 @@ public class SeaCreature extends Creature
 
     @Override
     protected int getMoveSpeed(TileType tileType) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        assert (tileType != TileType.LAND);
+        return Creature.TICKS_PER_TILE_AVG;
     }
 
     @Override

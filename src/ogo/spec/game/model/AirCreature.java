@@ -18,7 +18,7 @@ public class AirCreature extends Creature
     
     @Override
     protected int getMoveSpeed(TileType tileType) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Creature.TICKS_PER_TILE_AVG;
     }
 
     @Override
