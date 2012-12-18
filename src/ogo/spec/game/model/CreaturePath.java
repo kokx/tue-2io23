@@ -60,8 +60,10 @@ public class CreaturePath
      *
      * This method uses the A* algorithm.
      */
-    public Tile calculatePath(Tile tile)
+    public void calculatePath(Tile tile)
     {
-        return tile;
+        //path.add(tile);
+        previous = current;
+        current = tile;
     }
 }

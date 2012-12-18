@@ -219,20 +219,21 @@ public class GUI extends Base {
                 switch (type) {
                     case DEEP_WATER:
                         //gl.glColor3f(0, 0, 1);
-                        deepWater.bind(gl);
+                        //deepWater.bind(gl);
                         break;
                     case SHALLOW_WATER:
                         //gl.glColor3f(0, 1, 0);
-                        shallowWater.bind(gl);
+                        //shallowWater.bind(gl);
                         break;
                     case LAND:
                         //gl.glColor3f(1, 0, 0);
-                        land.bind(gl);
+                        //land.bind(gl);
                         break;
                 }
 
                 // Draw tile.
                 gl.glBegin(GL_QUADS);
+                gl.glNormal3f(0, 0, 1);
                 gl.glTexCoord2d(0, 0);
                 gl.glVertex3d(0, 0, 0);
                 gl.glTexCoord2d(1, 0);
@@ -247,7 +248,7 @@ public class GUI extends Base {
                 // Draw inhabitants.
                 gl.glPushMatrix();
                 gl.glPushAttrib(GL_CURRENT_BIT);
-                empty.bind(gl);
+                //empty.bind(gl);
                 Inhabitant inhabitant = map.getTile(i, j).getInhabitant();
                     gl.glPushMatrix();
                     // TODO: replace by more meaningful, non-glut objects.
@@ -283,7 +284,7 @@ public class GUI extends Base {
             for (Creature c : p) {
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
                 gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
-                System.out.println(currentLocation);
+                //System.out.println(currentLocation);
                 gs.cnt = currentLocation;
                 new GraphicalObjects(gl).drawCylinder(0.5f, 2);
             }

@@ -51,14 +51,27 @@ public class GraphicalObjects {
         //TODO: optimize
         int slices = 100;
         gl.glBegin(GL_QUADS);
-        float angle1; // angle of ray from origin to current point with x axis
-        float angle2;
+        double angle1; // angle of ray from origin to current point with x axis
+        double angle2;
+        double[] angles = new double[slices+1];
+        for (int i = 0; i <= slices; i++) {
+            angles[i] = (i * 2 * PI / slices);
+        }
         for (int i = 0; i < slices; i++) {
-            angle1 = (float) (i * 2 * PI / slices); // compute angle
-            angle2 = (float) ((i + 1) * 2 * PI / slices); // compute angle
+            //angle1 = (float) (i * 2 * PI / slices); // compute angle
+            //angle2 = (float) ((i + 1) * 2 * PI / slices); // compute angle
+            angle1 = angles[i];
+            angle2 = angles[i+1];
+            gl.glNormal3d(cos(angle1), sin(angle1), 0);
             gl.glVertex3d(cos(angle1), sin(angle1), 0);
+            
+            //gl.glNormal3d(cos(angle1), sin(angle1), 0);
             gl.glVertex3d(cos(angle1), sin(angle1), 1);
+            
+            //gl.glNormal3d(cos(angle2), sin(angle2), 0);
             gl.glVertex3d(cos(angle2), sin(angle2), 1);
+            
+            //gl.glNormal3d(cos(angle2), sin(angle2), 0);
             gl.glVertex3d(cos(angle2), sin(angle2), 0);
         }
         gl.glEnd();

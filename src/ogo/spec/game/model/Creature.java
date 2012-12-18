@@ -70,6 +70,8 @@ public abstract class Creature extends Inhabitant {
     }
 
     public void select(Tile tile) {
+        CreaturePath p = new CreaturePath(null, this.currentTile);
+        p.calculatePath(tile);
     }
 
     private void doMove(Tile tile) {

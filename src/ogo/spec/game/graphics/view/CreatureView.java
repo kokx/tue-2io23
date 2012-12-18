@@ -39,6 +39,9 @@ public class CreatureView {
             y = previousLocation.getY();
             z = 0;
             Vector P = new Vector(x, y, z); //previous location
+            
+            System.out.println("Previous location:" + previousLocation);
+            System.out.println("Current location:" + creature.getCurrentTile());
 
             return P.add(V);
         }
