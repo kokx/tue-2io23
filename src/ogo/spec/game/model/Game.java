@@ -13,7 +13,7 @@ public class Game implements Iterable<Player>
         t1.setInhabitant(c);
          
         Creature c2 = new SeaCreature();
-        Tile t2 = new Tile(TileType.SHALLOW_WATER, 1, 3);
+        Tile t2 = new Tile(TileType.SHALLOW_WATER, 1, 34);
         t2.setInhabitant(c2);
         
         c.attackingCreature = c2;
