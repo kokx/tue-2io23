@@ -154,7 +154,7 @@ public class GUI extends Base {
             clickListener.y = -1;
             handleMouseClick(x, y);
             currentCreature.select(game.getMap().getTile(clicki, clickj));
-            gs.cnt = vViewChange.add(new Vector(clickj, clicki, 0));
+            //gs.cnt = vViewChange.add(new Vector(clickj, clicki, 0));
 
         }
         gl.glMatrixMode(GL_MODELVIEW);
@@ -283,6 +283,8 @@ public class GUI extends Base {
             for (Creature c : p) {
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
                 gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
+                System.out.println(currentLocation);
+                gs.cnt = currentLocation;
                 new GraphicalObjects(gl).drawCylinder(0.5f, 2);
             }
         }

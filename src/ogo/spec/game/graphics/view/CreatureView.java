@@ -27,11 +27,11 @@ public class CreatureView {
 
     public Vector getCurrentLocation() {
         if (previousLocation == null) {
-            return new Vector(creature.getPath().getCurrentTile().getX()+0.5,creature.getPath().getCurrentTile().getY()+0.5,0);
+            return new Vector(creature.getCurrentTile().getX()+0.5,creature.getCurrentTile().getY()+0.5,0);
         } else {
-            double x = (creature.getPath().getCurrentTile().getX() - previousLocation.getX() + 0.5) / (unit * (timer.getTime() - t0));
+            double x = (creature.getCurrentTile().getX() - previousLocation.getX() + 0.5) / (unit * (timer.getTime() - t0));
 
-            double y = (creature.getPath().getCurrentTile().getY() - previousLocation.getY() + 0.5) / (unit * (timer.getTime() - t0));
+            double y = (creature.getCurrentTile().getY() - previousLocation.getY() + 0.5) / (unit * (timer.getTime() - t0));
             double z = 0;
             Vector V = new Vector(x, y, z); //vector to move over
 
