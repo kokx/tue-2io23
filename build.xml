@@ -23,7 +23,7 @@
 
     <target name="compile" depends="protobuf">
         <mkdir dir="${classes.dir}" />
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpath=".:protobuf-java-2.4.1.jar" />
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpath=".:lib/protobuf-java-2.4.1.jar:lib/jogl-all.jar:lib/gluegen-rt.jar" />
     </target>
 
     <target name="jar" depends="compile">
@@ -46,7 +46,7 @@
                 <attribute name="Class-Path" value="protobuf.jar" />
             </manifest>
         </jar>
-        <copy file="protobuf-java-2.4.1.jar" tofile="build/jar/protobuf.jar" />
+        <copy file="lib/protobuf-java-2.4.1.jar" tofile="build/jar/protobuf.jar" />
     </target>
 
     <target name="client" depends="jar">

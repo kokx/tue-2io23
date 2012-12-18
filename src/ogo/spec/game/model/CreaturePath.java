@@ -8,7 +8,7 @@ public class CreaturePath
     ConcurrentLinkedQueue<Tile> path = new ConcurrentLinkedQueue<Tile>();
 
     // the map
-    Map map;
+    GameMap map;
 
     // current and previous tile
     Tile current, previous;
@@ -16,7 +16,7 @@ public class CreaturePath
     /**
      * Constructor.
      */
-    public CreaturePath(Map map, Tile initial)
+    public CreaturePath(GameMap map, Tile initial)
     {
         this.map = map;
         previous = initial;

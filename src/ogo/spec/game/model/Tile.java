@@ -18,14 +18,24 @@ public class Tile
     }
 
     /**
-     * Set an inhabitant to this tile.
+     * Set the inhabitant for this tile.
      *
      * This method also calls the setTile() method on the inhabitant.
      */
     public void setInhabitant(Inhabitant i)
     {
-        this.inhabitant = i;
+        inhabitant = i;
         i.setCurrentTile(this);
+    }
+
+    /**
+     * Get the inhabitant for this tile.
+     *
+     * This method also calls the setTile() method on the inhabitant.
+     */
+    public Inhabitant getInhabitant()
+    {
+        return inhabitant;
     }
 
     /**
@@ -50,5 +60,21 @@ public class Tile
     public boolean isAdjacent(Tile t)
     {
         return (Math.abs(this.x - t.x) <= 1) && (Math.abs(this.y - t.y) <=1);
+    }
+
+    /**
+     * Get the x value.
+     */
+    public int getX()
+    {
+        return x;
+    }
+
+    /**
+     * Get the y value.
+     */
+    public int getY()
+    {
+        return y;
     }
 }
