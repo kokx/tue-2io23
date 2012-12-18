@@ -14,6 +14,8 @@ public abstract class Creature extends Inhabitant {
         this.moveCooldown = -1;
         this.attackCooldown = 0;
         this.lifeCooldown = 0;
+        this.life = 15;
+        path = new CreaturePath(null, super.currentTile);
     }
 
     public int getLife() {
@@ -51,8 +53,7 @@ public abstract class Creature extends Inhabitant {
         if (this.attackingCreature.dealDamage(damage)) {
             //he dead
             this.eatCreature(this.attackingCreature);
-        } else {
-            //bitch alive
+            this.attackingCreature = null;
         }
     }
 
@@ -83,7 +84,15 @@ public abstract class Creature extends Inhabitant {
 
     public boolean dealDamage(int damage) {
         this.life -= damage;
-        return this.life <= 0;
+        if(this.life <= 0)
+        {
+            this.die();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private void eatCreature(Creature creature) {

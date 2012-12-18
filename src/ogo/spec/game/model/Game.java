@@ -12,15 +12,15 @@ public class Game implements Iterable<Player>
         Tile t1 = new Tile(TileType.LAND, 2,2);
         t1.setInhabitant(c);
          
-        Creature c2 = new LandCreature();
-        Tile t2 = new Tile(TileType.LAND, 1, 3);
+        Creature c2 = new SeaCreature();
+        Tile t2 = new Tile(TileType.SHALLOW_WATER, 1, 3);
         t2.setInhabitant(c2);
         
         c.attackingCreature = c2;
         while(true)
         {
             c.tick();
-            Thread.sleep(10);
+            Thread.sleep(Game.TICK_TIME_IN_MS);
             System.out.println("C: " + c.getLife());
             System.out.println("C2: "  + c2.getLife());
         }
