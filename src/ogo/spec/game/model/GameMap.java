@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.HashMap;
+import java.util.Collection;
 
 /**
  * The map of the game.
@@ -94,7 +95,7 @@ public class GameMap
      *
      * This method uses A*
      */
-    public List<Tile> calculatePath(Tile source, Tile target, Set<TileType> allowedTypes)
+    public Collection<Tile> calculatePath(Tile source, Tile target, Set<TileType> allowedTypes)
     {
         Node link = AyStar(source, target, allowedTypes);
 

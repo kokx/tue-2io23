@@ -1,6 +1,7 @@
 package ogo.spec.game.model;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Set;
 
 public class CreaturePath
 {
@@ -23,13 +24,19 @@ public class CreaturePath
     Tile current, previous;
 
     /**
+     * Allowed types.
+     */
+    Set<TileType> allowedTypes;
+
+    /**
      * Constructor.
      */
-    public CreaturePath(GameMap map, Tile initial)
+    public CreaturePath(GameMap map, Tile initial, Set<TileType> allowedTypes)
     {
         this.map = map;
         previous = initial;
         current = initial;
+        this.allowedTypes = allowedTypes;
     }
 
     /**
@@ -73,7 +80,7 @@ public class CreaturePath
      */
     public void calculatePath(Tile tile)
     {
-        //path.add(tile);
+        path = new ConcurrentLinkedQueue<Tile>(map.calculatePath(current, tile, allowedTypes));
         previous = current;
         current = tile;
     }
