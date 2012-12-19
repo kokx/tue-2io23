@@ -2,7 +2,14 @@ package ogo.spec.game.model;
 
 public class AirCreature extends Creature
 {
+    public final static int MAX_ENERGY = 100;
+    
     private int energy;
+    
+    public AirCreature()
+    {
+        this.energy = MAX_ENERGY;
+    }
     
     @Override
     public void tick()
