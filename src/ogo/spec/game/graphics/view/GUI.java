@@ -57,7 +57,7 @@ public class GUI extends Base {
         gl.glEnable(GL_DEPTH_TEST);
         gl.glDepthFunc(GL_LESS);
 
-        // Enable textures. 
+        // Enable textures.
         gl.glEnable(GL_TEXTURE_2D);
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
@@ -80,9 +80,9 @@ public class GUI extends Base {
                 }
             }
         }
-        LandCreature l = new LandCreature();
-        SeaCreature s = new SeaCreature();
         GameMap map = new GameMap(types);
+        LandCreature l = new LandCreature(map);
+        SeaCreature s = new SeaCreature(map);
         map.getTile(0, 0).setInhabitant(l);
         map.getTile(1, 1).setInhabitant(new Food());
         map.getTile(2, 2).setInhabitant(s);
@@ -267,7 +267,7 @@ public class GUI extends Base {
                         new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                     }
                     gl.glPopMatrix();
-                
+
                 gl.glPopAttrib();
                 gl.glPopMatrix();
 

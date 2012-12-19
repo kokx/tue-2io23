@@ -43,19 +43,6 @@ public class ChatClient implements TokenChangeListener
     InputReaderRunnable reader;
     int nextId = 0;
 
-    long count = 0;
-    long startTime = 0;
-
-    void printStat()
-    {
-        count++;
-        long curTime = ((System.currentTimeMillis() - startTime) / 1000);
-
-        if (curTime > 0) {
-            System.err.println("T/S: " + (count / curTime) + " count: " + count + " time: " + curTime);
-        }
-    }
-
     Token.Builder copyToken(Token token)
     {
         Token.Builder builder = Token.newBuilder();
@@ -99,8 +86,6 @@ public class ChatClient implements TokenChangeListener
     public Token tokenChanged(Token token)
     {
         printMessages(token.getMessageList());
-        // print the stats
-        printStat();
 
         Token.Builder builder = copyToken(token);
 
@@ -135,13 +120,6 @@ public class ChatClient implements TokenChangeListener
 
         client.setTokenChangeListener(this);
 
-        // start the stats
-        startTime = System.currentTimeMillis();
-
         client.connect(servers.get(num));
-    }
-
-    public static void main(String args[]) throws IOException, InterruptedException {
-        new ChatClient().run();
     }
 }

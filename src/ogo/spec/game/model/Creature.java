@@ -1,5 +1,7 @@
 package ogo.spec.game.model;
 
+import java.util.Set;
+
 /**
  * Creature class
  * @author sjef
@@ -14,7 +16,7 @@ public abstract class Creature extends Inhabitant {
     public static final int TICKS_PER_TILE_AVG = TICKS_PER_TILE_FAST * 2;
     //Slow speed is 3 * fast
     public static final int TICKS_PER_TILE_SLOW = TICKS_PER_TILE_FAST * 3;
-    
+
     protected Creature attackingCreature;
     private int life;
     private CreaturePath path;
@@ -25,24 +27,24 @@ public abstract class Creature extends Inhabitant {
     /**
      * Big ass constructor
      */
-    public Creature() {
+    public Creature(GameMap map) {
         this.moveCooldown = -1;
         this.attackCooldown = 0;
         this.lifeCooldown = 0;
         this.life = 15;
-        path = new CreaturePath(null, super.currentTile);
+        path = new CreaturePath(map, super.currentTile, getAllowedTypes());
     }
 
     /**
      * Return the life of the creature :O
-     * This might seem easy but in fact it requires 12 characters to accomplish. 
+     * This might seem easy but in fact it requires 12 characters to accomplish.
      * EXCLUDING whitespace!
      * Life is a variable in the class Creature (this class)
      * Life is of the type int, since this function returns life it also returns an int
-     * 
+     *
      * Life is an important property of creature since life is precious and short.
-     * 
-     * @return 
+     *
+     * @return
      */
     public int getLife() {
         return life;
@@ -60,7 +62,7 @@ public abstract class Creature extends Inhabitant {
         this.attackTick();
         //call move tick
         this.moveTick();
-        
+
         //end of the function
         //some more comments
     }
@@ -68,7 +70,7 @@ public abstract class Creature extends Inhabitant {
     /**
      * Handle movement
      * decrease moveCooldown every iteration, if 0 do some stuff like moving, attacking or eating.
-     * 
+     *
      */
     private void moveTick() {
         if (this.moveCooldown <= 0) {
@@ -93,7 +95,7 @@ public abstract class Creature extends Inhabitant {
                 }
                 else
                 {
-                    //start attacking 
+                    //start attacking
                     this.doAttack((Creature)inhabitant);
                 }
             } else {
@@ -101,7 +103,7 @@ public abstract class Creature extends Inhabitant {
                 this.moveCooldown = -1;
             }
         }
-        
+
         if (this.moveCooldown != -1) {
             //decrease moveCooldown with a min of 0
             if ((--this.moveCooldown) < 0) {
@@ -118,7 +120,7 @@ public abstract class Creature extends Inhabitant {
         //some nice boolean statement going on here
         if (this.attackCooldown == 0 && this.attackingCreature != null) {
             Tile attackCreatureTile = this.attackingCreature.getCurrentTile();
-            
+
             //if attackingCreature is not on an adjacent tile anymore attacking should stop
             if (super.currentTile.isAdjacent(attackCreatureTile)) {
                 //attackingCreature is still in range, time to attack
@@ -130,7 +132,7 @@ public abstract class Creature extends Inhabitant {
                 this.attackingCreature = null;
             }
         }
-        
+
         //decrease attackCooldown with a min of 0
         if ((--this.attackCooldown) < 0) {
             this.attackCooldown = 0;
@@ -169,24 +171,23 @@ public abstract class Creature extends Inhabitant {
     }
 
     public void select(Tile tile) {
-        CreaturePath p = new CreaturePath(null, this.currentTile);
-        p.calculatePath(tile);
+        path.calculatePath(tile);
     }
 
     /**
-     * move to a tile, immediately moving to the next tile 
+     * move to a tile, immediately moving to the next tile
      * and setting moveCooldown to some shitty number indicating how long the creature
      * should wait before he can move again. Animation is not handled in the model
-     * @param tile 
+     * @param tile
      */
     private void doMove(Tile tile) {
         Tile oldTile = super.currentTile;
         super.currentTile.setInhabitant(null);
         tile.setInhabitant(this);
-        
+
         //creature is moved, calculate moveCooldown
         this.moveCooldown = this.getMoveSpeed(tile.getType());
-        
+
         if(oldTile.isDiagonal(tile))
         {
             //if the tile is diagonal to the currenttile the movement should take sqrt(2) times longer
@@ -196,7 +197,7 @@ public abstract class Creature extends Inhabitant {
 
     /**
      * eat some pie
-     * @param food 
+     * @param food
      */
     private void doEat(Food food) {
         this.addLife(Food.HEALTH_REWARDED);
@@ -205,7 +206,7 @@ public abstract class Creature extends Inhabitant {
 
     /**
      * start attacking
-     * @param creature 
+     * @param creature
      */
     private void doAttack(Creature creature) {
         this.attackingCreature = creature;
@@ -227,7 +228,7 @@ public abstract class Creature extends Inhabitant {
 
     /**
      * eat dead creature.
-     * @param creature 
+     * @param creature
      */
     private void eatCreature(Creature creature) {
         this.addLife(this.getEatValue(creature));
@@ -235,7 +236,7 @@ public abstract class Creature extends Inhabitant {
 
     /**
      * add life, max life at 20
-     * @param life 
+     * @param life
      */
     protected void addLife(int life) {
         this.life += life;
@@ -247,6 +248,8 @@ public abstract class Creature extends Inhabitant {
     protected abstract int getMoveSpeed(TileType tileType);
 
     protected abstract int getEatValue(Creature creature);
+
+    protected abstract Set<TileType> getAllowedTypes();
 
     protected boolean canMove() {
         return true;

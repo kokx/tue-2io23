@@ -23,40 +23,17 @@
 
     <target name="compile" depends="protobuf">
         <mkdir dir="${classes.dir}" />
-        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpath=".:lib/protobuf-java-2.4.1.jar:lib/jogl-all.jar:lib/gluegen-rt.jar" />
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpath=".:lib/protobuf-java-2.4.1.jar:lib/jogl-all.jar:lib/gluegen-rt.jar"
+            includeantruntime="false" />
     </target>
 
     <target name="jar" depends="compile">
         <mkdir dir="${jar.dir}" />
-        <jar destfile="${jar.dir}/ChatClient.jar" basedir="build/classes">
+        <jar destfile="${jar.dir}/network.jar" basedir="build/classes">
             <manifest>
-                <attribute name="Main-Class" value="ogo.spec.game.multiplayer.client.ChatClient" />
-                <attribute name="Class-Path" value="protobuf.jar" />
-            </manifest>
-        </jar>
-        <jar destfile="${jar.dir}/ChatServer.jar" basedir="build/classes">
-            <manifest>
-                <attribute name="Main-Class" value="ogo.spec.game.multiplayer.initserver.ChatServer" />
                 <attribute name="Class-Path" value="protobuf.jar" />
             </manifest>
         </jar>
         <copy file="lib/protobuf-java-2.4.1.jar" tofile="build/jar/protobuf.jar" />
-    </target>
-
-    <target name="client" depends="jar">
-        <java jar="${jar.dir}/ChatClient.jar" classpath=".:${jar.dir}/protobuf.jar" fork="yes">
-            <arg value="192.168.1.1" />
-            <assertions>
-                <enable />
-            </assertions>
-        </java>
-    </target>
-
-    <target name="server" depends="jar">
-        <java jar="${jar.dir}/ChatServer.jar" fork="yes">
-            <assertions>
-                <enable />
-            </assertions>
-        </java>
     </target>
 </project>

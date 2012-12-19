@@ -1,7 +1,15 @@
 package ogo.spec.game.model;
 
+import java.util.Set;
+import java.util.HashSet;
+
 public class SeaCreature extends Creature
 {
+
+    public SeaCreature(GameMap map)
+    {
+        super(map);
+    }
 
     @Override
     protected int getMoveSpeed(TileType tileType) {
@@ -17,10 +25,18 @@ public class SeaCreature extends Creature
             return 4;
         }
         if(creature instanceof LandCreature)
-        {   
+        {
             return 6;
         }
         return 0;
     }
-    
+
+    @Override
+    protected Set<TileType> getAllowedTypes()
+    {
+        HashSet<TileType> types = new HashSet<TileType>();
+        types.add(TileType.DEEP_WATER);
+        types.add(TileType.SHALLOW_WATER);
+        return types;
+    }
 }
