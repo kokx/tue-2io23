@@ -8,6 +8,9 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class LobbyGui implements ActionListener{
+    
+    protected String nickname;
+    
     protected JFrame frame;
     
     protected JList serverList;
@@ -42,15 +45,18 @@ public class LobbyGui implements ActionListener{
         joinGame = new JButton("Join Game");
         joinGame.setEnabled(false);
         //joinGame.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        
-        scrollList = new JScrollPane();
         serverList = new JList();
         
-        scrollList.add(serverList);
+        DefaultListModel list = new DefaultListModel();
+        list.addElement("No Servers Found");
+        serverList.setModel(list);
+        
+        scrollList = new JScrollPane(serverList);
         
         scrollList.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()-100));
         
         startButtonPanel = new JPanel(new GridLayout(1,3));
+        
         startButtonPanel.add(startServer);
         startButtonPanel.add(searchServers);
         startButtonPanel.add(joinGame);
@@ -62,21 +68,50 @@ public class LobbyGui implements ActionListener{
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
+    boolean c = true;
+    private void setListModel(){
+         c = !c;
+         DefaultListModel list = new DefaultListModel();
+         list.addElement(nickname);
+         if(c){
+             list.addElement("JE MOEDER");
+         }else{
+             list.addElement("JOOD!");
+         }
+         
+         serverList.setModel(list);
+         frame.repaint();
+    }
     
     public void startLobby(){
+        nickname = JOptionPane.showInputDialog(null, "Enter Your Nickname: ", "", 1);
+        frame.setTitle("Welcome " + nickname + ". Enjoy Playing This Awesome Game!!!");
+        setListModel();
         startServer.addActionListener(this);
+        searchServers.addActionListener(this);
         joinGame.addActionListener(this);
-        DefaultListModel list = new DefaultListModel();
-        list.addElement("No Servers Found");
-        serverList.setModel(list);
     }
     
+    private void switchPanels(boolean forward){
+        if(forward){
+            frame.getContentPane().remove(startPanel);
+            frame.getContentPane().add(inGamePanel);
+        }else{
+            frame.getContentPane().remove(inGamePanel);
+            frame.getContentPane().add(startPanel);
+        }
+    }
+    
+    boolean b = true;
     
     public void actionPerformed(ActionEvent e){
-        
+        //switchPanels(b);
+        //b = !b;
+        setListModel();
+        frame.repaint();
     }
     
-    /*public static void main(String[] args){
-        new LobbyGui();//.startLobby();
-    }*/
+    public static void main(String[] args){
+        new LobbyGui().startLobby();
+    }
 }
