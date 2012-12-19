@@ -1,0 +1,49 @@
+package ogo.spec.game.multiplayer;
+
+option java_package = "ogo.spec.game.multiplayer";
+
+message Init {
+    // send from server to client
+    required int32 port = 1;
+}
+message Reply {
+    required bool done = 1;
+}
+message ConnectTo {
+    // send from server to client
+    required bytes ip = 1;
+    required int32 port = 2;
+    required bool init = 3;
+}
+
+message Token {
+    enum ChangeType {
+        MOVE_CREATURE = 0; // if a creature moves to a tile with food, the food will dissapear
+        HEALTH = 1;
+        ENERGY = 2; // only for air creatures
+        ATTACKING_CREATURE = 3;
+    }
+    message Change {
+        // basic info
+        required int32 id = 1;
+        required int64 tick = 2;
+        required int32 playerId = 3;
+
+        required ChangeType type = 4;
+
+        // everything happens to a creature
+        required int32 creatureId = 5;
+
+        // MOVE_CREATURE
+        optional int32 x = 6;
+        optional int32 y = 7;
+
+        // HEALTH / ENERGY
+        optional int32 newValue = 8;
+
+        // ATTACKING_CREATURE
+        optional int32 otherCreatureId = 9;
+    }
+    repeated Change message = 1;
+    required int32 lastId = 2; // should be increased by one for every sent message
+}
