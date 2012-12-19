@@ -5,11 +5,14 @@ import java.util.HashSet;
 
 public class AirCreature extends Creature
 {
+    public final static int MAX_ENERGY = 100;
+    
     private int energy;
 
     public AirCreature(GameMap map)
     {
         super(map);
+        this.energy = MAX_ENERGY;
     }
 
     @Override
