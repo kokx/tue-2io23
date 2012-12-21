@@ -5,6 +5,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.*;
+import java.io.FileNotFoundException;
 import javax.media.opengl.GL;
 import static javax.media.opengl.GL2.*;
 import static java.lang.Math.*;
@@ -32,7 +33,8 @@ public class GUI extends Base {
     Creature currentCreature;
     Timer timer = new Timer(30);
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
-
+    Wavefront w;
+    
     /**
      * Called upon the start of the application. Primarily used to configure
      * OpenGL.
@@ -109,6 +111,12 @@ public class GUI extends Base {
                 CreatureView creatureView = new CreatureView(c, timer);
                 creatureViews.put(c, creatureView);
             }
+        }
+        w = new Wavefront();
+        try {
+            w.readWavefront("/home/maikel/NetBeansProjects/tue-2io23/teapot.obj", gl);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -199,7 +207,10 @@ public class GUI extends Base {
         gl.glEnd();
 
         // Draw map.
-        drawMap(game.getMap());
+        //drawMap(game.getMap());
+        
+        w.drawTriangles();
+        
     }
 
     private void drawMap(GameMap map) throws GLException {
