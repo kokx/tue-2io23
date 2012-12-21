@@ -5,9 +5,13 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.UnknownHostException;
+import java.util.List;
 import javax.swing.*;
+import ogo.spec.game.multiplayer.PeerInfo;
 
-import ogo.spec.game.multiplayer.initserver.*;
+import ogo.spec.game.multiplayer.initserver.ChatServer;
+import ogo.spec.game.multiplayer.client.Client;
 
 public class LobbyGui implements ActionListener{
     
@@ -16,7 +20,10 @@ public class LobbyGui implements ActionListener{
     protected JFrame frame;
     
     protected JList serverList;
-    protected JScrollPane scrollList;
+    protected JScrollPane serverScrollList;
+    
+    protected JList clientList;
+    protected JScrollPane clientScrollList;
     
     protected JPanel startPanel;
     protected JPanel inGamePanel;
@@ -50,12 +57,11 @@ public class LobbyGui implements ActionListener{
         serverList = new JList();
         
         DefaultListModel list = new DefaultListModel();
-        list.addElement("No Servers Found");
+        list.addElement("No Attempt To Find Servers Yet");
         serverList.setModel(list);
         
-        scrollList = new JScrollPane(serverList);
-        
-        scrollList.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()-100));
+        serverScrollList = new JScrollPane(serverList);
+        serverScrollList.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()-100));
         
         startButtonPanel = new JPanel(new GridLayout(1,3));
         
@@ -63,29 +69,34 @@ public class LobbyGui implements ActionListener{
         startButtonPanel.add(searchServers);
         startButtonPanel.add(joinGame);
         
-        startPanel.add(scrollList, BorderLayout.NORTH);
+        startPanel.add(serverScrollList, BorderLayout.NORTH);
         startPanel.add(startButtonPanel, BorderLayout.SOUTH);
+        
+        //inGamePanel.add(clientScrollList, BorderLayout.NORTH);
         
         frame.getContentPane().add(startPanel);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
-    boolean c = true;
-    private void setListModel(){
-         c = !c;
-         DefaultListModel list = new DefaultListModel();
-         list.addElement(nickname);
-         if(c){
-             list.addElement("JE MOEDER");
-         }else{
-             list.addElement("JOOD!");
-         }
+    
+    private void setListModel() throws Exception{
+         Client client = new Client();
+
+         List<PeerInfo> servers = client.findServers();
          
+         DefaultListModel list = new DefaultListModel();
+         if(servers.isEmpty()){
+             list.addElement("No Servers Found LOL");
+         }else{
+            for(PeerInfo p : servers){
+                list.addElement(p.ip.toString());
+            } 
+         }
          serverList.setModel(list);
          //frame.repaint();
     }
     
-    public void init(){
+    public void init() throws Exception{
         nickname = JOptionPane.showInputDialog(null, "Enter Your Nickname: ", "", 1);
         frame.setTitle("Welcome " + nickname + ". Enjoy Playing This Awesome Game!!!");
         setListModel();
@@ -98,6 +109,8 @@ public class LobbyGui implements ActionListener{
     public void startLobby() throws Exception{
         initServer = new ChatServer();
         initServer.run();
+        
+        switchPanels(true);
     }
     
     private void switchPanels(boolean forward){
@@ -111,13 +124,20 @@ public class LobbyGui implements ActionListener{
     }
     
     public void actionPerformed(ActionEvent e){
-        if(e.getSource() == searchServers){
-            setListModel();
+        try{
+            if(e.getSource() == searchServers){
+                setListModel();
+            }else if(e.getSource() == startServer){
+                startLobby();
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+            System.err.println(ex.getMessage());
         }
         //frame.repaint();
     }
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
         new LobbyGui().init();
     }
 }
