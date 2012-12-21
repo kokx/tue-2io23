@@ -58,6 +58,10 @@ class ConnectClients implements Runnable{
         server = new Server(port);
         shouldConnect = true;
     }
+    
+    public void close() throws Exception{
+        server.close();
+    }
     public void run(){
         for (int i = 0; i < ChatServer.MAX_CLIENTS && shouldConnect; i++) {
             try{
@@ -82,6 +86,10 @@ public class ChatServer {
     
     public void initConnection() throws InterruptedException{
         connect.server.init(PORT+1);
+    }
+    
+    public void close() throws Exception{
+        connect.close();
     }
 
     public void run() throws Exception, IOException

@@ -29,6 +29,13 @@ class Server
         sock = new ServerSocket(port);
         
     }
+    
+    public void close() throws Exception{
+        for(Client c : clients){
+            c.close();
+        }
+        sock.close();
+    }
 
     /**
      * Wait for a client to connect.
