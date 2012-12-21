@@ -21,4 +21,9 @@ public class Player implements Iterable<Creature>
     public Iterator<Creature> iterator() {
         return Arrays.asList(creatures).iterator();
     }
+    
+    public Creature[] getCreatures()
+    {
+        return this.creatures;
+    }
 }

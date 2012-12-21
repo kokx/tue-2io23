@@ -16,6 +16,8 @@ public abstract class Creature extends Inhabitant {
     public static final int TICKS_PER_TILE_AVG = TICKS_PER_TILE_FAST * 2;
     //Slow speed is 3 * fast
     public static final int TICKS_PER_TILE_SLOW = TICKS_PER_TILE_FAST * 3;
+    
+    public static final int MAX_LIFE = 20;
 
     protected Creature attackingCreature;
     private int life;
@@ -240,8 +242,8 @@ public abstract class Creature extends Inhabitant {
      */
     protected void addLife(int life) {
         this.life += life;
-        if (this.life > 20) {
-            this.life = 20;
+        if (this.life > MAX_LIFE) {
+            this.life = MAX_LIFE;
         }
     }
 
@@ -260,5 +262,10 @@ public abstract class Creature extends Inhabitant {
      */
     public CreaturePath getPath() {
         return path;
+    }
+    
+    public String toString()
+    {
+        return super.toString() + "\nLife: " + this.life + "\nPosition.x: " + super.currentTile.x + "\nPosition.y: " + super.currentTile.y;
     }
 }
