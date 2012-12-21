@@ -7,7 +7,7 @@ public class AirCreature extends Creature {
 
     public final static int MAX_ENERGY = 100;
     public final static int ENERGY_INC = 1;
-    public final static int ENERGY_DEC = 1;
+    public final static int ENERGY_DEC = 3;
     public final static int ENERGY_TICKS = 1000 / Game.TICK_TIME_IN_MS;//loose 1 energy per second
     
     private int energy;
@@ -77,8 +77,9 @@ public class AirCreature extends Creature {
     }
 
     @Override
-    protected boolean canMove() {
-        return true;
+    protected boolean canMove(int ticks) {
+        int requiredEnergy = ticks * AirCreature.ENERGY_DEC / AirCreature.ENERGY_TICKS;
+        return (this.energy > requiredEnergy);
     }
     
     public String toString()

@@ -15,6 +15,7 @@ public class Game implements Iterable<Player> {
             c.tick();
             Thread.sleep(Game.TICK_TIME_IN_MS);
             System.out.println("\nC: " + c.toString());
+            System.out.println(c.canMove(1000));
         }
     }
     public static final int TICK_TIME_IN_MS = 10;
