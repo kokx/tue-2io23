@@ -49,7 +49,27 @@ class BroadcastReceiverRunnable implements Runnable
     }
 }
 
-class ChatServer {
+class ConnectClients implements Runnable{
+    Server server = null;
+    
+    public boolean shouldConnect;
+    
+    public ConnectClients(int port) throws IOException{
+        server = new Server(port);
+        shouldConnect = true;
+    }
+    public void run(){
+        for (int i = 0; i < ChatServer.MAX_CLIENTS && shouldConnect; i++) {
+            try{
+                server.connectClient();
+            }catch (Exception e) {
+                // nothing
+            }
+        }
+    }
+}
+
+public class ChatServer {
 
     public final static int PORT = 25665;
     public final static int INIT_PORT = 25344; // this is a UDP port
@@ -58,26 +78,23 @@ class ChatServer {
     public final static int TIME_POLL = 100;
 
     // real stuff
-    ServerSocket server = null;
+    private ConnectClients connect = null;
+    
+    public void initConnection() throws InterruptedException{
+        connect.server.init(PORT+1);
+    }
 
-    void run() throws Exception, IOException, InterruptedException
+    public void run() throws Exception, IOException
     {
         DatagramSocket sock = new DatagramSocket(INIT_LISTEN_PORT);
 
         BroadcastReceiverRunnable run = new BroadcastReceiverRunnable(sock);
 
         new Thread(run).start();
+        
+        connect = new ConnectClients(PORT);
 
-        // create a server
-        Server server = new Server(PORT);
-
-        // wait for MAX_CLIENTS clients to connect
-        for (int i = 0; i < MAX_CLIENTS; i++) {
-            server.connectClient();
-        }
-
-        // initialize the token ring and terminate
-        server.init(PORT + 1);
+        new Thread(connect).start();
     }
 
     public static void main(String args[]) throws Exception, IOException, InterruptedException {

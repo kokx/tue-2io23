@@ -18,6 +18,8 @@ class Server
     ServerSocket sock = null;
 
     ArrayList<Client> clients = new ArrayList<Client>();
+    
+    boolean connectClients;
 
     /**
      * Constructor.
@@ -25,6 +27,7 @@ class Server
     public Server(int port) throws IOException
     {
         sock = new ServerSocket(port);
+        
     }
 
     /**
@@ -32,7 +35,12 @@ class Server
      */
     public void connectClient() throws Exception
     {
-        clients.add(new Client(sock));
+        Client c = new Client(sock);
+        if(connectClients){
+            clients.add(c);
+        }else{
+            c.close();
+        }
     }
 
     public void waitClientReply() throws InterruptedException
@@ -54,6 +62,7 @@ class Server
      */
     public void init(int initialPort) throws InterruptedException
     {
+        connectClients = false;
         // give everyone the proper port number
         for (int i = 0; i < clients.size(); i++) {
             // create the message

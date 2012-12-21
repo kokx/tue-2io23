@@ -16,6 +16,10 @@ class Client extends Peer
 
     // reader
     ReadRun read;
+    
+    public void close() throws IOException{
+        sock.close();
+    }
 
     public Client(ServerSocket server) throws Exception
     {

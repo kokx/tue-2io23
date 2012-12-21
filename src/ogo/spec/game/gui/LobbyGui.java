@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
+import ogo.spec.game.multiplayer.initserver.*;
+
 public class LobbyGui implements ActionListener{
     
     protected String nickname;
@@ -80,16 +82,22 @@ public class LobbyGui implements ActionListener{
          }
          
          serverList.setModel(list);
-         frame.repaint();
+         //frame.repaint();
     }
     
-    public void startLobby(){
+    public void init(){
         nickname = JOptionPane.showInputDialog(null, "Enter Your Nickname: ", "", 1);
         frame.setTitle("Welcome " + nickname + ". Enjoy Playing This Awesome Game!!!");
         setListModel();
         startServer.addActionListener(this);
         searchServers.addActionListener(this);
         joinGame.addActionListener(this);
+    }
+    
+    ChatServer initServer = null;
+    public void startLobby() throws Exception{
+        initServer = new ChatServer();
+        initServer.run();
     }
     
     private void switchPanels(boolean forward){
@@ -102,16 +110,14 @@ public class LobbyGui implements ActionListener{
         }
     }
     
-    boolean b = true;
-    
     public void actionPerformed(ActionEvent e){
-        //switchPanels(b);
-        //b = !b;
-        setListModel();
-        frame.repaint();
+        if(e.getSource() == searchServers){
+            setListModel();
+        }
+        //frame.repaint();
     }
     
     public static void main(String[] args){
-        new LobbyGui().startLobby();
+        new LobbyGui().init();
     }
 }
