@@ -47,6 +47,7 @@ public abstract class Peer
             message.writeTo(out);
         } catch (IOException e) {
             System.out.println("I/O Error");
+            e.printStackTrace();
             System.exit(-1);
         }
     }

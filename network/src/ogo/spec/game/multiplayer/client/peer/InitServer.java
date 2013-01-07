@@ -45,4 +45,11 @@ public class InitServer extends Peer
         PeerInfo peer = new PeerInfo(connectTo.getPort(), InetAddress.getByAddress(connectTo.getIp().toByteArray()), connectTo.getInit());
         return peer;
     }
+    
+    public void close() throws IOException
+    {
+        in.close();
+        out.close();
+        sock.close();
+    }
 }

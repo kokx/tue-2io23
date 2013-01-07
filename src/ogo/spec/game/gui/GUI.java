@@ -10,7 +10,9 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class LobbyGui extends Lobby implements ActionListener, ListSelectionListener{
+public class GUI implements ActionListener, ListSelectionListener{
+    protected Player player;
+    
     protected JFrame frame;
     
     protected JList lobbyList;
@@ -37,12 +39,16 @@ public class LobbyGui extends Lobby implements ActionListener, ListSelectionList
     protected JTextArea chatOutput;
     protected JScrollPane chatScroll;
     
-    protected int lobbyAmount = 0;
-    protected int selectedLobby = -1;
+    protected Timer updateLobbyTimer;
+    
+    protected int lobbyAmount;
+    protected int selectedLobby;
     
     protected String[] noLobbys = {"No Lobbys Were Found"};
     
-    public LobbyGui() throws Exception{
+    public GUI(Player p) throws Exception{
+        player = p;
+        
         frame = new JFrame("Play This Awesome Game!");
         
         frame.setSize(600,600);
@@ -79,7 +85,7 @@ public class LobbyGui extends Lobby implements ActionListener, ListSelectionList
         
         leaveLobby.setEnabled(true);
         startGame.setEnabled(false);
-        sendMessage.setEnabled(false);
+        sendMessage.setEnabled(true);
         
         chatInput = new JTextField(30);
         chatOutput = new JTextArea(10,30);
@@ -103,12 +109,12 @@ public class LobbyGui extends Lobby implements ActionListener, ListSelectionList
         frame.getContentPane().add(startPanel);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        
+        lobbyAmount = 0;
+        selectedLobby = -1;
     }
     
     public void init() throws Exception{
-        nickname = JOptionPane.showInputDialog(null, "Enter Your Nickname: ", "", 1);
-        frame.setTitle("Welcome " + nickname + ". Enjoy Playing This Awesome Game!!!");
-        
         startLobby.addActionListener(this);
         searchLobbys.addActionListener(this);
         joinLobby.addActionListener(this);
@@ -130,7 +136,7 @@ public class LobbyGui extends Lobby implements ActionListener, ListSelectionList
     }
     
     private void findServers() throws Exception{
-        String[] lobbys = getServerNames();
+        String[] lobbys = player.getServerNames();
         lobbyAmount = lobbys.length;
         if(lobbyAmount > 0){
             lobbyList.setModel(getListModel(lobbys));
@@ -139,35 +145,38 @@ public class LobbyGui extends Lobby implements ActionListener, ListSelectionList
         }
     }
     
-    private void openLobby() throws Exception{
-        startLobby();
-        
-        switchPanels(true);
-    }
-    
-    private void joinServer() throws Exception{
-        joinLobby(selectedLobby);
-        
-        switchPanels(false);
-    }
-    
-    private void leaveLobby() throws Exception{
-        switchPanels(false);
-        
-        closeLobby();
-    }
-    
     private void startLobby() throws Exception{
-        startServer();
+        player.openLobby();
         
         switchPanels(true);
+    }
+    
+    private void joinLobby() throws Exception{
+        player.joinLobby(selectedLobby);
+        
+        switchPanels(true);
+        System.out.println("Done");
+    }
+    
+    private void closeLobby() throws Exception{
+        player.closeLobby();
+        
+        switchPanels(false);
+    }
+    
+    private void startGame(boolean toggle) throws Exception{
+        if(player.isHost){
+            player.startGame();
+        }else{
+            player.setReady(toggle);
+        }
     }
     
     private void sendMessage() throws Exception{
         String message = chatInput.getText();
-        
-        sendChatMessage(message);
-        
+        if(!message.isEmpty()){
+            player.sendChatMessage(message);
+        }
         chatInput.setText("");
     }
     
@@ -191,17 +200,16 @@ public class LobbyGui extends Lobby implements ActionListener, ListSelectionList
             }else if(e.getSource() == startLobby){
                 startLobby();
             }else if(e.getSource() == joinLobby){
-                joinServer();
+                joinLobby();
             }else if(e.getSource() == leaveLobby){
-                leaveLobby();
+                closeLobby();
             }else if(e.getSource() == startGame){
-                startLobby();
+                startGame(true);
             }else if(e.getSource() == sendMessage){
                 sendMessage();
             }
         }catch (Exception ex){
             ex.printStackTrace();
-            System.err.println(ex.getMessage());
         }
     }
     
@@ -214,9 +222,5 @@ public class LobbyGui extends Lobby implements ActionListener, ListSelectionList
         }else if(e.getSource() == clientList){
             
         }
-    }
-    
-    public static void main(String[] args) throws Exception{
-        new LobbyGui().init();
     }
 }

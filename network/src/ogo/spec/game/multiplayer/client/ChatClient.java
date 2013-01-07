@@ -32,8 +32,13 @@ class InputReaderRunnable implements Runnable
             }
         } catch (IOException e) {
             System.err.println("I/O Error");
+            e.printStackTrace();
             System.exit(1);
         }
+    }
+    
+    public  ConcurrentLinkedQueue<String> getBuffer(){
+        return buffer;
     }
 }
 
@@ -101,8 +106,6 @@ public class ChatClient implements TokenChangeListener
         Client client = new Client();
 
         List<PeerInfo> servers = client.findServers();
-        
-        System.out.println(servers.size());
 
         Scanner sc = new Scanner(System.in);
 
@@ -122,7 +125,8 @@ public class ChatClient implements TokenChangeListener
 
         client.setTokenChangeListener(this);
 
-        client.connect(servers.get(num));
+        client.connectToInitServer(servers.get(num));
+        client.connectToPeer();
     }
     
     public static void main(String[] a) throws Exception{
