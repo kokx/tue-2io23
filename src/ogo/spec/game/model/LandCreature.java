@@ -6,9 +6,9 @@ import java.util.HashSet;
 public class LandCreature extends Creature
 {
 
-    public LandCreature(GameMap map)
+    public LandCreature(Tile currentTile, GameMap map)
     {
-        super(map);
+        super(currentTile, map);
     }
 
     @Override

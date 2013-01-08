@@ -13,8 +13,8 @@ public class AirCreature extends Creature {
     private int energy;
     private int energyCooldown = 0;
 
-    public AirCreature(GameMap map) {
-        super(map);
+    public AirCreature(Tile currentTile, GameMap map) {
+        super(currentTile,map);
         this.energy = MAX_ENERGY;
     }
 
