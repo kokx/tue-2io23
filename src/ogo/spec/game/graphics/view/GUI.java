@@ -35,7 +35,7 @@ public class GUI extends Base {
     Timer timer = new Timer(30);
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
     Wavefront w;
-    
+
     /**
      * Called upon the start of the application. Primarily used to configure
      * OpenGL.
@@ -84,8 +84,8 @@ public class GUI extends Base {
             }
         }
         GameMap map = new GameMap(types);
-        LandCreature l = new LandCreature(map.getTile(0, 0),map);
-        SeaCreature s = new SeaCreature(map.getTile(2,2),map);
+        LandCreature l = new LandCreature(map.getTile(0, 0), map);
+        SeaCreature s = new SeaCreature(map.getTile(2, 2), map);
         map.getTile(0, 0).setInhabitant(l);
         map.getTile(1, 1).setInhabitant(new Food());
         map.getTile(2, 2).setInhabitant(s);
@@ -99,7 +99,8 @@ public class GUI extends Base {
         p2.setCreatures(p2c);
         player = p1;
         Player[] players = new Player[2];
-        players[0]=p1;players[1]=p2;
+        players[0] = p1;
+        players[1] = p2;
         try {
             game = new Game(players, map);
         } catch (Exception ex) {
@@ -148,8 +149,8 @@ public class GUI extends Base {
         //glu.gluLookAt(-40f, -40f, 30f, // eye point
         //        gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
         //        0.0, 0.0, 1.0);   // up axis
-        
-        
+
+
         glu.gluLookAt(eye.x(), eye.y(), eye.z(), // eye point
                 gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
                 0, 0, 1); // up axis
@@ -168,7 +169,10 @@ public class GUI extends Base {
             clickListener.y = -1;
             handleMouseClick(x, y);
             //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
-            currentCreature.select(game.getMap().getTile(clicki, clickj));
+            if (currentCreature.getPath() != null) {
+                currentCreature.select(game.getMap().getTile(clicki, clickj));
+            }
+
             //gs.cnt = vViewChange.add(new Vector(clickj, clicki, 0));
 
         }
@@ -209,30 +213,30 @@ public class GUI extends Base {
 
         // Draw map.
         drawMap(game.getMap());
-        
+
         /*float[] material = {
-            0.24725f, 0.1995f, 0.0745f, 1.0f, //ambient
-            0.75164f, 0.60648f, 0.22648f, 1.0f, //diffuse
-            0.628281f, 0.555802f, 0.366065f, 1.0f, //specular
-            51.2f //shininess
-        };*/
+         0.24725f, 0.1995f, 0.0745f, 1.0f, //ambient
+         0.75164f, 0.60648f, 0.22648f, 1.0f, //diffuse
+         0.628281f, 0.555802f, 0.366065f, 1.0f, //specular
+         51.2f //shininess
+         };*/
         /*float[] material = {
-        0.000000f, 0.000000f, 0.000000f, 1f,
- 1.000000f, 1.000000f, 1.000000f, 1f,
- 1.000000f, 1.000000f, 1.000000f, 1f,
- 512.000000f};*/
-        
+         0.000000f, 0.000000f, 0.000000f, 1f,
+         1.000000f, 1.000000f, 1.000000f, 1f,
+         1.000000f, 1.000000f, 1.000000f, 1f,
+         512.000000f};*/
+
         float[] material = {
             0f, 0f, 0f, 1.0f, //ambient
-            1f,1f,1f,1.0f, //diffuse
-            1f,1f,1f, 1.0f, //specular
+            1f, 1f, 1f, 1.0f, //diffuse
+            1f, 1f, 1f, 1.0f, //specular
             51.2f //shininess
         };
-        
+
         bananad.bind(gl);
         bananan.bind(gl);
         bananas.bind(gl);
-        
+
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material, 4);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material, 8);
@@ -241,7 +245,7 @@ public class GUI extends Base {
         //glut.glutWireCube(1);
         //gl.glTranslated(-0.5, -0.5, -0.5);
         //w.drawTriangles();
-        
+
     }
 
     private void drawMap(GameMap map) throws GLException {
@@ -292,23 +296,23 @@ public class GUI extends Base {
                 gl.glPushAttrib(GL_CURRENT_BIT);
                 //empty.bind(gl);
                 Inhabitant inhabitant = map.getTile(i, j).getInhabitant();
-                    gl.glPushMatrix();
-                    // TODO: replace by more meaningful, non-glut objects.
-                    gl.glTranslatef(0.5f, 0.5f, 0);
+                gl.glPushMatrix();
+                // TODO: replace by more meaningful, non-glut objects.
+                gl.glTranslatef(0.5f, 0.5f, 0);
 
-                    /*if (inhabitant instanceof LandCreature) {
-                     gl.glColor3f(0, 1, 0);
-                     //gl.glRotatef(90, 1, 0, 0);
-                     //glut.glutSolidTeapot(0.5);
-                     new GraphicalObjects(gl).drawCylinder(0.5f, 2);
-                     } else */
-                    if (inhabitant instanceof Food) {
-                        gl.glColor3f(1, 1, 1);
-                        //gl.glRotatef(90, 1, 0, 0);
-                        //glut.glutSolidTeapot(0.5);
-                        new GraphicalObjects(gl).drawCylinder(0.5f, 2);
-                    }
-                    gl.glPopMatrix();
+                /*if (inhabitant instanceof LandCreature) {
+                 gl.glColor3f(0, 1, 0);
+                 //gl.glRotatef(90, 1, 0, 0);
+                 //glut.glutSolidTeapot(0.5);
+                 new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                 } else */
+                if (inhabitant instanceof Food) {
+                    gl.glColor3f(1, 1, 1);
+                    //gl.glRotatef(90, 1, 0, 0);
+                    //glut.glutSolidTeapot(0.5);
+                    new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                }
+                gl.glPopMatrix();
 
                 gl.glPopAttrib();
                 gl.glPopMatrix();
