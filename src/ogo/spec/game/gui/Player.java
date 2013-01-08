@@ -4,7 +4,12 @@
  */
 package ogo.spec.game.gui;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.swing.JOptionPane;
 import ogo.spec.game.multiplayer.PeerInfo;
 import ogo.spec.game.multiplayer.client.Client;
@@ -52,6 +57,48 @@ public class Player {
         return convertServerList(serverList);
     }
     
+    class DatagramReceiverRunnable implements Runnable
+    {
+        DatagramSocket sock;
+
+        ConcurrentLinkedQueue<DatagramPacket> buffer = new ConcurrentLinkedQueue<DatagramPacket>();
+        
+        boolean read;
+
+        DatagramReceiverRunnable(DatagramSocket sock)
+        {
+            this.sock = sock;
+            this.read = true;
+        }
+        
+        public void stop(){
+            read = false;
+        }
+
+        public void run()
+        {
+            try {
+                while (read) {
+                    DatagramPacket p = new DatagramPacket(new byte[1], 1);
+
+                    sock.receive(p);
+                    
+                    buffer.add(p);
+                }
+            } catch (IOException e) {
+                if(read){
+                    System.err.println("I/O Error");
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
+        }
+    }
+    
+    public final static int INIT_PORT = 25745; // this is a UDP port
+    public final static int INIT_LISTEN_PORT = 4444; // this is a UDP port
+    public final static String BROADCAST_IP = "192.168.1.255";
+    
     public void openLobby() throws Exception{
         isHost = true;
         isReady = true;
@@ -60,9 +107,48 @@ public class Player {
         initServer = new ChatServer();
         initServer.run();
         
-        getServerNames();
+        boolean done = false;
         
+        DatagramPacket packet;
+        DatagramSocket sendSock;
+        DatagramSocket receiveSock = new DatagramSocket(INIT_PORT);
         
+        while(!done){
+            packet = new DatagramPacket(new byte[]{2}, 1, InetAddress.getByName(BROADCAST_IP), INIT_PORT);
+            sendSock = new DatagramSocket();
+            sendSock.send(packet);
+
+            DatagramReceiverRunnable run = new DatagramReceiverRunnable(receiveSock);
+            new Thread(run).start();
+
+            Thread.sleep(2000);
+
+            while((packet = run.buffer.poll()) != null){
+                System.out.println("Data: " + packet.getData()[0]);
+                if(packet.getData()[0] == 2){
+                    break;
+                }
+
+            }
+            if(packet != null){
+                getServerNames();
+
+                PeerInfo ownServer = null;
+                for(PeerInfo p : serverList){
+                    if(packet.getAddress().toString().equals(p.ip.toString())){
+                        ownServer = p;
+                    }
+                }
+
+                client.connectToInitServer(ownServer);
+                //client.connectToPeer();
+                
+                done = true;
+            }else{
+                System.err.println("LOBBY: Could not find own server; unable to connect self to lobby");
+            }
+            run.stop();
+        }
     }
     
     public void joinLobby(int serverNum) throws Exception{
@@ -85,13 +171,13 @@ public class Player {
     
     public void startGame() throws Exception{
         assert(isHost);
-        
-        // 
+        initServer.initConnection();
+        client.connectToPeer();
     }
     
-    public void setReady(boolean flag) throws Exception{
+    public void setReady() throws Exception{
         assert(!isHost);
-        isReady = flag;
+        isReady = true;
         
         client.connectToPeer();
     }

@@ -50,7 +50,7 @@ public class Client {
                     DatagramPacket p = new DatagramPacket(new byte[1], 1);
 
                     sock.receive(p);
-
+                    
                     buffer.add(p);
                 }
             } catch (IOException e) {
@@ -86,6 +86,19 @@ public class Client {
             }
         }
     }
+    
+    class StartConnectionRunnable implements Runnable
+    {
+        InitServer initServer;
+        
+        StartConnectionRunnable(InitServer init){
+            initServer = init;
+        }
+        
+        public void run(){
+            
+        }
+    }
 
 
     // API methods
@@ -97,6 +110,8 @@ public class Client {
     protected InitServer init;
     protected DatagramReceiverRunnable run;
     
+    protected String nickname;
+    
     public void close() throws IOException
     {
         run.stop();
@@ -107,10 +122,18 @@ public class Client {
     /**
      * Constructor.
      */
+    public Client(String name) throws SocketException
+    {
+        udpSock = new DatagramSocket();//INIT_LISTEN_PORT);
+        nickname = name;
+    }
+    
     public Client() throws SocketException
     {
         udpSock = new DatagramSocket();//INIT_LISTEN_PORT);
+        nickname = "JeMoeder";
     }
+
 
     /**
      * Find servers on the network.
@@ -139,6 +162,15 @@ public class Client {
     public void connectToInitServer(PeerInfo serv) throws IOException, UnknownHostException
     {
         init = new InitServer(serv.ip, serv.port);
+        
+        /*StartConnectionRunnable run = new StartConnectionRunnable(init);
+        new Thread(run).start();
+        
+        while(!run.startConnection()){
+            Thread.sleep(100);
+        }
+        
+        connectToPeer();*/
     }
     
     public void connectToPeer() throws IOException, UnknownHostException, InterruptedException

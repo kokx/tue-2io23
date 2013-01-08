@@ -83,6 +83,7 @@ class ConnectClients implements Runnable{
                 }
             }
         }
+        
     }
 }
 
@@ -108,6 +109,24 @@ public class ChatServer {
         run.stop();
         sock.close();
     }
+    
+    public void runCLI() throws Exception{
+        sock = new DatagramSocket(INIT_LISTEN_PORT);
+        
+        run = new BroadcastReceiverRunnable(sock);
+        
+        connect = new ConnectClients(PORT);
+        
+        new Thread(run).start();
+        
+        for(int i = 0; i < 2/*MAX_CLIENTS*/; i++){
+            connect.server.connectClient();
+        }
+        
+        run.stop();
+        
+        connect.server.init(PORT + 1);
+    }
 
     public void run() throws Exception, IOException
     {
@@ -123,6 +142,14 @@ public class ChatServer {
     }
 
     public static void main(String args[]) throws Exception, IOException, InterruptedException {
-        new ChatServer().run();
+        System.out.println("Enter which type of ChatServer you want; 0 is CLI Mode, Lobby Mode otherwise");
+        Scanner sc = new Scanner(System.in);
+        if(sc.nextInt() == 0){
+            System.out.println("CLI");
+            new ChatServer().runCLI();
+        }else{
+            System.out.println("ELSE");
+            new ChatServer().run();
+        }
     }
 }

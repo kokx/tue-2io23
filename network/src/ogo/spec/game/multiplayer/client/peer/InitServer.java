@@ -33,7 +33,8 @@ public class InitServer extends Peer
      */
     public int getPort() throws IOException
     {
-        return ChatProto.Init.parseFrom(read()).getPort();
+        byte[] data = read();
+        return ChatProto.Init.parseFrom(data).getPort();
     }
 
     /**

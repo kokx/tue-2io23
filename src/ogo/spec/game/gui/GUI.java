@@ -87,9 +87,9 @@ public class GUI implements ActionListener, ListSelectionListener{
         startGame.setEnabled(false);
         sendMessage.setEnabled(true);
         
-        chatInput = new JTextField(30);
+        /*chatInput = new JTextField(30);
         chatOutput = new JTextArea(10,30);
-        chatScroll = new JScrollPane(chatOutput);
+        chatScroll = new JScrollPane(chatOutput);*/
         
         clientList = new JList();
         clientList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -98,12 +98,12 @@ public class GUI implements ActionListener, ListSelectionListener{
         
         inGameButtonPanel = new JPanel(new GridLayout(1,3));
         inGameButtonPanel.add(leaveLobby);
-        inGameButtonPanel.add(sendMessage);
+        //inGameButtonPanel.add(sendMessage);
         inGameButtonPanel.add(startGame);
         
         inGamePanel.add(clientScrollList, BorderLayout.EAST);
-        inGamePanel.add(chatOutput, BorderLayout.NORTH);
-        inGamePanel.add(chatInput, BorderLayout.CENTER);
+        //inGamePanel.add(chatOutput, BorderLayout.NORTH);
+        //inGamePanel.add(chatInput, BorderLayout.CENTER);
         inGamePanel.add(inGameButtonPanel, BorderLayout.SOUTH);
         
         frame.getContentPane().add(startPanel);
@@ -148,6 +148,8 @@ public class GUI implements ActionListener, ListSelectionListener{
     private void startLobby() throws Exception{
         player.openLobby();
         
+        startGame.setEnabled(true);
+        
         switchPanels(true);
     }
     
@@ -167,8 +169,6 @@ public class GUI implements ActionListener, ListSelectionListener{
     private void startGame(boolean toggle) throws Exception{
         if(player.isHost){
             player.startGame();
-        }else{
-            player.setReady(toggle);
         }
     }
     
