@@ -125,9 +125,9 @@ public class GameMap
     public List<Tile> getNeighbours(Tile tile)
     {
         LinkedList<Tile> neighbours = new LinkedList<Tile>();
-        for (int x = tile.x - 1; x >= 0 && x < tiles.length; x++) {
-            for (int y = tile.y - 1; y >= 0 && y < tiles[0].length; y++) {
-                if (x == tile.x && y == tile.y) {
+        for (int x = tile.x - 1; x <= tile.x + 1; x++) {
+            for (int y = tile.y - 1; y <= tile.y + 1; y++) {
+                if ((x == tile.x && y == tile.y) || x < 0 || y < 0 || x >= tiles.length || y >= tiles[0].length) {
                     continue;
                 }
                 neighbours.add(tiles[x][y]);
@@ -186,6 +186,8 @@ public class GameMap
                     neighbourNode.g = distanceThroughNeighbour;
                     neighbourNode.f = distanceThroughNeighbour + current.h(neighbour);
                     open.put(neighbour, neighbourNode);
+                    Q.remove(neighbourNode);
+                    Q.add(neighbourNode);
                 }
             }
         }

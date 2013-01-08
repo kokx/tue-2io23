@@ -84,8 +84,8 @@ public class GUI extends Base {
             }
         }
         GameMap map = new GameMap(types);
-        LandCreature l = new LandCreature(map);
-        SeaCreature s = new SeaCreature(map);
+        LandCreature l = new LandCreature(map.getTile(0, 0),map);
+        SeaCreature s = new SeaCreature(map.getTile(2,2),map);
         map.getTile(0, 0).setInhabitant(l);
         map.getTile(1, 1).setInhabitant(new Food());
         map.getTile(2, 2).setInhabitant(s);
@@ -167,7 +167,7 @@ public class GUI extends Base {
             clickListener.x = -1;
             clickListener.y = -1;
             handleMouseClick(x, y);
-            System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
+            //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
             currentCreature.select(game.getMap().getTile(clicki, clickj));
             //gs.cnt = vViewChange.add(new Vector(clickj, clicki, 0));
 
