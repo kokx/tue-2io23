@@ -17,7 +17,9 @@ public class Wavefront {
     List<int[]> faces;
     List<double[]> vertices;
     List<double[]> normals;
+    List<double[]> texcoords;
     boolean useNormals = false;
+    boolean useTexCoords = false;
     GL2 gl;
 
     public void readWavefront(String filename, GL2 gl) throws FileNotFoundException {
@@ -31,6 +33,7 @@ public class Wavefront {
         vertices = new ArrayList<>();
         faces = new ArrayList<>();
         normals = new ArrayList<>();
+        texcoords = new ArrayList<>();
         while (fileScanner.hasNextLine()) {
             readLine(fileScanner);
         }
@@ -41,6 +44,7 @@ public class Wavefront {
         vertices = new ArrayList<>();
         faces = new ArrayList<>();
         normals = new ArrayList<>();
+        texcoords = new ArrayList<>();
         while (scanner.hasNextLine()) {
             readLine(scanner);
         }
@@ -89,7 +93,15 @@ public class Wavefront {
     }
 
     private void readTextureCoordinate(Scanner src) {
-        //throw new UnsupportedOperationException("Not yet implemented");
+        useTexCoords = true;
+        String line = src.nextLine();
+        line = line.substring(1);
+        String[] numbers_string = line.split(" ");
+        double[] numbers = new double[numbers_string.length];
+        for (int i = 0; i < numbers_string.length; i++) {
+            numbers[i] = Double.parseDouble(numbers_string[i]);
+        }
+        texcoords.add(numbers);
     }
 
     private void readNormal(Scanner src) {
@@ -137,10 +149,14 @@ public class Wavefront {
                 if (useNormals) {
                     //N.B. untested code
                     double[] normal = normals.get(face[i] - 1);
-                    gl.glNormal3d(normal[0], normal[1], normal[2]);
+                    gl.glNormal3dv(normal, 0);
+                }
+                if (useTexCoords) {
+                    double[] texCoords = texcoords.get(i);
+                    gl.glTexCoord3dv(texCoords, 0);
                 }
                 double[] vertex = vertices.get(face[i] - 1);
-                gl.glVertex3d(vertex[0], vertex[1], vertex[2]);
+                gl.glVertex3dv(vertex, 0);
             }
         }
         gl.glEnd();

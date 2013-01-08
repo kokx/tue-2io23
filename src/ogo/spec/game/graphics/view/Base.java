@@ -160,7 +160,7 @@ abstract public class Base {
             gl = drawable.getGL().getGL2();
 
             // Try to load textures.
-            String path = "ogo/spec/game/graphics/textures/";
+            String path = "ogo/spec/game/graphics/";
             land = loadTexture(path + "land.jpg");
             shallowWater = loadTexture(path + "shallow.jpg");
             deepWater = loadTexture(path + "deep.jpg");
