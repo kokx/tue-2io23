@@ -43,7 +43,7 @@ public class Level
          */
         private double determineSoundLevel()
         {
-            return 0;
+            return Math.random();
         }
 
         /**
