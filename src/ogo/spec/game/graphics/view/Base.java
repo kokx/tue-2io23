@@ -63,6 +63,7 @@ abstract public class Base {
     private long startTime;
     // Textures.
     protected Texture land, shallowWater, deepWater, empty;
+    protected Texture bananad, bananan, bananas;
     MainFrame frame;
 
     /**
@@ -164,6 +165,10 @@ abstract public class Base {
             shallowWater = loadTexture(path + "shallow.jpg");
             deepWater = loadTexture(path + "deep.jpg");
             empty = loadTexture(path + "empty.jpg");
+            
+            bananad = loadTexture("Bananaz__diffuse0000.tga");
+            bananan = loadTexture("Bananaz__normal0000.tga");
+            bananas = loadTexture("Bananaz__specular0000.jpg");
 
             // Print library version number.
             System.out.println("Using library version " + LIBRARY_VERSION);
