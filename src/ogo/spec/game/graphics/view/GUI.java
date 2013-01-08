@@ -65,7 +65,7 @@ public class GUI extends Base {
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
         // Create game object
-        Random generator = new Random();
+        Random generator = new Random(0);
         TileType[][] types = new TileType[50][50];
         for (int i = 0; i < types.length; i++) {
             for (int j = 0; j < types[0].length; j++) {
@@ -167,6 +167,7 @@ public class GUI extends Base {
             clickListener.x = -1;
             clickListener.y = -1;
             handleMouseClick(x, y);
+            System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
             currentCreature.select(game.getMap().getTile(clicki, clickj));
             //gs.cnt = vViewChange.add(new Vector(clickj, clicki, 0));
 
@@ -207,7 +208,7 @@ public class GUI extends Base {
         gl.glEnd();
 
         // Draw map.
-        //drawMap(game.getMap());
+        drawMap(game.getMap());
         
         /*float[] material = {
             0.24725f, 0.1995f, 0.0745f, 1.0f, //ambient
@@ -225,7 +226,7 @@ public class GUI extends Base {
             0f, 0f, 0f, 1.0f, //ambient
             1f,1f,1f,1.0f, //diffuse
             1f,1f,1f, 1.0f, //specular
-            512f //shininess
+            51.2f //shininess
         };
         
         bananad.bind(gl);
@@ -237,9 +238,9 @@ public class GUI extends Base {
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material, 8);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, material, 12);
         gl.glTranslated(0.5, 0.5, 0.5);
-        glut.glutWireCube(1);
-        gl.glTranslated(-0.5, -0.5, -0.5);
-        w.drawTriangles();
+        //glut.glutWireCube(1);
+        //gl.glTranslated(-0.5, -0.5, -0.5);
+        //w.drawTriangles();
         
     }
 
@@ -260,15 +261,15 @@ public class GUI extends Base {
                 switch (type) {
                     case DEEP_WATER:
                         //gl.glColor3f(0, 0, 1);
-                        //deepWater.bind(gl);
+                        deepWater.bind(gl);
                         break;
                     case SHALLOW_WATER:
                         //gl.glColor3f(0, 1, 0);
-                        //shallowWater.bind(gl);
+                        shallowWater.bind(gl);
                         break;
                     case LAND:
                         //gl.glColor3f(1, 0, 0);
-                        //land.bind(gl);
+                        land.bind(gl);
                         break;
                 }
 
@@ -327,7 +328,8 @@ public class GUI extends Base {
                 gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
                 //System.out.println(currentLocation);
                 gs.cnt = currentLocation;
-                new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                w.drawTriangles();
             }
         }
         gl.glPopMatrix();
