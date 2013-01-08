@@ -26,23 +26,39 @@ public class CreatureView {
     }
 
     public Vector getCurrentLocation() {
+        final Tile currentTile = creature.getPath().getCurrentTile();
         if (previousLocation == null) {
-            return new Vector(creature.getCurrentTile().getX()+0.5,creature.getCurrentTile().getY()+0.5,0);
+            return new Vector(currentTile.getX() + 0.5, currentTile.getY() + 0.5, 0);
         } else {
-            double x = (creature.getCurrentTile().getX() - previousLocation.getX() + 0.5) / (unit * (timer.getTime() - t0));
-            double y = (creature.getCurrentTile().getY() - previousLocation.getY() + 0.5) / (unit * (timer.getTime() - t0));
-            double z = 0;
-            Vector V = new Vector(x, y, z); //vector to move over
+            final double scalar = unit * (timer.getTime() - t0);
+            if (scalar < 1) {
+                double x = (currentTile.getX() - previousLocation.getX() + 0.5) * scalar;
+                double y = (currentTile.getY() - previousLocation.getY() + 0.5) * scalar;
+                double z = 0;
+                Vector V = new Vector(x, y, z); //vector to move over
 
-            x = previousLocation.getX();
-            y = previousLocation.getY();
-            z = 0;
-            Vector P = new Vector(x, y, z); //previous location
-            
-            System.out.println("Previous location:" + previousLocation);
-            System.out.println("Current location:" + creature.getCurrentTile());
-            
-            return P.add(V);
+                x = previousLocation.getX();
+                y = previousLocation.getY();
+                z = 0;
+                Vector P = new Vector(x, y, z); //previous location
+
+                System.out.println("Previous location:" + previousLocation);
+                System.out.println("Current location:" + creature.getPath().getCurrentTile());
+                System.out.println("Draw at:" + P.add(V));
+
+                System.out.println("Unit:" + unit);
+                System.out.println("Timer:" + timer.getTime());
+                System.out.println("t0:" + t0);
+
+                System.out.println();
+
+                return P.add(V);
+            } else {
+                //TODO: change model to reflect that the movement has been done
+                return new Vector(creature.getPath().getCurrentTile().getX(),
+                        creature.getPath().getCurrentTile().getY(),
+                        0);
+            }
         }
     }
 }

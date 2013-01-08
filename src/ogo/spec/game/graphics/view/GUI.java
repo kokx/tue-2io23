@@ -120,6 +120,8 @@ public class GUI extends Base {
         } catch (FileNotFoundException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        new Thread(timer).start();
     }
 
     /**
@@ -170,7 +172,8 @@ public class GUI extends Base {
             handleMouseClick(x, y);
             //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
             if (currentCreature.getPath() != null) {
-                currentCreature.select(game.getMap().getTile(clicki, clickj));
+                currentCreature.select(game.getMap().getTile(clickj, clicki));
+                creatureViews.get(currentCreature).move(1000);
             }
 
             //gs.cnt = vViewChange.add(new Vector(clickj, clicki, 0));
