@@ -101,6 +101,8 @@ public class ChatClient implements TokenChangeListener
         Client client = new Client();
 
         List<PeerInfo> servers = client.findServers();
+        
+        System.out.println(servers.size());
 
         Scanner sc = new Scanner(System.in);
 
@@ -121,5 +123,9 @@ public class ChatClient implements TokenChangeListener
         client.setTokenChangeListener(this);
 
         client.connect(servers.get(num));
+    }
+    
+    public static void main(String[] a) throws Exception{
+        new ChatClient().run();
     }
 }

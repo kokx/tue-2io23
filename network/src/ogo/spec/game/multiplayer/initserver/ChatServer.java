@@ -58,6 +58,10 @@ class ConnectClients implements Runnable{
         server = new Server(port);
         shouldConnect = true;
     }
+    
+    public void close() throws Exception{
+        server.close();
+    }
     public void run(){
         for (int i = 0; i < ChatServer.MAX_CLIENTS && shouldConnect; i++) {
             try{
@@ -71,10 +75,10 @@ class ConnectClients implements Runnable{
 
 public class ChatServer {
 
-    public final static int PORT = 25665;
-    public final static int INIT_PORT = 25344; // this is a UDP port
-    public final static int INIT_LISTEN_PORT = 25345; // this is a UDP port
-    public final static int MAX_CLIENTS = 2;
+    public final static int PORT = 25765;
+    public final static int INIT_PORT = 25744; // this is a UDP port
+    public final static int INIT_LISTEN_PORT = 25745; // this is a UDP port
+    public final static int MAX_CLIENTS = 6;
     public final static int TIME_POLL = 100;
 
     // real stuff
@@ -82,6 +86,10 @@ public class ChatServer {
     
     public void initConnection() throws InterruptedException{
         connect.server.init(PORT+1);
+    }
+    
+    public void close() throws Exception{
+        connect.close();
     }
 
     public void run() throws Exception, IOException

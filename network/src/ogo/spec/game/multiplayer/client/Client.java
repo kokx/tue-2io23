@@ -13,11 +13,11 @@ import ogo.spec.game.multiplayer.ChatProto.*;
 /**
  * Client for network communication.
  */
-class Client {
+public class Client {
 
-    public final static int PORT = 25665;
-    public final static int INIT_PORT = 25345; // this is a UDP port
-    public final static int INIT_LISTEN_PORT = 25344; // this is a UDP port
+    public final static int PORT = 25765;
+    public final static int INIT_PORT = 25745; // this is a UDP port
+    public final static int INIT_LISTEN_PORT = 4444; // this is a UDP port
     public final static String BROADCAST_IP = "192.168.1.255";
 
     public final static int WAIT_SERVER_TIMEOUT = 1000;
@@ -88,7 +88,7 @@ class Client {
      */
     public Client() throws SocketException
     {
-        udpSock = new DatagramSocket(INIT_LISTEN_PORT);
+        udpSock = new DatagramSocket();//INIT_LISTEN_PORT);
     }
 
     /**
