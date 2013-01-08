@@ -220,11 +220,13 @@ public class GUI extends Base {
  1.000000f, 1.000000f, 1.000000f, 1f,
  1.000000f, 1.000000f, 1.000000f, 1f,
  512.000000f};*/
+        
         float[] material = {
-        0.000000f, 0.000000f, 0.000000f, 1f,
- 1.000000f, 0.000000f, 0.000000f, 1f,
- 0.500000f, 0.500000f, 0.500000f, 1f,
- 512.000000f};
+            0f, 0f, 0f, 1.0f, //ambient
+            1f,1f,1f,1.0f, //diffuse
+            1f,1f,1f, 1.0f, //specular
+            512f //shininess
+        };
         
         bananad.bind(gl);
         bananan.bind(gl);
