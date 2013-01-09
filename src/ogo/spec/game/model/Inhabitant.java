@@ -12,7 +12,7 @@ public class Inhabitant
      */
     public void setCurrentTile(Tile tile)
     {
-        assert tile.hasInhabitant();
+        assert tile.hasInhabitant() && tile.getInhabitant() == this;
         currentTile = tile;
     }
 

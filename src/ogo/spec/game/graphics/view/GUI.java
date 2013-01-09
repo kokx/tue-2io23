@@ -2,9 +2,11 @@ package ogo.spec.game.graphics.view;
 
 import ogo.spec.game.model.*;
 import com.jogamp.opengl.util.gl2.GLUT;
+import com.jogamp.opengl.util.texture.Texture;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.*;
+import java.io.FileNotFoundException;
 import javax.media.opengl.GL;
 import static javax.media.opengl.GL2.*;
 import static java.lang.Math.*;
@@ -32,6 +34,7 @@ public class GUI extends Base {
     Creature currentCreature;
     Timer timer = new Timer(30);
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
+    Wavefront w;
 
     /**
      * Called upon the start of the application. Primarily used to configure
@@ -62,7 +65,7 @@ public class GUI extends Base {
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
         // Create game object
-        Random generator = new Random();
+        Random generator = new Random(0);
         TileType[][] types = new TileType[50][50];
         for (int i = 0; i < types.length; i++) {
             for (int j = 0; j < types[0].length; j++) {
@@ -81,8 +84,8 @@ public class GUI extends Base {
             }
         }
         GameMap map = new GameMap(types);
-        LandCreature l = new LandCreature(map);
-        SeaCreature s = new SeaCreature(map);
+        LandCreature l = new LandCreature(map.getTile(0, 0), map);
+        SeaCreature s = new SeaCreature(map.getTile(2, 2), map);
         map.getTile(0, 0).setInhabitant(l);
         map.getTile(1, 1).setInhabitant(new Food());
         map.getTile(2, 2).setInhabitant(s);
@@ -96,7 +99,8 @@ public class GUI extends Base {
         p2.setCreatures(p2c);
         player = p1;
         Player[] players = new Player[2];
-        players[0]=p1;players[1]=p2;
+        players[0] = p1;
+        players[1] = p2;
         try {
             game = new Game(players, map);
         } catch (Exception ex) {
@@ -110,6 +114,14 @@ public class GUI extends Base {
                 creatureViews.put(c, creatureView);
             }
         }
+        w = new Wavefront();
+        try {
+            w.readWavefront("Bananaz.obj", gl);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        new Thread(timer).start();
     }
 
     /**
@@ -136,9 +148,14 @@ public class GUI extends Base {
 
         Vector eye = gs.cnt.add(dir.scale(gs.vDist));
 
-        glu.gluLookAt(-40f, -40f, 30f, // eye point
+        //glu.gluLookAt(-40f, -40f, 30f, // eye point
+        //        gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
+        //        0.0, 0.0, 1.0);   // up axis
+
+
+        glu.gluLookAt(eye.x(), eye.y(), eye.z(), // eye point
                 gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
-                0.0, 0.0, 1.0);   // up axis
+                0, 0, 1); // up axis
     }
 
     /**
@@ -153,22 +170,21 @@ public class GUI extends Base {
             clickListener.x = -1;
             clickListener.y = -1;
             handleMouseClick(x, y);
-            currentCreature.select(game.getMap().getTile(clicki, clickj));
+            //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
+            if (currentCreature.getPath() != null) {
+                currentCreature.select(game.getMap().getTile(clickj, clicki));
+                creatureViews.get(currentCreature).move(1000);
+            }
+
             //gs.cnt = vViewChange.add(new Vector(clickj, clicki, 0));
 
         }
         gl.glMatrixMode(GL_MODELVIEW);
 
         // Enable lighting
-        gl.glPushMatrix();
-        gl.glEnable(GL_LIGHTING); //enable lighting (lighting influences color)
-        gl.glEnable(GL_LIGHT0); //enable light source 0
-        gl.glLoadIdentity();
-        float[] location = {game.getMap().getWidth() / 2, game.getMap().getHeight() / 2, 10, 1};
-        gl.glLightfv(GL_LIGHT0, GL_POSITION, location, 0); //set location of ls0
-        gl.glEnable(GL_COLOR_MATERIAL); //enable materials (material influences color)
-        gl.glTranslatef(location[0], location[1], location[2]);
-        gl.glPopMatrix();
+        gl.glEnable(GL_LIGHTING);
+        gl.glEnable(GL_LIGHT0);
+        gl.glEnable(GL_NORMALIZE);
 
         // Draw stuff.
         draw();
@@ -191,7 +207,7 @@ public class GUI extends Base {
         gl.glBindTexture(GL_TEXTURE_2D, 0);
         gl.glColor3f(1, 0, 1);
         gl.glBegin(GL_QUADS);
-        float v = 1000;
+        float v = 000;
         gl.glVertex3f(-v, -v, -1);
         gl.glVertex3f(-v, v, -1);
         gl.glVertex3f(v, v, -1);
@@ -200,6 +216,39 @@ public class GUI extends Base {
 
         // Draw map.
         drawMap(game.getMap());
+
+        /*float[] material = {
+         0.24725f, 0.1995f, 0.0745f, 1.0f, //ambient
+         0.75164f, 0.60648f, 0.22648f, 1.0f, //diffuse
+         0.628281f, 0.555802f, 0.366065f, 1.0f, //specular
+         51.2f //shininess
+         };*/
+        /*float[] material = {
+         0.000000f, 0.000000f, 0.000000f, 1f,
+         1.000000f, 1.000000f, 1.000000f, 1f,
+         1.000000f, 1.000000f, 1.000000f, 1f,
+         512.000000f};*/
+
+        float[] material = {
+            0f, 0f, 0f, 1.0f, //ambient
+            1f, 1f, 1f, 1.0f, //diffuse
+            1f, 1f, 1f, 1.0f, //specular
+            51.2f //shininess
+        };
+
+        bananad.bind(gl);
+        bananan.bind(gl);
+        bananas.bind(gl);
+
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material, 4);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material, 8);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, material, 12);
+        gl.glTranslated(0.5, 0.5, 0.5);
+        //glut.glutWireCube(1);
+        //gl.glTranslated(-0.5, -0.5, -0.5);
+        //w.drawTriangles();
+
     }
 
     private void drawMap(GameMap map) throws GLException {
@@ -219,15 +268,15 @@ public class GUI extends Base {
                 switch (type) {
                     case DEEP_WATER:
                         //gl.glColor3f(0, 0, 1);
-                        //deepWater.bind(gl);
+                        deepWater.bind(gl);
                         break;
                     case SHALLOW_WATER:
                         //gl.glColor3f(0, 1, 0);
-                        //shallowWater.bind(gl);
+                        shallowWater.bind(gl);
                         break;
                     case LAND:
                         //gl.glColor3f(1, 0, 0);
-                        //land.bind(gl);
+                        land.bind(gl);
                         break;
                 }
 
@@ -250,23 +299,23 @@ public class GUI extends Base {
                 gl.glPushAttrib(GL_CURRENT_BIT);
                 //empty.bind(gl);
                 Inhabitant inhabitant = map.getTile(i, j).getInhabitant();
-                    gl.glPushMatrix();
-                    // TODO: replace by more meaningful, non-glut objects.
-                    gl.glTranslatef(0.5f, 0.5f, 0);
+                gl.glPushMatrix();
+                // TODO: replace by more meaningful, non-glut objects.
+                gl.glTranslatef(0.5f, 0.5f, 0);
 
-                    /*if (inhabitant instanceof LandCreature) {
-                     gl.glColor3f(0, 1, 0);
-                     //gl.glRotatef(90, 1, 0, 0);
-                     //glut.glutSolidTeapot(0.5);
-                     new GraphicalObjects(gl).drawCylinder(0.5f, 2);
-                     } else */
-                    if (inhabitant instanceof Food) {
-                        gl.glColor3f(1, 1, 1);
-                        //gl.glRotatef(90, 1, 0, 0);
-                        //glut.glutSolidTeapot(0.5);
-                        new GraphicalObjects(gl).drawCylinder(0.5f, 2);
-                    }
-                    gl.glPopMatrix();
+                /*if (inhabitant instanceof LandCreature) {
+                 gl.glColor3f(0, 1, 0);
+                 //gl.glRotatef(90, 1, 0, 0);
+                 //glut.glutSolidTeapot(0.5);
+                 new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                 } else */
+                if (inhabitant instanceof Food) {
+                    gl.glColor3f(1, 1, 1);
+                    //gl.glRotatef(90, 1, 0, 0);
+                    //glut.glutSolidTeapot(0.5);
+                    new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                }
+                gl.glPopMatrix();
 
                 gl.glPopAttrib();
                 gl.glPopMatrix();
@@ -286,7 +335,8 @@ public class GUI extends Base {
                 gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
                 //System.out.println(currentLocation);
                 gs.cnt = currentLocation;
-                new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                w.drawTriangles();
             }
         }
         gl.glPopMatrix();

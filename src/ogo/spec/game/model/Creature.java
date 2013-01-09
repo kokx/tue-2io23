@@ -16,7 +16,7 @@ public abstract class Creature extends Inhabitant {
     public static final int TICKS_PER_TILE_AVG = TICKS_PER_TILE_FAST * 2;
     //Slow speed is 3 * fast
     public static final int TICKS_PER_TILE_SLOW = TICKS_PER_TILE_FAST * 3;
-
+    public static final int MAX_LIFE = 20;
     protected Creature attackingCreature;
     private int life;
     private CreaturePath path;
@@ -27,11 +27,14 @@ public abstract class Creature extends Inhabitant {
     /**
      * Big ass constructor
      */
-    public Creature(GameMap map) {
+    public Creature(Tile currentTile, GameMap map) {
         this.moveCooldown = -1;
         this.attackCooldown = 0;
         this.lifeCooldown = 0;
         this.life = 15;
+        
+        currentTile.setInhabitant(this);
+        
         path = new CreaturePath(map, super.currentTile, getAllowedTypes());
     }
 
@@ -79,24 +82,22 @@ public abstract class Creature extends Inhabitant {
             // if attackingCreature == null the creature is not attacking
             // this.canMove() will check if the creature has enough energy to move (only for aircreatures)
             // only do stuff if there is a next tile
-            if (this.attackingCreature == null && this.canMove() && nextTile != null) {
+            if (this.attackingCreature == null
+                    && nextTile != null
+                    && this.canMove(this.calculateMoveSpeed(super.currentTile, nextTile))
+                    ) {
                 Inhabitant inhabitant = nextTile.getInhabitant();
-                if(inhabitant == null)
-                {
+                if (inhabitant == null) {
                     //no inhabitant on next tile, lets move there <:)
                     this.doMove(nextTile);
-                }
-                else if(inhabitant instanceof Food)
-                {
+                } else if (inhabitant instanceof Food) {
                     //food on the next tile, lets eat it
-                    this.doEat((Food)inhabitant);
+                    this.doEat((Food) inhabitant);
                     //now the creature is fat so it has to do some movement.
                     this.doMove(nextTile);
-                }
-                else
-                {
+                } else {
                     //start attacking
-                    this.doAttack((Creature)inhabitant);
+                    this.doAttack((Creature) inhabitant);
                 }
             } else {
                 //at this point the creature is not moving. To indicate that we set moveCooldown to -1
@@ -186,13 +187,19 @@ public abstract class Creature extends Inhabitant {
         tile.setInhabitant(this);
 
         //creature is moved, calculate moveCooldown
-        this.moveCooldown = this.getMoveSpeed(tile.getType());
+        this.moveCooldown = this.calculateMoveSpeed(oldTile, tile);
+    }
 
-        if(oldTile.isDiagonal(tile))
-        {
+    private int calculateMoveSpeed(Tile oldTile, Tile tile) {
+
+        double moveCooldown = this.getMoveSpeed(tile.getType());
+
+        if (oldTile.isDiagonal(tile)) {
             //if the tile is diagonal to the currenttile the movement should take sqrt(2) times longer
-            this.moveCooldown *= Math.sqrt(2);
+            moveCooldown *= Math.sqrt(2);
         }
+
+        return (int) moveCooldown;
     }
 
     /**
@@ -240,8 +247,8 @@ public abstract class Creature extends Inhabitant {
      */
     protected void addLife(int life) {
         this.life += life;
-        if (this.life > 20) {
-            this.life = 20;
+        if (this.life > MAX_LIFE) {
+            this.life = MAX_LIFE;
         }
     }
 
@@ -251,7 +258,7 @@ public abstract class Creature extends Inhabitant {
 
     protected abstract Set<TileType> getAllowedTypes();
 
-    protected boolean canMove() {
+    protected boolean canMove(int ticks) {
         return true;
     }
 
@@ -260,5 +267,9 @@ public abstract class Creature extends Inhabitant {
      */
     public CreaturePath getPath() {
         return path;
+    }
+
+    public String toString() {
+        return super.toString() + "\nLife: " + this.life + "\nPosition.x: " + super.currentTile.x + "\nPosition.y: " + super.currentTile.y;
     }
 }

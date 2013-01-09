@@ -98,13 +98,17 @@ public class GameMap
     public Collection<Tile> calculatePath(Tile source, Tile target, Set<TileType> allowedTypes)
     {
         Node link = AyStar(source, target, allowedTypes);
-
+        
         // now traverse the path
         LinkedList<Tile> path = new LinkedList<Tile>();
 
+        if (link == null) {
+            return path;
+        }
+        
         do {
             path.addFirst(link.tile);
-        } while ((link = link.prev) != null);
+        } while ((link = link.prev) != null); // equivalent to link=link.prev;link!=null
 
         return path;
     }
@@ -125,9 +129,9 @@ public class GameMap
     public List<Tile> getNeighbours(Tile tile)
     {
         LinkedList<Tile> neighbours = new LinkedList<Tile>();
-        for (int x = tile.x - 1; x >= 0 && x < tiles.length; x++) {
-            for (int y = tile.y - 1; y >= 0 && y < tiles[0].length; y++) {
-                if (x == tile.x && y == tile.y) {
+        for (int x = tile.x - 1; x <= tile.x + 1; x++) {
+            for (int y = tile.y - 1; y <= tile.y + 1; y++) {
+                if ((x == tile.x && y == tile.y) || x < 0 || y < 0 || x >= tiles.length || y >= tiles[0].length) {
                     continue;
                 }
                 neighbours.add(tiles[x][y]);
@@ -186,6 +190,8 @@ public class GameMap
                     neighbourNode.g = distanceThroughNeighbour;
                     neighbourNode.f = distanceThroughNeighbour + current.h(neighbour);
                     open.put(neighbour, neighbourNode);
+                    Q.remove(neighbourNode);
+                    Q.add(neighbourNode);
                 }
             }
         }

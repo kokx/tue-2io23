@@ -1,5 +1,6 @@
 package ogo.spec.game.model;
 
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Set;
 
