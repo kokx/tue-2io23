@@ -11,7 +11,7 @@ public abstract class Creature extends Inhabitant {
     //Time between strikes
     public static final int ATTACK_COOLDOWN_TICKS = 200;
     //Time it takes to move to next tile at fastest speed.
-    public static final int TICKS_PER_TILE_FAST = 100;
+    public static final int TICKS_PER_TILE_FAST = 10;
     //Avg speed is 2 * fast
     public static final int TICKS_PER_TILE_AVG = TICKS_PER_TILE_FAST * 2;
     //Slow speed is 3 * fast
@@ -82,6 +82,8 @@ public abstract class Creature extends Inhabitant {
             // if attackingCreature == null the creature is not attacking
             // this.canMove() will check if the creature has enough energy to move (only for aircreatures)
             // only do stuff if there is a next tile
+            if(nextTile != null)
+                System.out.println("jan");
             if (this.attackingCreature == null
                     && nextTile != null
                     && this.canMove(this.calculateMoveSpeed(super.currentTile, nextTile))
@@ -169,6 +171,7 @@ public abstract class Creature extends Inhabitant {
     }
 
     protected void die() {
+        
     }
 
     public void select(Tile tile) {
@@ -185,6 +188,7 @@ public abstract class Creature extends Inhabitant {
         Tile oldTile = super.currentTile;
         super.currentTile.setInhabitant(null);
         tile.setInhabitant(this);
+        this.path.step();
 
         //creature is moved, calculate moveCooldown
         this.moveCooldown = this.calculateMoveSpeed(oldTile, tile);

@@ -82,5 +82,6 @@ public class CreaturePath
     public void calculatePath(Tile tile)
     {
         path = new ConcurrentLinkedQueue<Tile>(map.calculatePath(current, tile, allowedTypes));
+        path.poll();
     }
 }
