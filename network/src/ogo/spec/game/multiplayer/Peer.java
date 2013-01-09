@@ -47,6 +47,7 @@ public abstract class Peer
             message.writeTo(out);
         } catch (IOException e) {
             System.out.println("I/O Error");
+            e.printStackTrace();
             System.exit(-1);
         }
     }
@@ -58,11 +59,12 @@ public abstract class Peer
     {
         byte[] input = new byte[4];
         in.readFully(input, 0, 4);
-
+        
         int len = byteArrayToInt(input);
 
         byte[] data = new byte[len];
         in.readFully(data, 0, len);
+        
         return data;
     }
 }

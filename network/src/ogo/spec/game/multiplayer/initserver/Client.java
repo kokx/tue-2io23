@@ -37,6 +37,16 @@ class Client extends Peer
     {
         return sock.getInetAddress().getAddress();
     }
+    
+    String getIpString()
+    {
+        return sock.getInetAddress().toString();
+    }
+    
+    int getPort()
+    {
+        return sock.getPort();
+    }
 
     // expect a reply
     void expectReply()

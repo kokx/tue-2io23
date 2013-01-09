@@ -30,25 +30,35 @@ public class Client {
         DatagramSocket sock;
 
         ConcurrentLinkedQueue<DatagramPacket> buffer = new ConcurrentLinkedQueue<DatagramPacket>();
+        
+        boolean read;
 
         DatagramReceiverRunnable(DatagramSocket sock)
         {
             this.sock = sock;
+            this.read = true;
+        }
+        
+        public void stop(){
+            read = false;
         }
 
         public void run()
         {
             try {
-                while (true) {
+                while (read) {
                     DatagramPacket p = new DatagramPacket(new byte[1], 1);
 
                     sock.receive(p);
-
+                    
                     buffer.add(p);
                 }
             } catch (IOException e) {
-                System.err.println("I/O Error");
-                System.exit(1);
+                if(read){
+                    System.err.println("I/O Error");
+                    e.printStackTrace();
+                    System.exit(1);
+                }
             }
         }
     }
@@ -71,8 +81,22 @@ public class Client {
                 server.accept();
             } catch (IOException e) {
                 System.err.println("I/O not working");
+                e.printStackTrace();
                 System.exit(-1);
             }
+        }
+    }
+    
+    class StartConnectionRunnable implements Runnable
+    {
+        InitServer initServer;
+        
+        StartConnectionRunnable(InitServer init){
+            initServer = init;
+        }
+        
+        public void run(){
+            
         }
     }
 
@@ -82,14 +106,34 @@ public class Client {
     protected TokenChangeListener tokenChangeListener;
     protected PeerServer server;
     protected PeerClient client;
+    
+    protected InitServer init;
+    protected DatagramReceiverRunnable run;
+    
+    protected String nickname;
+    
+    public void close() throws IOException
+    {
+        run.stop();
+        udpSock.close();
+        init.close();
+    }
 
     /**
      * Constructor.
      */
+    public Client(String name) throws SocketException
+    {
+        udpSock = new DatagramSocket();//INIT_LISTEN_PORT);
+        nickname = name;
+    }
+    
     public Client() throws SocketException
     {
         udpSock = new DatagramSocket();//INIT_LISTEN_PORT);
+        nickname = "JeMoeder";
     }
+
 
     /**
      * Find servers on the network.
@@ -115,10 +159,13 @@ public class Client {
      * Please note that this method will only terminate when the connection is closes.
      * Thus, you should only call this from a thread that doesn't do anything else.
      */
-    public void connect(PeerInfo serv) throws IOException, UnknownHostException, InterruptedException
+    public void connectToInitServer(PeerInfo serv) throws IOException, UnknownHostException
     {
-        InitServer init = new InitServer(serv.ip, serv.port);
-
+        init = new InitServer(serv.ip, serv.port);
+    }
+    
+    public void connectToPeer() throws IOException, UnknownHostException, InterruptedException
+    {
         // find initialization port
         int port = init.getPort();
 
@@ -145,12 +192,17 @@ public class Client {
         if (info.init) {
             init();
         }
-
+        
+        System.out.println("Client Done");
+    }
+    
+    public void startTokenRing() throws Exception{
         while (true) {
             // get the next token and give it to the TokenChangeListener
             Token token = tokenChangeListener.tokenChanged(getToken());
 
             sendToken(token);
+            //i++;
         }
     }
 
@@ -169,7 +221,7 @@ public class Client {
      */
     protected List<PeerInfo> getServerList() throws InterruptedException
     {
-        DatagramReceiverRunnable run = new DatagramReceiverRunnable(udpSock);
+        run = new DatagramReceiverRunnable(udpSock);
         new Thread(run).start();
 
         Thread.sleep(WAIT_SERVER_TIMEOUT);

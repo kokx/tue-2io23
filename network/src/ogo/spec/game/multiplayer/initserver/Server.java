@@ -27,6 +27,7 @@ class Server
     public Server(int port) throws IOException
     {
         sock = new ServerSocket(port);
+        connectClients = true;
         
     }
     
@@ -70,12 +71,13 @@ class Server
     public void init(int initialPort) throws InterruptedException
     {
         connectClients = false;
-        // give everyone the proper port number
+        // give everyone the proper port number to setup a server on;
         for (int i = 0; i < clients.size(); i++) {
             // create the message
             ChatProto.Init init = ChatProto.Init.newBuilder()
                 .setPort(initialPort + i)
                 .build();
+            System.out.println(clients.get(i).getIpString() + "  " + clients.get(i).getPort());
             clients.get(i).write(init);
 
             clients.get(i).expectReply();
@@ -97,5 +99,7 @@ class Server
         }
 
         waitClientReply();
+        
+        System.out.println("LOL");
     }
 }

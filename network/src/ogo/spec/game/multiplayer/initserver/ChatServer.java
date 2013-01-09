@@ -17,16 +17,23 @@ class BroadcastReceiverRunnable implements Runnable
     DatagramSocket sock;
 
     ConcurrentLinkedQueue<DatagramPacket> buffer = new ConcurrentLinkedQueue<DatagramPacket>();
+    
+    boolean read;
+    
+    public void stop(){
+        read = false;
+    }
 
     BroadcastReceiverRunnable(DatagramSocket sock)
     {
         this.sock = sock;
+        this.read = true;
     }
 
     public void run()
     {
         try {
-            while (true) {
+            while (read) {
                 DatagramPacket p = new DatagramPacket(new byte[1], 1);
 
                 sock.receive(p);
@@ -43,8 +50,11 @@ class BroadcastReceiverRunnable implements Runnable
                 sock.send(c);
             }
         } catch (IOException e) {
-            System.err.println("I/O Error");
-            System.exit(1);
+            if(read){
+                System.err.println("I/O Error");
+                e.printStackTrace();
+                System.exit(1);
+            }
         }
     }
 }
@@ -61,15 +71,19 @@ class ConnectClients implements Runnable{
     
     public void close() throws Exception{
         server.close();
+        shouldConnect = false;
     }
     public void run(){
         for (int i = 0; i < ChatServer.MAX_CLIENTS && shouldConnect; i++) {
             try{
                 server.connectClient();
             }catch (Exception e) {
-                // nothing
+                if(shouldConnect){
+                    e.printStackTrace();
+                }
             }
         }
+        
     }
 }
 
@@ -83,6 +97,8 @@ public class ChatServer {
 
     // real stuff
     private ConnectClients connect = null;
+    private DatagramSocket sock = null;
+    private BroadcastReceiverRunnable run = null;
     
     public void initConnection() throws InterruptedException{
         connect.server.init(PORT+1);
@@ -90,13 +106,33 @@ public class ChatServer {
     
     public void close() throws Exception{
         connect.close();
+        run.stop();
+        sock.close();
+    }
+    
+    public void runCLI() throws Exception{
+        sock = new DatagramSocket(INIT_LISTEN_PORT);
+        
+        run = new BroadcastReceiverRunnable(sock);
+        
+        connect = new ConnectClients(PORT);
+        
+        new Thread(run).start();
+        
+        for(int i = 0; i < 2/*MAX_CLIENTS*/; i++){
+            connect.server.connectClient();
+        }
+        
+        run.stop();
+        
+        connect.server.init(PORT + 1);
     }
 
     public void run() throws Exception, IOException
     {
-        DatagramSocket sock = new DatagramSocket(INIT_LISTEN_PORT);
+        sock = new DatagramSocket(INIT_LISTEN_PORT);
 
-        BroadcastReceiverRunnable run = new BroadcastReceiverRunnable(sock);
+        run = new BroadcastReceiverRunnable(sock);
 
         new Thread(run).start();
         
@@ -106,6 +142,14 @@ public class ChatServer {
     }
 
     public static void main(String args[]) throws Exception, IOException, InterruptedException {
-        new ChatServer().run();
+        System.out.println("Enter which type of ChatServer you want; 0 is CLI Mode, Lobby Mode otherwise");
+        Scanner sc = new Scanner(System.in);
+        if(sc.nextInt() == 0){
+            //System.out.println("CLI");
+            new ChatServer().runCLI();
+        }else{
+            //System.out.println("ELSE");
+            new ChatServer().run();
+        }
     }
 }
