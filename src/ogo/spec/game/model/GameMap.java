@@ -98,13 +98,17 @@ public class GameMap
     public Collection<Tile> calculatePath(Tile source, Tile target, Set<TileType> allowedTypes)
     {
         Node link = AyStar(source, target, allowedTypes);
-
+        
         // now traverse the path
         LinkedList<Tile> path = new LinkedList<Tile>();
 
+        if (link == null) {
+            return path;
+        }
+        
         do {
             path.addFirst(link.tile);
-        } while ((link = link.prev) != null);
+        } while ((link = link.prev) != null); // equivalent to link=link.prev;link!=null
 
         return path;
     }
