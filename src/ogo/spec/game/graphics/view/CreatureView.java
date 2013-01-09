@@ -32,8 +32,8 @@ public class CreatureView {
         } else {
             final double scalar = unit * (timer.getTime() - t0);
             if (scalar < 1) {
-                double x = (currentTile.getX() - previousLocation.getX() + 0.5) * scalar;
-                double y = (currentTile.getY() - previousLocation.getY() + 0.5) * scalar;
+                double x = (currentTile.getX() - previousLocation.getX()) * scalar;
+                double y = (currentTile.getY() - previousLocation.getY()) * scalar;
                 double z = 0;
                 Vector V = new Vector(x, y, z); //vector to move over
 
