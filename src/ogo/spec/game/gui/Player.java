@@ -13,13 +13,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.swing.JOptionPane;
 import ogo.spec.game.multiplayer.PeerInfo;
 import ogo.spec.game.multiplayer.client.Client;
+import ogo.spec.game.multiplayer.client.TokenChangeListener;
 import ogo.spec.game.multiplayer.initserver.ChatServer;
+import ogo.spec.game.multiplayer.GameProto.GameToken;
 
 /**
  *
  * @author florian
  */
-public class Player {
+public class Player implements TokenChangeListener{
     String nickname;
     
     GUI theGui;
@@ -53,6 +55,7 @@ public class Player {
     
     public String[] getServerNames() throws Exception{
         client = new Client();
+        client.setTokenChangeListener(this);
         serverList = client.findServers();
         return convertServerList(serverList);
     }
@@ -95,7 +98,7 @@ public class Player {
         }
     }
     
-    public final static int INIT_PORT = 25745; // this is a UDP port
+    public final static int INIT_PORT = 25945; // this is a UDP port
     public final static int INIT_LISTEN_PORT = 4444; // this is a UDP port
     public final static String BROADCAST_IP = "192.168.1.255";
     
@@ -131,6 +134,7 @@ public class Player {
 
             }
             if(packet != null){
+                //System.err.println("Found Packet!");
                 getServerNames();
 
                 PeerInfo ownServer = null;
@@ -141,13 +145,16 @@ public class Player {
                 }
 
                 client.connectToInitServer(ownServer);
-                //client.connectToPeer();
                 
                 done = true;
             }else{
                 System.err.println("LOBBY: Could not find own server; unable to connect self to lobby");
             }
             run.stop();
+            
+            client.connectToPeer();
+            client.startTokenRing();
+            theGui.stop();
         }
     }
     
@@ -156,6 +163,9 @@ public class Player {
         isReady = false;
         
         client.connectToInitServer(serverList.get(serverNum));
+        client.connectToPeer();
+        theGui.stop();
+        client.startTokenRing();
     }
     
     public void closeLobby() throws Exception{
@@ -171,19 +181,27 @@ public class Player {
     
     public void startGame() throws Exception{
         assert(isHost);
+        System.out.println("Start Init Connection");
         initServer.initConnection();
-        client.connectToPeer();
-    }
-    
-    public void setReady() throws Exception{
-        assert(!isHost);
-        isReady = true;
         
         client.connectToPeer();
     }
     
-    public void sendChatMessage(String message) throws Exception{
-        
+    private Token.Builder copyToken(Token token)
+    {
+        Token.Builder builder = Token.newBuilder();
+
+        builder.mergeFrom(token);
+
+        return builder;
+    }
+    
+    public Token tokenChanged(Token t){
+        Token.Builder builder = copyToken(t);
+
+        builder.setLastId(nextId);
+
+        return builder.build();
     }
     
     public static void main(String[] args) throws Exception{

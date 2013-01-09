@@ -145,6 +145,11 @@ public class GUI implements ActionListener, ListSelectionListener{
         }
     }
     
+    public void stop(){
+        frame.setVisible(false);
+        frame.dispose();
+    }
+    
     private void startLobby() throws Exception{
         player.openLobby();
         
@@ -154,10 +159,8 @@ public class GUI implements ActionListener, ListSelectionListener{
     }
     
     private void joinLobby() throws Exception{
-        player.joinLobby(selectedLobby);
-        
         switchPanels(true);
-        System.out.println("Done");
+        player.joinLobby(selectedLobby);
     }
     
     private void closeLobby() throws Exception{
@@ -166,18 +169,10 @@ public class GUI implements ActionListener, ListSelectionListener{
         switchPanels(false);
     }
     
-    private void startGame(boolean toggle) throws Exception{
+    private void startGame() throws Exception{
         if(player.isHost){
             player.startGame();
         }
-    }
-    
-    private void sendMessage() throws Exception{
-        String message = chatInput.getText();
-        if(!message.isEmpty()){
-            player.sendChatMessage(message);
-        }
-        chatInput.setText("");
     }
     
     private void switchPanels(boolean forward){
@@ -204,9 +199,7 @@ public class GUI implements ActionListener, ListSelectionListener{
             }else if(e.getSource() == leaveLobby){
                 closeLobby();
             }else if(e.getSource() == startGame){
-                startGame(true);
-            }else if(e.getSource() == sendMessage){
-                sendMessage();
+                startGame();
             }
         }catch (Exception ex){
             ex.printStackTrace();

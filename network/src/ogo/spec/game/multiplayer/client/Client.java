@@ -162,15 +162,6 @@ public class Client {
     public void connectToInitServer(PeerInfo serv) throws IOException, UnknownHostException
     {
         init = new InitServer(serv.ip, serv.port);
-        
-        /*StartConnectionRunnable run = new StartConnectionRunnable(init);
-        new Thread(run).start();
-        
-        while(!run.startConnection()){
-            Thread.sleep(100);
-        }
-        
-        connectToPeer();*/
     }
     
     public void connectToPeer() throws IOException, UnknownHostException, InterruptedException
@@ -201,12 +192,17 @@ public class Client {
         if (info.init) {
             init();
         }
-
+        
+        System.out.println("Client Done");
+    }
+    
+    public void startTokenRing() throws Exception{
         while (true) {
             // get the next token and give it to the TokenChangeListener
             Token token = tokenChangeListener.tokenChanged(getToken());
 
             sendToken(token);
+            //i++;
         }
     }
 

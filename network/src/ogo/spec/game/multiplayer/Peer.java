@@ -40,12 +40,6 @@ public abstract class Peer
     public void write(com.google.protobuf.GeneratedMessage message)
     {
         try {
-            byte[] data = message.toByteArray();
-            System.out.print("Data: ");
-            for(byte b : data){
-                System.out.print(b + " ");
-            }
-            System.out.println("");
             int len = message.toByteArray().length;
             byte[] length = intToByteArray(len);
 
@@ -64,20 +58,12 @@ public abstract class Peer
     public byte[] read() throws IOException
     {
         byte[] input = new byte[4];
-        //in.readFully(input, 0, 4);
-        in.read(input, 0, 4);
-        int len = byteArrayToInt(input);
+        in.readFully(input, 0, 4);
         
-        System.out.println("Data Length: " + len);
+        int len = byteArrayToInt(input);
 
         byte[] data = new byte[len];
-        //in.readFully(data, 0, len);
-        in.read(input, 0, len);
-        
-        for(byte b : data){
-            System.out.print(b + " ");
-        }
-        System.out.println("");
+        in.readFully(data, 0, len);
         
         return data;
     }

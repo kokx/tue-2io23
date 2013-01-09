@@ -145,10 +145,10 @@ public class ChatServer {
         System.out.println("Enter which type of ChatServer you want; 0 is CLI Mode, Lobby Mode otherwise");
         Scanner sc = new Scanner(System.in);
         if(sc.nextInt() == 0){
-            System.out.println("CLI");
+            //System.out.println("CLI");
             new ChatServer().runCLI();
         }else{
-            System.out.println("ELSE");
+            //System.out.println("ELSE");
             new ChatServer().run();
         }
     }

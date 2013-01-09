@@ -99,5 +99,7 @@ class Server
         }
 
         waitClientReply();
+        
+        System.out.println("LOL");
     }
 }
