@@ -390,16 +390,16 @@ public class GUI extends Base {
         gl.glMatrixMode(GL_PROJECTION);
         gl.glPushMatrix();
         GameMap map = game.getMap();
-        float t = (1 / (float) map.getHeight());
-        gl.glTranslatef(t, -1f, 0f);
+        float t = (1.5f / (float) map.getHeight());
+        gl.glTranslatef(-0.5f + t, -1f, 0f);
         for (int i = 0; i < map.getHeight(); i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 TileType type = map.getTile(i, j).getType();
                 gl.glColor3f(1, 1, 1);
                 Inhabitant inhabitant = map.getTile(j, i).getInhabitant();
                 if (inhabitant instanceof Creature) {
-                    gl.glColor3f(1, 1, 1);
-                    red.bind(gl);
+                    gl.glColor3f(1, 0, 0);
+                    //red.bind(gl);
                 } else {
                     switch (type) {
                         case DEEP_WATER:
@@ -427,7 +427,7 @@ public class GUI extends Base {
                 gl.glEnd();
                 gl.glTranslatef(t, 0f, 0f);
             }
-            gl.glTranslatef(-1f, t, 0);
+            gl.glTranslatef(-1.5f, t, 0);
         }
         gl.glPopMatrix();
         gl.glEnable(GL_LIGHTING);
