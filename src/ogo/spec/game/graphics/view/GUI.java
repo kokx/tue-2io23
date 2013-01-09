@@ -188,7 +188,7 @@ public class GUI extends Base {
             clickListener.y = -1;
             handleMouseClick(x, y);
             //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
-            if (currentCreature.getPath() != null) {
+            if (currentCreature.getPath() != null && clickListener.x != -1) {
                 currentCreature.select(game.getMap().getTile(clickj, clicki));
                 creatureViews.get(currentCreature).move(1000);
             }
@@ -205,6 +205,7 @@ public class GUI extends Base {
 
         // Draw stuff.
         draw();
+        drawMiniMap();
     }
 
     private void draw() {
@@ -366,6 +367,57 @@ public class GUI extends Base {
 
             }
         }
+    }
+    
+    private void drawMiniMap() {
+        //Set Viewport
+        gl.glViewport(gs.w / 2, 0, gs.w / 2, gs.h / 2);
+        // Set projection matrix.
+        gl.glMatrixMode(GL_PROJECTION);
+        gl.glLoadIdentity();
+        gl.glMatrixMode(GL_MODELVIEW);
+        gl.glLoadIdentity();
+        glu.gluLookAt(0.0, 1.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+        gl.glDisable(GL_LIGHTING);
+        gl.glMatrixMode(GL_PROJECTION);
+        gl.glPushMatrix();
+        GameMap map = game.getMap();
+        float t = (1 / (float) map.getHeight());
+        gl.glTranslatef(t, -1f, 0f);
+        for (int i = 0; i < map.getHeight(); i++) {
+            for (int j = 0; j < map.getWidth(); j++) {
+                TileType type = map.getTile(i, j).getType();
+                gl.glColor3f(1, 1, 1);
+                Inhabitant inhabitant = map.getTile(i, j).getInhabitant();
+                switch (type) {
+                    case DEEP_WATER:
+                        deepWater.bind(gl);
+                        break;
+                    case SHALLOW_WATER:
+                        shallowWater.bind(gl);
+                        break;
+                    case LAND:
+                        land.bind(gl);
+                        break;
+
+                }
+                gl.glBegin(GL_QUADS);
+                gl.glNormal3f(0, 0, t);
+                gl.glTexCoord2d(0, 0);
+                gl.glVertex3d(0, 0, 0);
+                gl.glTexCoord2d(1, 0);
+                gl.glVertex3d(t, 0, 0);
+                gl.glTexCoord2d(1, 1);
+                gl.glVertex3d(t, 0, t);
+                gl.glTexCoord2d(0, 1);
+                gl.glVertex3d(0, 0, t);
+                gl.glEnd();
+                gl.glTranslatef(t, 0f, 0f);
+            }
+            gl.glTranslatef(-1f, t, 0);
+        }
+        gl.glPopMatrix();
+        gl.glEnable(GL_LIGHTING);
     }
 
     private void handleMouseClick(int x, int y) {
