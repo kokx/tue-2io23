@@ -15,14 +15,14 @@ import ogo.spec.game.multiplayer.PeerInfo;
 import ogo.spec.game.multiplayer.client.Client;
 import ogo.spec.game.multiplayer.client.TokenChangeListener;
 import ogo.spec.game.multiplayer.initserver.ChatServer;
-import ogo.spec.game.multiplayer.GameProto.GameToken;
+import ogo.spec.game.multiplayer.GameProto.Token;
 
 /**
  *
  * @author florian
  */
-public class Player implements TokenChangeListener{
-    String nickname;
+public class Player{
+    Game game;
     
     GUI theGui;
     
@@ -35,7 +35,6 @@ public class Player implements TokenChangeListener{
     boolean isReady;
     
     public Player(){
-        nickname = JOptionPane.showInputDialog(null, "Enter Your Nickname: ", "", 1);
         isHost = false;
     }
     
@@ -55,7 +54,6 @@ public class Player implements TokenChangeListener{
     
     public String[] getServerNames() throws Exception{
         client = new Client();
-        client.setTokenChangeListener(this);
         serverList = client.findServers();
         return convertServerList(serverList);
     }
@@ -153,6 +151,10 @@ public class Player implements TokenChangeListener{
             run.stop();
             
             client.connectToPeer();
+            
+            game = new Game();
+            
+            client.setTokenChangeListener(game);
             client.startTokenRing();
             theGui.stop();
         }
@@ -164,6 +166,10 @@ public class Player implements TokenChangeListener{
         
         client.connectToInitServer(serverList.get(serverNum));
         client.connectToPeer();
+        
+        game = new Game();
+        
+        client.setTokenChangeListener(game);
         theGui.stop();
         client.startTokenRing();
     }
@@ -185,23 +191,6 @@ public class Player implements TokenChangeListener{
         initServer.initConnection();
         
         client.connectToPeer();
-    }
-    
-    private Token.Builder copyToken(Token token)
-    {
-        Token.Builder builder = Token.newBuilder();
-
-        builder.mergeFrom(token);
-
-        return builder;
-    }
-    
-    public Token tokenChanged(Token t){
-        Token.Builder builder = copyToken(t);
-
-        builder.setLastId(nextId);
-
-        return builder.build();
     }
     
     public static void main(String[] args) throws Exception{

@@ -1,6 +1,6 @@
 package ogo.spec.game.multiplayer.client;
 
-import ogo.spec.game.multiplayer.ChatProto.*;
+import ogo.spec.game.multiplayer.GameProto.*;
 
 public interface TokenChangeListener {
 

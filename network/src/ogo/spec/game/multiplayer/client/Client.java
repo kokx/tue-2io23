@@ -8,7 +8,7 @@ import java.util.concurrent.*;
 import ogo.spec.game.multiplayer.*;
 import ogo.spec.game.multiplayer.PeerInfo;
 import ogo.spec.game.multiplayer.client.peer.*;
-import ogo.spec.game.multiplayer.ChatProto.*;
+import ogo.spec.game.multiplayer.GameProto.*;
 
 /**
  * Client for network communication.
