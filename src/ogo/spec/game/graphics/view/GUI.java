@@ -188,7 +188,7 @@ public class GUI extends Base {
             clickListener.y = -1;
             handleMouseClick(x, y);
             //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
-            if (currentCreature.getPath() != null && clickListener.x != -1) {
+            if (currentCreature.getPath() != null) {
                 currentCreature.select(game.getMap().getTile(clickj, clicki));
                 creatureViews.get(currentCreature).move(1000);
             }
