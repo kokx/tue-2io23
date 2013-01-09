@@ -25,17 +25,20 @@ import javax.media.opengl.GLException;
 import javax.media.opengl.awt.GLJPanel;
 
 public class GUI extends Base {
-
+    
     Game game;
     ClickListener clickListener;
     KeyListener keyListener;
     int clicki = -1, clickj = -1;
+    int seaCreature = 1;
+    int airCreature = 2;
+    int landCreature = 3;
     Player player;
     Vector vViewChange = null;
     Creature currentCreature;
     Timer timer = new Timer(30);
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
-    Wavefront landCreature, seaCreature, airCreature;
+    Wavefront models;
 
     /**
      * Called upon the start of the application. Primarily used to configure
@@ -92,7 +95,7 @@ public class GUI extends Base {
         map.getTile(0, 0).setInhabitant(a);
         map.getTile(1, 1).setInhabitant(new Food());
         map.getTile(2, 2).setInhabitant(s);
-
+        
         Player p1 = new Player("1");
         Creature[] p1c = {a, s};
         p1.setCreatures(p1c);
@@ -109,7 +112,7 @@ public class GUI extends Base {
         } catch (Exception ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        
         creatureViews = new HashMap<Creature, CreatureView>();
         for (Player p : game) {
             for (Creature c : p) {
@@ -117,26 +120,28 @@ public class GUI extends Base {
                 creatureViews.put(c, creatureView);
             }
         }
-        landCreature = new Wavefront();
-        seaCreature = new Wavefront();
-        airCreature = new Wavefront();
+        models = new Wavefront();
+        
+        
         String path = "src/ogo/spec/game/graphics/models/";
         try {
-            landCreature.readWavefront(path + "land.obj", gl);
+            models.readWavefront(path + "land.obj", gl);
+            gl.glNewList(landCreature, GL_COMPILE);
+            models.drawTriangles();
+            gl.glEndList();
+            models.readWavefront(path + "sea.obj", gl);
+            gl.glNewList(seaCreature, GL_COMPILE);
+            models.drawTriangles();
+            gl.glEndList();
+            models.readWavefront(path + "air.obj", gl);
+            gl.glNewList(airCreature, GL_COMPILE);
+            models.drawTriangles();
+            gl.glEndList();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try {
-            seaCreature.readWavefront(path + "sea.obj", gl);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            airCreature.readWavefront(path + "air.obj", gl);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        
+        
         new Thread(timer).start();
         game.start();
     }
@@ -157,14 +162,14 @@ public class GUI extends Base {
         // Set camera.
         gl.glMatrixMode(GL_MODELVIEW);
         gl.glLoadIdentity();
-
-
+        
+        
         Vector dir = new Vector(cos(gs.phi) * cos(gs.theta),
                 sin(gs.phi) * cos(gs.theta),
                 sin(gs.theta));
-
+        
         Vector eye = gs.cnt.add(dir.scale(gs.vDist));
-
+        
         glu.gluLookAt(-40f, -40f, 30f, // eye point
                 gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
                 0.0, 0.0, 1.0);   // up axis
@@ -183,7 +188,7 @@ public class GUI extends Base {
         if (clickListener.x != -1) {
             int x = clickListener.x;
             int y = clickListener.y;
-
+            
             clickListener.x = -1;
             clickListener.y = -1;
             handleMouseClick(x, y);
@@ -207,7 +212,7 @@ public class GUI extends Base {
         draw();
         drawMiniMap();
     }
-
+    
     private void draw() {
         // Background color.
         gl.glClearColor(1f, 1f, 1f, 0f);
@@ -246,18 +251,18 @@ public class GUI extends Base {
          1.000000f, 1.000000f, 1.000000f, 1f,
          1.000000f, 1.000000f, 1.000000f, 1f,
          512.000000f};*/
-
+        
         float[] material = {
             0f, 0f, 0f, 1.0f, //ambient
             1f, 1f, 1f, 1.0f, //diffuse
             1f, 1f, 1f, 1.0f, //specular
             51.2f //shininess
         };
-
+        
         bananad.bind(gl);
         bananan.bind(gl);
         bananas.bind(gl);
-
+        
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material, 4);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material, 8);
@@ -268,7 +273,7 @@ public class GUI extends Base {
         //w.drawTriangles();
 
     }
-
+    
     private void drawMap(GameMap map) throws GLException {
         gl.glPushMatrix();
         //gl.glTranslatef(-map.getHeight() / 2, -map.getWidth() / 2, 0.0f);
@@ -280,7 +285,7 @@ public class GUI extends Base {
             for (int j = 0; j < map.getWidth(); j++) {
                 // Load unique name for this tile.
                 gl.glLoadName(i * map.getHeight() + j + 1);
-
+                
                 TileType type = map.getTile(i, j).getType();
                 gl.glColor3f(1, 1, 1);
                 switch (type) {
@@ -334,7 +339,7 @@ public class GUI extends Base {
                     new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 }
                 gl.glPopMatrix();
-
+                
                 gl.glPopAttrib();
                 gl.glPopMatrix();
 
@@ -345,7 +350,7 @@ public class GUI extends Base {
             gl.glTranslatef(-map.getHeight(), 1, 0);
         }
         gl.glPopMatrix();
-
+        
         for (Player p : game) {
             for (Creature c : p) {
                 gl.glPushMatrix();
@@ -358,13 +363,15 @@ public class GUI extends Base {
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 if (c.getLife() > 0) {
                     if (c instanceof LandCreature) {
-                    landCreature.drawTriangles();} else if (c instanceof SeaCreature) {
-                        seaCreature.drawTriangles();} else if (c instanceof AirCreature) {
-                            airCreature.drawTriangles();
+                        gl.glCallList(landCreature);
+                    } else if (c instanceof SeaCreature) {
+                        gl.glCallList(seaCreature);
+                    } else if (c instanceof AirCreature) {
+                        gl.glCallList(airCreature);
                     }
                 }
                 gl.glPopMatrix();
-
+                
             }
         }
     }
@@ -399,7 +406,7 @@ public class GUI extends Base {
                     case LAND:
                         land.bind(gl);
                         break;
-
+                    
                 }
                 gl.glBegin(GL_QUADS);
                 gl.glNormal3f(0, 0, t);
@@ -419,7 +426,7 @@ public class GUI extends Base {
         gl.glPopMatrix();
         gl.glEnable(GL_LIGHTING);
     }
-
+    
     private void handleMouseClick(int x, int y) {
         y = gs.h - y;
         int buffsize = 64;
@@ -431,7 +438,7 @@ public class GUI extends Base {
         gl.glInitNames();
         gl.glPushName(0);
         gl.glMatrixMode(GL_PROJECTION);
-
+        
         gl.glPushMatrix();
         gl.glLoadIdentity();
         glu.gluPickMatrix(x, y, 1.0, 1.0, view);
@@ -443,7 +450,7 @@ public class GUI extends Base {
         gl.glPopMatrix();
         gl.glMatrixMode(GL_PROJECTION);
         gl.glPopMatrix();
-
+        
         int hits = gl.glRenderMode(GL_RENDER);
         int clickcode = 0;
 
@@ -457,43 +464,43 @@ public class GUI extends Base {
         int h = game.getMap().getHeight();
         clicki = hits > 0 ? (clickcode - 1) / h : -1;
         clickj = hits > 0 ? (clickcode - 1) % h : -1;
-
+        
         gl.glMatrixMode(GL_MODELVIEW);
     }
-
+    
     private final class ClickListener implements MouseListener {
-
+        
         int x = -1, y = -1;
-
+        
         @Override
         public void mouseClicked(MouseEvent e) {
             x = e.getX();
             y = e.getY();
         }
-
+        
         @Override
         public void mousePressed(MouseEvent e) {
         }
-
+        
         @Override
         public void mouseReleased(MouseEvent e) {
         }
-
+        
         @Override
         public void mouseEntered(MouseEvent e) {
         }
-
+        
         @Override
         public void mouseExited(MouseEvent e) {
         }
     }
-
+    
     private final class NumberKeysListener implements KeyListener {
-
+        
         @Override
         public void keyTyped(KeyEvent e) {
         }
-
+        
         @Override
         public void keyPressed(KeyEvent e) {
             if (Character.isDigit(e.getKeyChar())) {
@@ -503,12 +510,12 @@ public class GUI extends Base {
                 }
             }
         }
-
+        
         @Override
         public void keyReleased(KeyEvent e) {
         }
     }
-
+    
     public static void main(String args[]) {
         new GUI();
     }
