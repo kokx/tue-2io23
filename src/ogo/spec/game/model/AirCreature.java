@@ -76,11 +76,14 @@ public class AirCreature extends Creature {
         return types;
     }
 
+    /*
     @Override
     protected boolean canMove(int ticks) {
         int requiredEnergy = ticks * AirCreature.ENERGY_DEC / AirCreature.ENERGY_TICKS;
         return (this.energy > requiredEnergy);
     }
+     * 
+     */
     
     public String toString()
     {
