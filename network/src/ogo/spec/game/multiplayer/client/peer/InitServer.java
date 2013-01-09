@@ -33,7 +33,8 @@ public class InitServer extends Peer
      */
     public int getPort() throws IOException
     {
-        return ChatProto.Init.parseFrom(read()).getPort();
+        byte[] data = read();
+        return ChatProto.Init.parseFrom(data).getPort();
     }
 
     /**
@@ -44,5 +45,12 @@ public class InitServer extends Peer
         ChatProto.ConnectTo connectTo = ChatProto.ConnectTo.parseFrom(read());
         PeerInfo peer = new PeerInfo(connectTo.getPort(), InetAddress.getByAddress(connectTo.getIp().toByteArray()), connectTo.getInit());
         return peer;
+    }
+    
+    public void close() throws IOException
+    {
+        in.close();
+        out.close();
+        sock.close();
     }
 }

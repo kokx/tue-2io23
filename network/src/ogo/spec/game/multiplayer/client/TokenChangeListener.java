@@ -1,8 +1,8 @@
 package ogo.spec.game.multiplayer.client;
 
-import ogo.spec.game.multiplayer.ChatProto.*;
+import ogo.spec.game.multiplayer.GameProto.*;
 
-interface TokenChangeListener {
+public interface TokenChangeListener {
 
     /**
      * Process the token, and create a new token to be sent.
