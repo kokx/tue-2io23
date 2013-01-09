@@ -22,7 +22,7 @@ import ogo.spec.game.multiplayer.GameProto.Token;
  * @author florian
  */
 public class Player{
-    Game game;
+    //Game game;
     
     GUI theGui;
     
@@ -152,9 +152,9 @@ public class Player{
             
             client.connectToPeer();
             
-            game = new Game();
+            //game = new Game();
             
-            client.setTokenChangeListener(game);
+            //client.setTokenChangeListener(game);
             client.startTokenRing();
             theGui.stop();
         }
@@ -167,9 +167,9 @@ public class Player{
         client.connectToInitServer(serverList.get(serverNum));
         client.connectToPeer();
         
-        game = new Game();
+        //game = new Game();
         
-        client.setTokenChangeListener(game);
+        //client.setTokenChangeListener(game);
         theGui.stop();
         client.startTokenRing();
     }
