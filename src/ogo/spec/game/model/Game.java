@@ -14,7 +14,7 @@ public static void main(String[] args)
     g.start();
 }
     
-    public static final int TICK_TIME_IN_MS = 10;
+    public static final int TICK_TIME_IN_MS = 50;
     private Timer timer;
     private Player[] players;
     private GameMap map;
@@ -31,7 +31,7 @@ public static void main(String[] args)
             public void run() {
                 tick();
             }
-        }, Game.TICK_TIME_IN_MS);
+        }, 0, Game.TICK_TIME_IN_MS);
     }
 
     private void tick() {
