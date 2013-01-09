@@ -168,13 +168,12 @@ public class Client {
     {
         // find initialization port
         int port = init.getPort();
-
         // create a local server with the given port
         server = new PeerServer(port);
 
         // tell the server we got the message and started a server
         init.reply(true);
-
+        
         // create a connection to the given peer
         PeerInfo info = init.getConnectTo();
 
@@ -183,17 +182,16 @@ public class Client {
         client = new PeerClient(info);
 
         // wait until we are connected
+        
         while (!server.isConnected()) {
             Thread.sleep(100);
         }
-
+        
         init.reply(true);
 
         if (info.init) {
             init();
         }
-        
-        System.out.println("Client Done");
     }
     
     public void startTokenRing() throws Exception{

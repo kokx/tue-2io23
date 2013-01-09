@@ -104,6 +104,10 @@ public class ChatServer {
         connect.server.init(PORT+1);
     }
     
+    public int getClientCount(){
+        return connect.server.getClientCount();
+    }
+    
     public void close() throws Exception{
         connect.close();
         run.stop();

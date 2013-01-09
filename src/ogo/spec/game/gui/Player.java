@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.swing.JOptionPane;
@@ -122,10 +123,10 @@ public class Player{
             DatagramReceiverRunnable run = new DatagramReceiverRunnable(receiveSock);
             new Thread(run).start();
 
-            Thread.sleep(2000);
+            Thread.sleep(100);
 
             while((packet = run.buffer.poll()) != null){
-                System.out.println("Data: " + packet.getData()[0]);
+                //System.out.println("Data: " + packet.getData()[0]);
                 if(packet.getData()[0] == 2){
                     break;
                 }
@@ -149,14 +150,11 @@ public class Player{
                 System.err.println("LOBBY: Could not find own server; unable to connect self to lobby");
             }
             run.stop();
-            
-            client.connectToPeer();
+            //client.connectToPeer();
             
             //game = new Game();
             
             //client.setTokenChangeListener(game);
-            client.startTokenRing();
-            theGui.stop();
         }
     }
     
@@ -165,11 +163,15 @@ public class Player{
         isReady = false;
         
         client.connectToInitServer(serverList.get(serverNum));
+    }
+    
+    public void connectToLobby() throws Exception{
         client.connectToPeer();
         
         //game = new Game();
         
         //client.setTokenChangeListener(game);
+
         theGui.stop();
         client.startTokenRing();
     }
@@ -185,14 +187,38 @@ public class Player{
         isReady = false;
     }
     
-    public void startGame() throws Exception{
-        assert(isHost);
-        System.out.println("Start Init Connection");
-        initServer.initConnection();
+    class InitConnectionRunnable implements Runnable{
+        ChatServer init;
         
-        client.connectToPeer();
+        public InitConnectionRunnable(ChatServer initServer){
+            init = initServer;
+        }
+        
+        public void run(){
+            try{
+                init.initConnection();
+            } catch (Exception e){
+                System.err.println("Problem with Init Server:\n" + e.getMessage());
+            }
+        }
     }
     
+    public void startGame() throws Exception{
+        assert(isHost);
+        if(initServer.getClientCount() > 1){
+            new Thread(new InitConnectionRunnable(initServer)).start();
+
+            client.connectToPeer();
+            theGui.stop();
+            client.startTokenRing();
+        }else{
+            System.out.println("Playing on your own? You pathetic loser!!!!");
+        }
+    }
+    
+    public int getClientCount(){
+        return initServer.getClientCount();
+    }
     public static void main(String[] args) throws Exception{
         new Player().runGUI();
     }
