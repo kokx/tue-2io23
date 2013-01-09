@@ -30,10 +30,10 @@ public class Wavefront {
 
     public void readWavefront(File file) throws FileNotFoundException {
         Scanner fileScanner = new Scanner(file);
-        vertices = new ArrayList<>();
-        faces = new ArrayList<>();
-        normals = new ArrayList<>();
-        texcoords = new ArrayList<>();
+        vertices = new ArrayList<double[]>();
+        faces = new ArrayList<int[]>();
+        normals = new ArrayList<double[]>();
+        texcoords = new ArrayList<double[]>();
         while (fileScanner.hasNextLine()) {
             readLine(fileScanner);
         }
@@ -41,10 +41,10 @@ public class Wavefront {
 
     public void readWavefront(InputStream input) {
         Scanner scanner = new Scanner(input);
-        vertices = new ArrayList<>();
-        faces = new ArrayList<>();
-        normals = new ArrayList<>();
-        texcoords = new ArrayList<>();
+        vertices = new ArrayList<double[]>();
+        faces = new ArrayList<int[]>();
+        normals = new ArrayList<double[]>();
+        texcoords = new ArrayList<double[]>();
         while (scanner.hasNextLine()) {
             readLine(scanner);
         }

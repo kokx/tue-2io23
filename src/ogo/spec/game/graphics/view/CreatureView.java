@@ -32,8 +32,8 @@ public class CreatureView {
         } else {
             final double scalar = unit * (timer.getTime() - t0);
             if (scalar < 1) {
-                double x = (currentTile.getX() - previousLocation.getX() + 0.5) * scalar;
-                double y = (currentTile.getY() - previousLocation.getY() + 0.5) * scalar;
+                double x = (currentTile.getX() - previousLocation.getX()) * scalar;
+                double y = (currentTile.getY() - previousLocation.getY()) * scalar;
                 double z = 0;
                 Vector V = new Vector(x, y, z); //vector to move over
 
@@ -42,7 +42,7 @@ public class CreatureView {
                 z = 0;
                 Vector P = new Vector(x, y, z); //previous location
 
-                System.out.println("Previous location:" + previousLocation);
+                /*System.out.println("Previous location:" + previousLocation);
                 System.out.println("Current location:" + creature.getPath().getCurrentTile());
                 System.out.println("Draw at:" + P.add(V));
 
@@ -50,7 +50,7 @@ public class CreatureView {
                 System.out.println("Timer:" + timer.getTime());
                 System.out.println("t0:" + t0);
 
-                System.out.println();
+                System.out.println();*/
 
                 return P.add(V);
             } else {
