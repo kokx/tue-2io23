@@ -35,7 +35,7 @@ public class GUI extends Base {
     Creature currentCreature;
     Timer timer = new Timer(30);
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
-    Wavefront w;
+    Wavefront landCreature, seaCreature, airCreature;
 
     /**
      * Called upon the start of the application. Primarily used to configure
@@ -117,9 +117,22 @@ public class GUI extends Base {
                 creatureViews.put(c, creatureView);
             }
         }
-        w = new Wavefront();
+        landCreature = new Wavefront();
+        seaCreature = new Wavefront();
+        airCreature = new Wavefront();
+        String path = "src/ogo/spec/game/graphics/models/";
         try {
-            w.readWavefront("Bananaz.obj", gl);
+            landCreature.readWavefront(path + "land.obj", gl);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            seaCreature.readWavefront(path + "sea.obj", gl);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            airCreature.readWavefront(path + "air.obj", gl);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -151,14 +164,14 @@ public class GUI extends Base {
 
         Vector eye = gs.cnt.add(dir.scale(gs.vDist));
 
-        //glu.gluLookAt(-40f, -40f, 30f, // eye point
-        //        gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
-        //        0.0, 0.0, 1.0);   // up axis
-
-
-        glu.gluLookAt(eye.x(), eye.y(), eye.z(), // eye point
+        glu.gluLookAt(-40f, -40f, 30f, // eye point
                 gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
-                0, 0, 1); // up axis
+                0.0, 0.0, 1.0);   // up axis
+
+
+        //glu.gluLookAt(eye.x(), eye.y(), eye.z(), // eye point
+        //        gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
+        //        0, 0, 1); // up axis
     }
 
     /**
@@ -342,7 +355,11 @@ public class GUI extends Base {
                 }
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 if (c.getLife() > 0) {
-                    w.drawTriangles();
+                    if (c instanceof LandCreature) {
+                    landCreature.drawTriangles();} else if (c instanceof SeaCreature) {
+                        seaCreature.drawTriangles();} else if (c instanceof AirCreature) {
+                            airCreature.drawTriangles();
+                    }
                 }
                 gl.glPopMatrix();
 
@@ -428,7 +445,7 @@ public class GUI extends Base {
         public void keyPressed(KeyEvent e) {
             if (Character.isDigit(e.getKeyChar())) {
                 int parseInt = Integer.parseInt(e.getKeyChar() + "");
-                if (parseInt > 0 && parseInt < 3) {
+                if (parseInt > 0 && parseInt <= player.getCreatures().length) {
                     currentCreature = player.getCreatures()[parseInt - 1];
                 }
             }
