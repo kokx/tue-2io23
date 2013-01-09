@@ -62,7 +62,7 @@ abstract public class Base {
     // Start time of animation.
     private long startTime;
     // Textures.
-    protected Texture land, shallowWater, deepWater, empty;
+    protected Texture land, shallowWater, deepWater, empty, red;
     protected Texture bananad, bananan, bananas;
     MainFrame frame;
 
@@ -165,6 +165,7 @@ abstract public class Base {
             shallowWater = loadTexture(path + "shallow.jpg");
             deepWater = loadTexture(path + "deep.jpg");
             empty = loadTexture(path + "empty.jpg");
+            red = loadTexture(path + "red.jpg");
             
             bananad = loadTexture("Bananaz__diffuse0000.tga");
             bananan = loadTexture("Bananaz__normal0000.tga");
