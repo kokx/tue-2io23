@@ -87,16 +87,16 @@ public class GUI extends Base {
             }
         }
         GameMap map = new GameMap(types);
-        LandCreature l = new LandCreature(map.getTile(0, 0), map);
+        AirCreature a = new AirCreature(map.getTile(0, 0), map);
         SeaCreature s = new SeaCreature(map.getTile(2, 2), map);
-        map.getTile(0, 0).setInhabitant(l);
+        map.getTile(0, 0).setInhabitant(a);
         map.getTile(1, 1).setInhabitant(new Food());
         map.getTile(2, 2).setInhabitant(s);
 
         Player p1 = new Player("1");
-        Creature[] p1c = {l, s};
+        Creature[] p1c = {a, s};
         p1.setCreatures(p1c);
-        currentCreature = l;
+        currentCreature = a;
         Player p2 = new Player("2");
         Creature[] p2c = {};
         p2.setCreatures(p2c);
@@ -138,6 +138,7 @@ public class GUI extends Base {
         }
 
         new Thread(timer).start();
+        game.start();
     }
 
     /**
