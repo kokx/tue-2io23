@@ -28,6 +28,7 @@ public class GUI extends Base {
 
     Game game;
     ClickListener clickListener;
+    KeyListener keyListener;
     int clicki = -1, clickj = -1;
     Player player;
     Vector vViewChange = null;
@@ -45,6 +46,8 @@ public class GUI extends Base {
         GLJPanel glPanel = (GLJPanel) frame.glPanel;
         clickListener = new ClickListener();
         glPanel.addMouseListener(clickListener);
+        keyListener = new NumberKeysListener();
+        glPanel.addKeyListener(keyListener);
 
         // Enable blending.
         gl.glEnable(GL_BLEND);
@@ -91,11 +94,11 @@ public class GUI extends Base {
         map.getTile(2, 2).setInhabitant(s);
 
         Player p1 = new Player("1");
-        Creature[] p1c = {l};
+        Creature[] p1c = {l, s};
         p1.setCreatures(p1c);
         currentCreature = l;
         Player p2 = new Player("2");
-        Creature[] p2c = {s};
+        Creature[] p2c = {};
         p2.setCreatures(p2c);
         player = p1;
         Player[] players = new Player[2];
@@ -334,9 +337,13 @@ public class GUI extends Base {
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
                 gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
                 //System.out.println(currentLocation);
-                if (c==currentCreature) {gs.cnt = currentLocation;}
+                if (c == currentCreature) {
+                    gs.cnt = currentLocation;
+                }
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
-                w.drawTriangles();
+                if (c.getLife() > 0) {
+                    w.drawTriangles();
+                }
                 gl.glPopMatrix();
 
             }
@@ -408,6 +415,27 @@ public class GUI extends Base {
 
         @Override
         public void mouseExited(MouseEvent e) {
+        }
+    }
+
+    private final class NumberKeysListener implements KeyListener {
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (Character.isDigit(e.getKeyChar())) {
+                int parseInt = Integer.parseInt(e.getKeyChar() + "");
+                if (parseInt > 0 && parseInt < 3) {
+                    currentCreature = player.getCreatures()[parseInt - 1];
+                }
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
         }
     }
 
