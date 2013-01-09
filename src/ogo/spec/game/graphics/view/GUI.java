@@ -120,7 +120,7 @@ public class GUI extends Base {
         } catch (FileNotFoundException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         new Thread(timer).start();
     }
 
@@ -328,18 +328,19 @@ public class GUI extends Base {
         }
         gl.glPopMatrix();
 
-        gl.glPushMatrix();
         for (Player p : game) {
             for (Creature c : p) {
+                gl.glPushMatrix();
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
                 gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
                 //System.out.println(currentLocation);
                 gs.cnt = currentLocation;
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 w.drawTriangles();
+                gl.glPopMatrix();
+
             }
         }
-        gl.glPopMatrix();
     }
 
     private void handleMouseClick(int x, int y) {
