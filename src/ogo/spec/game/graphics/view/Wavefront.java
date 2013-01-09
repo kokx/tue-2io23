@@ -52,28 +52,19 @@ public class Wavefront {
 
     private void readLine(Scanner src) {
         String next = src.next();
-        switch (next) {
-            case "#":
-                readComment(src);
-                break;
-            case "vt":
-                readTextureCoordinate(src);
-                break;
-            case "vn":
-                readNormal(src);
-                break;
-            case "vp":
-                readSpaceVertex(src);
-                break;
-            case "v":
-                readVertex(src);
-                break;
-            case "f":
-                readFace(src);
-                break;
-            default:
-            //System.out.println(next);
-            //throw new IllegalArgumentException();
+
+        if (next.equals("#")) {
+            readComment(src);
+        } else if (next.equals("vt")) {
+            readTextureCoordinate(src);
+        } else if (next.equals("vn")) {
+            readNormal(src);
+        } else if (next.equals("vp")) {
+            readSpaceVertex(src);
+        } else if (next.equals("v")) {
+            readVertex(src);
+        } else if (next.equals("f")) {
+            readFace(src);
         }
     }
 
@@ -173,7 +164,7 @@ public class Wavefront {
          * gl.glBegin(GL2.GL_LINES); gl.glVertex3d(vertex[0], vertex[1],
          * vertex[2]); gl.glVertex3d(vertex[0] + normal[0], vertex[1] +
          * normal[1], vertex[2] + normal[2]); gl.glEnd(); } }
-        }
+         }
          */
     }
 
