@@ -84,7 +84,7 @@ public class Wavefront {
     }
 
     private void readTextureCoordinate(Scanner src) {
-        useTexCoords = true;
+        useTexCoords = false;
         String line = src.nextLine();
         line = line.substring(1);
         String[] numbers_string = line.split(" ");
@@ -166,11 +166,6 @@ public class Wavefront {
          * normal[1], vertex[2] + normal[2]); gl.glEnd(); } }
          }
          */
-    }
-
-    public static void main(String[] args) {
-        Wavefront w = new Wavefront();
-        w.readWavefront(System.in);
     }
 
     private void normalize() {
