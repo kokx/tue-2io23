@@ -334,7 +334,7 @@ public class GUI extends Base {
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
                 gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
                 //System.out.println(currentLocation);
-                gs.cnt = currentLocation;
+                if (c==currentCreature) {gs.cnt = currentLocation;}
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 w.drawTriangles();
                 gl.glPopMatrix();
