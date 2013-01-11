@@ -276,6 +276,7 @@ public abstract class Creature extends Inhabitant {
         return path;
     }
 
+    @Override
     public String toString() {
         return super.toString() + "\nLife: " + this.life + "\nPosition.x: " + super.currentTile.x + "\nPosition.y: " + super.currentTile.y;
     }
