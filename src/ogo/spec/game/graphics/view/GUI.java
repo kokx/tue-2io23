@@ -29,6 +29,7 @@ import javax.swing.UIManager;
 
 public class GUI extends Base {
 
+    Game game;
     ClickListener clickListener;
     KeyListener keyListener;
     int clicki = -1, clickj = -1;

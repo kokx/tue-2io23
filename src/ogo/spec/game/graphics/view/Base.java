@@ -65,7 +65,6 @@ abstract public class Base {
     // Textures.
     protected Texture land, shallowWater, deepWater, empty, red;
     MainFrame frame;
-    Game game;
 
     /**
      * Constructs base class.
