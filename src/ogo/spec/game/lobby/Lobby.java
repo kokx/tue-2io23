@@ -59,16 +59,17 @@ public class Lobby {
         return new GameMap(types);
     }
 
-    private void initGame(int[][] data, String[] names){
-        Player[] players = new Player[data.length];
-        for (int i = 0; i < data.length; i++) {
+    private void initGame(int[][] data, String[] names, int id){
+        Player[] players = new Player[names.length];
+        for (int i = 0; i < names.length; i++) {
             players[i] = new Player(names[i]);
         }
         GameMap map = generateMap();
         
         for(int i = 0; i < data.length; i++){
+            Creature[] creatures = new Creature[3];
             for(int j = 0; j < data[i].length; j++){
-                Inhabitant inh;
+                Creature inh;
                 if(data[i][j] == 0){
                     inh = new LandCreature(map.getTile(i*6, j*6), map);
                 }else if(data[i][j] == 1){
@@ -77,11 +78,14 @@ public class Lobby {
                     inh = new AirCreature(map.getTile(i*6, j*6), map);
                 }
                 map.getTile(i*6, j*6).setInhabitant(inh);
+                
+                creatures[j] = inh;
             }
+            players[i].setCreatures(creatures);
         }
-        Game game2 = new Game(players, generateMap());
         
-        game = new GameRun(game2);
+        Game game2 = new Game(players, generateMap());
+        game = new GameRun(game2, id);
         client.setTokenChangeListener(game);
     }
 
@@ -251,12 +255,13 @@ public class Lobby {
             names[i] = data.getNames(i);
         }
         
+        int id = data.getId();
         
         client.connectToPeer();
         
         theGui.stop();
         
-        initGame(creatureData, names);
+        initGame(creatureData, names, id);
 
         new Thread(new TokenRingRunnable(client)).start();
     }

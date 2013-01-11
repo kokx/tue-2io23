@@ -22,14 +22,16 @@ public class GameRun implements TokenChangeListener
     protected int nextId;
     protected long lastMessage = -1;
     protected int counter = 0;
+    protected int playerId; // the ID of the player behind this computer
     protected Game game;
 
     /**
      * Run the game.
      */
-    public GameRun(Game game)
+    public GameRun(Game game, int playerId)
     {
         this.game = game;
+        this.playerId = playerId;
 
         startGraphics();
     }
@@ -39,7 +41,7 @@ public class GameRun implements TokenChangeListener
      */
     void startGraphics()
     {
-        new GUI(game, null); // TODO: replace null reference with player object
+        new GUI(game, game.getPlayer(playerId)); // TODO: replace null reference with player object
     }
 
     // other methods
@@ -82,7 +84,7 @@ public class GameRun implements TokenChangeListener
         newChange.tick = change.getTick();
 
         // TODO: get the player from the game
-        //newChange.player = game.getPlayer(change.getPlayerId());
+        newChange.player = game.getPlayer(change.getPlayerId());
         //newChange.creature = game.getCreature(change.getCreatureId());
 
         return newChange;
@@ -134,9 +136,19 @@ public class GameRun implements TokenChangeListener
      * the previous token should be preferred.
      *
      * @param token Token to be processed
+     *
+     * TODO: Implement merging
      */
     public Token.Builder mergeInfo(Token.Builder token)
     {
+        LinkedList<Change> gameChanges = getGameChanges();
+        LinkedList<Change> tokenChanges = getTokenChanges(token);
+
+        // merge the two change lists
+        // when we revert a change from game, also apply this to the game
+        // state
+        // when we add a change from token, also apply this to the game state
+
         return token;
     }
 
