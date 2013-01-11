@@ -8,6 +8,7 @@ import ogo.spec.game.multiplayer.GameProto.Token;
 import ogo.spec.game.multiplayer.client.TokenChangeListener;
 import ogo.spec.game.model.Game;
 import ogo.spec.game.model.Change;
+import ogo.spec.game.graphics.view.GUI;
 
 import java.util.LinkedList;
 
@@ -22,9 +23,22 @@ public class GameRun implements TokenChangeListener
     protected int counter = 0;
     protected Game game;
 
+    /**
+     * Run the game.
+     */
     public GameRun(Game game)
     {
         this.game = game;
+
+        startGraphics();
+    }
+
+    /**
+     * Start the graphics.
+     */
+    void startGraphics()
+    {
+        new GUI(game);
     }
 
     // other methods
