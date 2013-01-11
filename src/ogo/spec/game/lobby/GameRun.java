@@ -134,9 +134,19 @@ public class GameRun implements TokenChangeListener
      * the previous token should be preferred.
      *
      * @param token Token to be processed
+     *
+     * TODO: Implement merging
      */
     public Token.Builder mergeInfo(Token.Builder token)
     {
+        LinkedList<Change> gameChanges = getGameChanges();
+        LinkedList<Change> tokenChanges = getTokenChanges(token);
+
+        // merge the two change lists
+        // when we revert a change from game, also apply this to the game
+        // state
+        // when we add a change from token, also apply this to the game state
+
         return token;
     }
 
