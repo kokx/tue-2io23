@@ -106,12 +106,13 @@ class ConnectClients implements Runnable{
     }
     
     public void sendInitialGameState(int[][] data, String[] names){
-        for(Client c : server.clients){
+        for(int i = 0; i < server.getClientCount(); i++){
             GameProto.InitialGameState init = GameProto.InitialGameState.newBuilder()
                     .addAllData(createCreaturesFromData(data))
                     .addAllNames(createNamesFromData(names))
+                    .setId(i)
                     .build();
-            c.sendInitialGameState(init);
+            server.clients.get(i).sendInitialGameState(init);
         }
     }
 }
