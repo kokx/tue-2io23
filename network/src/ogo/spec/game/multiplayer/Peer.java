@@ -32,6 +32,7 @@ public abstract class Peer
     {
         in = new DataInputStream(new BufferedInputStream(sock.getInputStream()));
         out = sock.getOutputStream();
+        sock.setTcpNoDelay(true);
     }
 
     /**
@@ -59,12 +60,12 @@ public abstract class Peer
     {
         byte[] input = new byte[4];
         in.readFully(input, 0, 4);
-        
+
         int len = byteArrayToInt(input);
 
         byte[] data = new byte[len];
         in.readFully(data, 0, len);
-        
+
         return data;
     }
 }

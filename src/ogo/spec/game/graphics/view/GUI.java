@@ -30,12 +30,15 @@ public class GUI extends Base {
     ClickListener clickListener;
     KeyListener keyListener;
     int clicki = -1, clickj = -1;
+    int seaCreature = 1;
+    int airCreature = 2;
+    int landCreature = 3;
     Player player;
     Vector vViewChange = null;
     Creature currentCreature;
     Timer timer = new Timer(30);
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
-    Wavefront landCreature, seaCreature, airCreature;
+    Wavefront models;
 
     /**
      * Called upon the start of the application. Primarily used to configure
@@ -94,7 +97,7 @@ public class GUI extends Base {
         map.getTile(2, 2).setInhabitant(s);
 
         Player p1 = new Player("1");
-        Creature[] p1c = {a, s};
+        Creature[] p1c = {a};
         p1.setCreatures(p1c);
         currentCreature = a;
         Player p2 = new Player("2");
@@ -117,25 +120,27 @@ public class GUI extends Base {
                 creatureViews.put(c, creatureView);
             }
         }
-        landCreature = new Wavefront();
-        seaCreature = new Wavefront();
-        airCreature = new Wavefront();
+        models = new Wavefront();
+
+
         String path = "src/ogo/spec/game/graphics/models/";
         try {
-            landCreature.readWavefront(path + "land.obj", gl);
+            models.readWavefront(path + "land.obj", gl);
+            gl.glNewList(landCreature, GL_COMPILE);
+            models.drawTriangles();
+            gl.glEndList();
+            models.readWavefront(path + "sea.obj", gl);
+            gl.glNewList(seaCreature, GL_COMPILE);
+            models.drawTriangles();
+            gl.glEndList();
+            models.readWavefront(path + "air.obj", gl);
+            gl.glNewList(airCreature, GL_COMPILE);
+            models.drawTriangles();
+            gl.glEndList();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        try {
-            seaCreature.readWavefront(path + "sea.obj", gl);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            airCreature.readWavefront(path + "air.obj", gl);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
 
         new Thread(timer).start();
         game.start();
@@ -188,9 +193,9 @@ public class GUI extends Base {
             clickListener.y = -1;
             handleMouseClick(x, y);
             //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
-            if (currentCreature.getPath() != null) {
+            if (clicki != -1) {
                 currentCreature.select(game.getMap().getTile(clickj, clicki));
-                creatureViews.get(currentCreature).move(1000);
+                creatureViews.get(currentCreature).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
             }
 
             //gs.cnt = vViewChange.add(new Vector(clickj, clicki, 0));
@@ -253,10 +258,6 @@ public class GUI extends Base {
             1f, 1f, 1f, 1.0f, //specular
             51.2f //shininess
         };
-
-        bananad.bind(gl);
-        bananan.bind(gl);
-        bananas.bind(gl);
 
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material, 4);
@@ -327,6 +328,7 @@ public class GUI extends Base {
                  //glut.glutSolidTeapot(0.5);
                  new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                  } else */
+
                 if (inhabitant instanceof Food) {
                     gl.glColor3f(1, 1, 1);
                     //gl.glRotatef(90, 1, 0, 0);
@@ -358,9 +360,11 @@ public class GUI extends Base {
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 if (c.getLife() > 0) {
                     if (c instanceof LandCreature) {
-                    landCreature.drawTriangles();} else if (c instanceof SeaCreature) {
-                        seaCreature.drawTriangles();} else if (c instanceof AirCreature) {
-                            airCreature.drawTriangles();
+                        gl.glCallList(landCreature);
+                    } else if (c instanceof SeaCreature) {
+                        gl.glCallList(seaCreature);
+                    } else if (c instanceof AirCreature) {
+                        gl.glCallList(airCreature);
                     }
                 }
                 gl.glPopMatrix();
@@ -368,7 +372,7 @@ public class GUI extends Base {
             }
         }
     }
-    
+
     private void drawMiniMap() {
         //Set Viewport
         gl.glViewport(gs.w / 2, 0, gs.w / 2, gs.h / 2);
@@ -382,24 +386,29 @@ public class GUI extends Base {
         gl.glMatrixMode(GL_PROJECTION);
         gl.glPushMatrix();
         GameMap map = game.getMap();
-        float t = (1 / (float) map.getHeight());
-        gl.glTranslatef(t, -1f, 0f);
+        float t = (1.5f / (float) map.getHeight());
+        gl.glTranslatef(-0.5f + t, -1f, 0f);
         for (int i = 0; i < map.getHeight(); i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 TileType type = map.getTile(i, j).getType();
                 gl.glColor3f(1, 1, 1);
-                Inhabitant inhabitant = map.getTile(i, j).getInhabitant();
-                switch (type) {
-                    case DEEP_WATER:
-                        deepWater.bind(gl);
-                        break;
-                    case SHALLOW_WATER:
-                        shallowWater.bind(gl);
-                        break;
-                    case LAND:
-                        land.bind(gl);
-                        break;
+                Inhabitant inhabitant = map.getTile(j, i).getInhabitant();
+                if (inhabitant instanceof Creature) {
+                    gl.glColor3f(1, 0, 0);
+                    //red.bind(gl);
+                } else {
+                    switch (type) {
+                        case DEEP_WATER:
+                            deepWater.bind(gl);
+                            break;
+                        case SHALLOW_WATER:
+                            shallowWater.bind(gl);
+                            break;
+                        case LAND:
+                            land.bind(gl);
+                            break;
 
+                    }
                 }
                 gl.glBegin(GL_QUADS);
                 gl.glNormal3f(0, 0, t);
@@ -414,7 +423,7 @@ public class GUI extends Base {
                 gl.glEnd();
                 gl.glTranslatef(t, 0f, 0f);
             }
-            gl.glTranslatef(-1f, t, 0);
+            gl.glTranslatef(-1.5f, t, 0);
         }
         gl.glPopMatrix();
         gl.glEnable(GL_LIGHTING);

@@ -64,6 +64,10 @@ class Server
             }
         }
     }
+    
+    public int getClientCount(){
+        return clients.size();
+    }
 
     /**
      * Initialize the token ring.
@@ -77,12 +81,10 @@ class Server
             ChatProto.Init init = ChatProto.Init.newBuilder()
                 .setPort(initialPort + i)
                 .build();
-            System.out.println(clients.get(i).getIpString() + "  " + clients.get(i).getPort());
             clients.get(i).write(init);
 
             clients.get(i).expectReply();
         }
-
         waitClientReply();
 
         // link all clients
@@ -99,7 +101,5 @@ class Server
         }
 
         waitClientReply();
-        
-        System.out.println("LOL");
     }
 }

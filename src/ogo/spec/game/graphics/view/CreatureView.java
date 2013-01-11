@@ -13,6 +13,7 @@ public class CreatureView {
     Timer timer;
     int t0;
     double unit;
+    double animationLength;
 
     public CreatureView(Creature creature, Timer timer) {
         this.creature = creature;
@@ -22,6 +23,7 @@ public class CreatureView {
     public void move(double animationLength) {
         previousLocation = creature.getPath().getPreviousTile();
         t0 = timer.getTime();
+        this.animationLength = animationLength;
         unit = timer.getSleepTime() / animationLength;
     }
 
@@ -43,18 +45,21 @@ public class CreatureView {
                 Vector P = new Vector(x, y, z); //previous location
 
                 /*System.out.println("Previous location:" + previousLocation);
-                System.out.println("Current location:" + creature.getPath().getCurrentTile());
-                System.out.println("Draw at:" + P.add(V));
+                 System.out.println("Current location:" + creature.getPath().getCurrentTile());
+                 System.out.println("Draw at:" + P.add(V));
 
-                System.out.println("Unit:" + unit);
-                System.out.println("Timer:" + timer.getTime());
-                System.out.println("t0:" + t0);
+                 System.out.println("Unit:" + unit);
+                 System.out.println("Timer:" + timer.getTime());
+                 System.out.println("t0:" + t0);
 
-                System.out.println();*/
+                 System.out.println();*/
 
                 return P.add(V);
             } else {
-                //TODO: change model to reflect that the movement has been done
+                previousLocation = currentTile;
+                t0 = timer.getTime();
+                unit = timer.getSleepTime() / animationLength;
+
                 return new Vector(creature.getPath().getCurrentTile().getX(),
                         creature.getPath().getCurrentTile().getY(),
                         0);
