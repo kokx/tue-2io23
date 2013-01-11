@@ -73,6 +73,7 @@ class ConnectClients implements Runnable{
         server.close();
         shouldConnect = false;
     }
+    
     public void run(){
         for (int i = 0; i < ChatServer.MAX_CLIENTS && shouldConnect; i++) {
             try{
@@ -87,6 +88,58 @@ class ConnectClients implements Runnable{
     }
 }
 
+class ClientsReadyRunnable implements Runnable{
+    ConnectClients connect;
+    ArrayList<Client> expectingClients;
+    
+    boolean isReady;
+    boolean threadRunning;
+    public ClientsReadyRunnable(ConnectClients c){
+        connect = c;
+        expectingClients = new ArrayList<Client>();
+        isReady = false;
+        threadRunning = true;
+    }
+    
+    public void run(){
+        try{
+            for(Client c : connect.server.clients){
+                c.expectReply();
+                expectingClients.add(c);
+            }
+            
+            while(threadRunning){
+                Thread.sleep(1000);
+                for(Client c : connect.server.clients){
+                    if(!expectingClients.contains(c)){
+                        c.expectReply();
+                        expectingClients.add(c);
+                    }
+                }
+                
+                int count = 0;
+                for(Client c : expectingClients){
+                    if(c.hasReply()){
+                        count++;
+                    }
+                }
+                isReady = (expectingClients.size() == count+1);
+                System.out.println("ReadyState: " + expectingClients.size() + " " + count);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public boolean isReady(){
+        return isReady;
+    }
+    
+    public void stop(){
+        threadRunning = false;
+    }
+}
+
 public class ChatServer {
 
     public final static int PORT = 25765;
@@ -97,6 +150,7 @@ public class ChatServer {
 
     // real stuff
     private ConnectClients connect = null;
+    private ClientsReadyRunnable readyState = null;
     private DatagramSocket sock = null;
     private BroadcastReceiverRunnable run = null;
     
@@ -108,10 +162,19 @@ public class ChatServer {
         return connect.server.getClientCount();
     }
     
+    public boolean canStartGame(){
+        return readyState.isReady();
+    }
+    
+    public void stopReadyState(){
+        readyState.stop();
+    }
+    
     public void close() throws Exception{
         connect.close();
         run.stop();
         sock.close();
+        readyState.stop();
     }
     
     public void runCLI() throws Exception{
@@ -143,6 +206,10 @@ public class ChatServer {
         connect = new ConnectClients(PORT);
 
         new Thread(connect).start();
+        
+        readyState = new ClientsReadyRunnable(connect);
+        
+        new Thread(readyState).start();
     }
 
     public static void main(String args[]) throws Exception, IOException, InterruptedException {
