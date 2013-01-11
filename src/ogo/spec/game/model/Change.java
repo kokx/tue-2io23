@@ -1,7 +1,18 @@
 package ogo.spec.game.model;
 
+import ogo.spec.game.multiplayer.GameProto.Token;
+
 public class Change
 {
+
+    public Change()
+    {
+    }
+
+    public Change(Token.Change change)
+    {
+        // TODO: import from change
+    }
 
     public enum ChangeType {
         MOVE_CREATURE, HEALTH, ENERGY, ATTACKING_CREATURE
