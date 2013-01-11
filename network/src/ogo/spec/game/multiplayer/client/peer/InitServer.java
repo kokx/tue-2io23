@@ -58,16 +58,7 @@ public class InitServer extends Peer
         sock.close();
     }
     
-    public int[][] receiveInitialGameState() throws Exception{
-        GameProto.InitialGameState init = GameProto.InitialGameState.parseFrom(read());
-        int players = init.getDataCount()/3;
-        int[][] data = new int[players][3];
-        for(int i = 0; i < players; i++){
-            for (int j = 0; j < 3; j++) {
-                data[i][j] = init.getData(i*3 + j);
-            }
-        }
-        
-        return data;
+    public GameProto.InitialGameState receiveInitialGameState() throws Exception{
+        return GameProto.InitialGameState.parseFrom(read());
     }
 }

@@ -272,7 +272,7 @@ public class Client {
         init.sendReady(ready);
     }
     
-    public int[][] receiveInitialGameState() throws Exception{
+    public GameProto.InitialGameState receiveInitialGameState() throws Exception{
         return init.receiveInitialGameState();
     }
 }
