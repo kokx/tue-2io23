@@ -59,4 +59,12 @@ class Client extends Peer
     {
         return read.wasRead;
     }
+    
+    byte[] getData(){
+        return read.getData();
+    }
+    
+    void sendInitialGameState(GameProto.InitialGameState state){
+        write(state);
+    }
 }

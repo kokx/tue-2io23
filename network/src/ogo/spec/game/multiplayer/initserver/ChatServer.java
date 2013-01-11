@@ -86,6 +86,25 @@ class ConnectClients implements Runnable{
         }
         
     }
+    
+    public List<Integer> createCreaturesFromData(int[][] data){
+        List<Integer> list = new ArrayList<Integer>();
+        for(int i = 0; i < data.length; i++){
+            for (int j = 0; j < data[i].length; j++) {
+                list.add(data[i][j]);
+            }
+        }
+        return list;
+    }
+    
+    public void sendInitialGameState(int[][] data){
+        for(Client c : server.clients){
+            GameProto.InitialGameState init = GameProto.InitialGameState.newBuilder()
+                    .addAllData(createCreaturesFromData(data))
+                    .build();
+            c.sendInitialGameState(init);
+        }
+    }
 }
 
 class ClientsReadyRunnable implements Runnable{
@@ -109,7 +128,7 @@ class ClientsReadyRunnable implements Runnable{
             }
             
             while(threadRunning){
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 for(Client c : connect.server.clients){
                     if(!expectingClients.contains(c)){
                         c.expectReply();
@@ -124,7 +143,6 @@ class ClientsReadyRunnable implements Runnable{
                     }
                 }
                 isReady = (expectingClients.size() == count+1);
-                System.out.println("ReadyState: " + expectingClients.size() + " " + count);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -137,6 +155,17 @@ class ClientsReadyRunnable implements Runnable{
     
     public void stop(){
         threadRunning = false;
+    }
+    
+    public int[][] getCreatureTypes() throws Exception{
+        int[][] result = new int[expectingClients.size()][3];
+        for(int i = expectingClients.size()-1; i >= 0; i--){
+            GameProto.IsReady ready = GameProto.IsReady.parseFrom(expectingClients.get(i).getData());
+            result[i][0] = ready.getCreature1();
+            result[i][1] = ready.getCreature2();
+            result[i][2] = ready.getCreature3();
+        }
+        return result;
     }
 }
 
@@ -154,6 +183,10 @@ public class ChatServer {
     private DatagramSocket sock = null;
     private BroadcastReceiverRunnable run = null;
     
+    public void sendInitialGameState(int[][] data){
+        connect.sendInitialGameState(data);
+    }
+    
     public void initConnection() throws InterruptedException{
         connect.server.init(PORT+1);
     }
@@ -168,6 +201,10 @@ public class ChatServer {
     
     public void stopReadyState(){
         readyState.stop();
+    }
+    
+    public int[][] getCreatureTypes() throws Exception{
+        return readyState.getCreatureTypes();
     }
     
     public void close() throws Exception{

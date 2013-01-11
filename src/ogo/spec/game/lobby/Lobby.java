@@ -10,6 +10,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import ogo.spec.game.model.Game;
 import ogo.spec.game.multiplayer.PeerInfo;
 import ogo.spec.game.multiplayer.client.Client;
 import ogo.spec.game.multiplayer.initserver.ChatServer;
@@ -35,8 +36,18 @@ public class Lobby {
         isHost = false;
     }
 
-    private void initGame(){
-        game = new GameRun();
+    private void initGame(int[][] data){
+        /*for(int i = 0; i < data.length; i++){
+            for (int j = 0; j < data[i].length; j++) {
+                System.out.print(" " + data[i][j]);
+            }
+            System.out.println("");
+        }*/
+        if(true)return;
+        //Game game2 = new Game();
+        // init Game
+        
+        //game = new GameRun(game2);
         client.setTokenChangeListener(game);
     }
 
@@ -186,31 +197,34 @@ public class Lobby {
 
     public void finishConnection() throws Exception
     {
-        System.out.println("Finish");
+        int[][] creatureData = client.receiveInitialGameState();
+        
         client.connectToPeer();
-
-        System.out.println("Stop Gui");
+        
         theGui.stop();
-        initGame();
+        
+        initGame(creatureData);
 
         new Thread(new TokenRingRunnable(client)).start();
     }
 
     public void setReady() throws Exception{
         GameProto.IsReady ready = parseReadyInfo();
-        System.out.println("Parse Ready Done");
         client.setReady(ready);
     }
 
     class InitConnectionRunnable implements Runnable{
         ChatServer init;
-
-        public InitConnectionRunnable(ChatServer initServer){
+        int[][] data;
+        public InitConnectionRunnable(ChatServer initServer, int[][] creatureData){
             init = initServer;
+            data = creatureData;
         }
 
         public void run(){
             try{
+                init.sendInitialGameState(data);
+                
                 init.initConnection();
             } catch (Exception e){
                 System.err.println("Problem with Init Server:\n" + e.getMessage());
@@ -219,19 +233,17 @@ public class Lobby {
     }
 
     public void startGame() throws Exception{
-        assert(isHost);
-
+        assert(isHost && canStartGame());
+        
         setReady();
 
         initServer.stopReadyState();
+        
+        int[][] creatureData = initServer.getCreatureTypes();
+        
+        new Thread(new InitConnectionRunnable(initServer, creatureData)).start();
 
-        if(canStartGame()){
-            new Thread(new InitConnectionRunnable(initServer)).start();
-
-            finishConnection();
-        }else{
-            System.out.println("Playing on your own? You pathetic loser!!!!");
-        }
+        finishConnection();
     }
 
     public int getClientCount(){

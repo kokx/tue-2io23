@@ -830,6 +830,392 @@ public final class GameProto {
     // @@protoc_insertion_point(class_scope:ogo.spec.game.multiplayer.IsReady)
   }
   
+  public interface InitialGameStateOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+    
+    // repeated int32 data = 1;
+    java.util.List<java.lang.Integer> getDataList();
+    int getDataCount();
+    int getData(int index);
+  }
+  public static final class InitialGameState extends
+      com.google.protobuf.GeneratedMessage
+      implements InitialGameStateOrBuilder {
+    // Use InitialGameState.newBuilder() to construct.
+    private InitialGameState(Builder builder) {
+      super(builder);
+    }
+    private InitialGameState(boolean noInit) {}
+    
+    private static final InitialGameState defaultInstance;
+    public static InitialGameState getDefaultInstance() {
+      return defaultInstance;
+    }
+    
+    public InitialGameState getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+    
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return ogo.spec.game.multiplayer.GameProto.internal_static_ogo_spec_game_multiplayer_InitialGameState_descriptor;
+    }
+    
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return ogo.spec.game.multiplayer.GameProto.internal_static_ogo_spec_game_multiplayer_InitialGameState_fieldAccessorTable;
+    }
+    
+    // repeated int32 data = 1;
+    public static final int DATA_FIELD_NUMBER = 1;
+    private java.util.List<java.lang.Integer> data_;
+    public java.util.List<java.lang.Integer>
+        getDataList() {
+      return data_;
+    }
+    public int getDataCount() {
+      return data_.size();
+    }
+    public int getData(int index) {
+      return data_.get(index);
+    }
+    
+    private void initFields() {
+      data_ = java.util.Collections.emptyList();;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+      
+      memoizedIsInitialized = 1;
+      return true;
+    }
+    
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      for (int i = 0; i < data_.size(); i++) {
+        output.writeInt32(1, data_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+    
+      size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < data_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(data_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getDataList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+    
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+    
+    public static ogo.spec.game.multiplayer.GameProto.InitialGameState parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static ogo.spec.game.multiplayer.GameProto.InitialGameState parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static ogo.spec.game.multiplayer.GameProto.InitialGameState parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data).buildParsed();
+    }
+    public static ogo.spec.game.multiplayer.GameProto.InitialGameState parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return newBuilder().mergeFrom(data, extensionRegistry)
+               .buildParsed();
+    }
+    public static ogo.spec.game.multiplayer.GameProto.InitialGameState parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static ogo.spec.game.multiplayer.GameProto.InitialGameState parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    public static ogo.spec.game.multiplayer.GameProto.InitialGameState parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static ogo.spec.game.multiplayer.GameProto.InitialGameState parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      Builder builder = newBuilder();
+      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
+        return builder.buildParsed();
+      } else {
+        return null;
+      }
+    }
+    public static ogo.spec.game.multiplayer.GameProto.InitialGameState parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input).buildParsed();
+    }
+    public static ogo.spec.game.multiplayer.GameProto.InitialGameState parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return newBuilder().mergeFrom(input, extensionRegistry)
+               .buildParsed();
+    }
+    
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(ogo.spec.game.multiplayer.GameProto.InitialGameState prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+    
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements ogo.spec.game.multiplayer.GameProto.InitialGameStateOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return ogo.spec.game.multiplayer.GameProto.internal_static_ogo_spec_game_multiplayer_InitialGameState_descriptor;
+      }
+      
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return ogo.spec.game.multiplayer.GameProto.internal_static_ogo_spec_game_multiplayer_InitialGameState_fieldAccessorTable;
+      }
+      
+      // Construct using ogo.spec.game.multiplayer.GameProto.InitialGameState.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+      
+      private Builder(BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+      
+      public Builder clear() {
+        super.clear();
+        data_ = java.util.Collections.emptyList();;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+      
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return ogo.spec.game.multiplayer.GameProto.InitialGameState.getDescriptor();
+      }
+      
+      public ogo.spec.game.multiplayer.GameProto.InitialGameState getDefaultInstanceForType() {
+        return ogo.spec.game.multiplayer.GameProto.InitialGameState.getDefaultInstance();
+      }
+      
+      public ogo.spec.game.multiplayer.GameProto.InitialGameState build() {
+        ogo.spec.game.multiplayer.GameProto.InitialGameState result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+      
+      private ogo.spec.game.multiplayer.GameProto.InitialGameState buildParsed()
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        ogo.spec.game.multiplayer.GameProto.InitialGameState result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(
+            result).asInvalidProtocolBufferException();
+        }
+        return result;
+      }
+      
+      public ogo.spec.game.multiplayer.GameProto.InitialGameState buildPartial() {
+        ogo.spec.game.multiplayer.GameProto.InitialGameState result = new ogo.spec.game.multiplayer.GameProto.InitialGameState(this);
+        int from_bitField0_ = bitField0_;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          data_ = java.util.Collections.unmodifiableList(data_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.data_ = data_;
+        onBuilt();
+        return result;
+      }
+      
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof ogo.spec.game.multiplayer.GameProto.InitialGameState) {
+          return mergeFrom((ogo.spec.game.multiplayer.GameProto.InitialGameState)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+      
+      public Builder mergeFrom(ogo.spec.game.multiplayer.GameProto.InitialGameState other) {
+        if (other == ogo.spec.game.multiplayer.GameProto.InitialGameState.getDefaultInstance()) return this;
+        if (!other.data_.isEmpty()) {
+          if (data_.isEmpty()) {
+            data_ = other.data_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureDataIsMutable();
+            data_.addAll(other.data_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+      
+      public final boolean isInitialized() {
+        return true;
+      }
+      
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder(
+            this.getUnknownFields());
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              this.setUnknownFields(unknownFields.build());
+              onChanged();
+              return this;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                this.setUnknownFields(unknownFields.build());
+                onChanged();
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              ensureDataIsMutable();
+              data_.add(input.readInt32());
+              break;
+            }
+            case 10: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              while (input.getBytesUntilLimit() > 0) {
+                addData(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+          }
+        }
+      }
+      
+      private int bitField0_;
+      
+      // repeated int32 data = 1;
+      private java.util.List<java.lang.Integer> data_ = java.util.Collections.emptyList();;
+      private void ensureDataIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          data_ = new java.util.ArrayList<java.lang.Integer>(data_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      public java.util.List<java.lang.Integer>
+          getDataList() {
+        return java.util.Collections.unmodifiableList(data_);
+      }
+      public int getDataCount() {
+        return data_.size();
+      }
+      public int getData(int index) {
+        return data_.get(index);
+      }
+      public Builder setData(
+          int index, int value) {
+        ensureDataIsMutable();
+        data_.set(index, value);
+        onChanged();
+        return this;
+      }
+      public Builder addData(int value) {
+        ensureDataIsMutable();
+        data_.add(value);
+        onChanged();
+        return this;
+      }
+      public Builder addAllData(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureDataIsMutable();
+        super.addAll(values, data_);
+        onChanged();
+        return this;
+      }
+      public Builder clearData() {
+        data_ = java.util.Collections.emptyList();;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      
+      // @@protoc_insertion_point(builder_scope:ogo.spec.game.multiplayer.InitialGameState)
+    }
+    
+    static {
+      defaultInstance = new InitialGameState(true);
+      defaultInstance.initFields();
+    }
+    
+    // @@protoc_insertion_point(class_scope:ogo.spec.game.multiplayer.InitialGameState)
+  }
+  
   public interface ReplyOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
     
@@ -3215,6 +3601,11 @@ public final class GameProto {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ogo_spec_game_multiplayer_IsReady_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_ogo_spec_game_multiplayer_InitialGameState_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_ogo_spec_game_multiplayer_InitialGameState_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ogo_spec_game_multiplayer_Reply_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -3246,19 +3637,19 @@ public final class GameProto {
       "\n\017GameProto.proto\022\031ogo.spec.game.multipl" +
       "ayer\"\024\n\004Init\022\014\n\004port\030\001 \002(\005\"B\n\007IsReady\022\021\n" +
       "\tcreature1\030\001 \002(\005\022\021\n\tcreature2\030\002 \002(\005\022\021\n\tc" +
-      "reature3\030\003 \002(\005\"\025\n\005Reply\022\014\n\004done\030\001 \002(\010\"3\n" +
-      "\tConnectTo\022\n\n\002ip\030\001 \002(\014\022\014\n\004port\030\002 \002(\005\022\014\n\004" +
-      "init\030\003 \002(\010\"\351\002\n\005Token\0228\n\007message\030\001 \003(\0132\'." +
-      "ogo.spec.game.multiplayer.Token.Change\022\016" +
-      "\n\006lastId\030\002 \002(\005\032\304\001\n\006Change\022\n\n\002id\030\001 \002(\005\022\014\n" +
-      "\004tick\030\002 \002(\003\022\020\n\010playerId\030\003 \002(\005\0229\n\004type\030\004 " +
-      "\002(\0162+.ogo.spec.game.multiplayer.Token.Ch",
-      "angeType\022\022\n\ncreatureId\030\005 \002(\005\022\t\n\001x\030\006 \001(\005\022" +
-      "\t\n\001y\030\007 \001(\005\022\020\n\010newValue\030\010 \001(\005\022\027\n\017otherCre" +
-      "atureId\030\t \001(\005\"O\n\nChangeType\022\021\n\rMOVE_CREA" +
-      "TURE\020\000\022\n\n\006HEALTH\020\001\022\n\n\006ENERGY\020\002\022\026\n\022ATTACK" +
-      "ING_CREATURE\020\003B\033\n\031ogo.spec.game.multipla" +
-      "yer"
+      "reature3\030\003 \002(\005\" \n\020InitialGameState\022\014\n\004da" +
+      "ta\030\001 \003(\005\"\025\n\005Reply\022\014\n\004done\030\001 \002(\010\"3\n\tConne" +
+      "ctTo\022\n\n\002ip\030\001 \002(\014\022\014\n\004port\030\002 \002(\005\022\014\n\004init\030\003" +
+      " \002(\010\"\351\002\n\005Token\0228\n\007message\030\001 \003(\0132\'.ogo.sp" +
+      "ec.game.multiplayer.Token.Change\022\016\n\006last" +
+      "Id\030\002 \002(\005\032\304\001\n\006Change\022\n\n\002id\030\001 \002(\005\022\014\n\004tick\030" +
+      "\002 \002(\003\022\020\n\010playerId\030\003 \002(\005\0229\n\004type\030\004 \002(\0162+.",
+      "ogo.spec.game.multiplayer.Token.ChangeTy" +
+      "pe\022\022\n\ncreatureId\030\005 \002(\005\022\t\n\001x\030\006 \001(\005\022\t\n\001y\030\007" +
+      " \001(\005\022\020\n\010newValue\030\010 \001(\005\022\027\n\017otherCreatureI" +
+      "d\030\t \001(\005\"O\n\nChangeType\022\021\n\rMOVE_CREATURE\020\000" +
+      "\022\n\n\006HEALTH\020\001\022\n\n\006ENERGY\020\002\022\026\n\022ATTACKING_CR" +
+      "EATURE\020\003B\033\n\031ogo.spec.game.multiplayer"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -3281,8 +3672,16 @@ public final class GameProto {
               new java.lang.String[] { "Creature1", "Creature2", "Creature3", },
               ogo.spec.game.multiplayer.GameProto.IsReady.class,
               ogo.spec.game.multiplayer.GameProto.IsReady.Builder.class);
-          internal_static_ogo_spec_game_multiplayer_Reply_descriptor =
+          internal_static_ogo_spec_game_multiplayer_InitialGameState_descriptor =
             getDescriptor().getMessageTypes().get(2);
+          internal_static_ogo_spec_game_multiplayer_InitialGameState_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ogo_spec_game_multiplayer_InitialGameState_descriptor,
+              new java.lang.String[] { "Data", },
+              ogo.spec.game.multiplayer.GameProto.InitialGameState.class,
+              ogo.spec.game.multiplayer.GameProto.InitialGameState.Builder.class);
+          internal_static_ogo_spec_game_multiplayer_Reply_descriptor =
+            getDescriptor().getMessageTypes().get(3);
           internal_static_ogo_spec_game_multiplayer_Reply_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogo_spec_game_multiplayer_Reply_descriptor,
@@ -3290,7 +3689,7 @@ public final class GameProto {
               ogo.spec.game.multiplayer.GameProto.Reply.class,
               ogo.spec.game.multiplayer.GameProto.Reply.Builder.class);
           internal_static_ogo_spec_game_multiplayer_ConnectTo_descriptor =
-            getDescriptor().getMessageTypes().get(3);
+            getDescriptor().getMessageTypes().get(4);
           internal_static_ogo_spec_game_multiplayer_ConnectTo_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogo_spec_game_multiplayer_ConnectTo_descriptor,
@@ -3298,7 +3697,7 @@ public final class GameProto {
               ogo.spec.game.multiplayer.GameProto.ConnectTo.class,
               ogo.spec.game.multiplayer.GameProto.ConnectTo.Builder.class);
           internal_static_ogo_spec_game_multiplayer_Token_descriptor =
-            getDescriptor().getMessageTypes().get(4);
+            getDescriptor().getMessageTypes().get(5);
           internal_static_ogo_spec_game_multiplayer_Token_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogo_spec_game_multiplayer_Token_descriptor,
