@@ -20,7 +20,7 @@ import ogo.spec.game.multiplayer.GameProto;
  * @author florian
  */
 public class Lobby {
-    Game game;
+    GameRun game;
 
     GUI theGui;
 
@@ -36,7 +36,7 @@ public class Lobby {
     }
 
     private void initGame(){
-        game = new Game();
+        game = new GameRun();
         client.setTokenChangeListener(game);
     }
 
@@ -59,7 +59,7 @@ public class Lobby {
         serverList = client.findServers();
         return convertServerList(serverList);
     }
-    
+
     class DatagramReceiverRunnable implements Runnable
     {
         DatagramSocket sock;
@@ -158,7 +158,7 @@ public class Lobby {
 
         client.connectToInitServer(serverList.get(serverNum));
     }
-    
+
     private GameProto.IsReady parseReadyInfo(){
         int[] creatures = theGui.getCreatureInfo();
         return  GameProto.IsReady.newBuilder()
@@ -167,14 +167,14 @@ public class Lobby {
                 .setCreature3(creatures[2])
                 .build();
     }
-    
+
     class TokenRingRunnable implements Runnable
     {
         Client client;
         public TokenRingRunnable(Client c){
             client = c;
         }
-        
+
         public void run(){
             try{
                 client.startTokenRing();
@@ -183,7 +183,7 @@ public class Lobby {
             }
         }
     }
-    
+
     public void finishConnection() throws Exception
     {
         System.out.println("Finish");
@@ -195,7 +195,7 @@ public class Lobby {
 
         new Thread(new TokenRingRunnable(client)).start();
     }
-    
+
     public void setReady() throws Exception{
         GameProto.IsReady ready = parseReadyInfo();
         System.out.println("Parse Ready Done");
@@ -220,11 +220,11 @@ public class Lobby {
 
     public void startGame() throws Exception{
         assert(isHost);
-        
+
         setReady();
-        
+
         initServer.stopReadyState();
-        
+
         if(canStartGame()){
             new Thread(new InitConnectionRunnable(initServer)).start();
 
@@ -237,11 +237,11 @@ public class Lobby {
     public int getClientCount(){
         return initServer.getClientCount();
     }
-    
+
     public boolean canStartGame(){
         return initServer.canStartGame();
     }
-    
+
     public static void main(String[] args) throws Exception{
         new Lobby().runGUI();
     }

@@ -10,14 +10,14 @@ import ogo.spec.game.multiplayer.client.TokenChangeListener;
 /**
  * Main game class.
  */
-public class Game implements TokenChangeListener
+public class GameRun implements TokenChangeListener
 {
 
     int nextId;
     long lastMessage = -1;
     int counter = 0;
 
-    public Game()
+    public GameRun()
     {
     }
 
