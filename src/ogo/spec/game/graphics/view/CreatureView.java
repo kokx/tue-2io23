@@ -10,6 +10,7 @@ public class CreatureView {
 
     Creature creature;
     Tile previousLocation;
+    Vector currentLocation;
     Timer timer;
     int t0;
     double unit;
@@ -28,6 +29,7 @@ public class CreatureView {
     }
 
     public Vector getCurrentLocation() {
+        
         final Tile currentTile = creature.getPath().getCurrentTile();
         if (previousLocation == null) {
             return new Vector(currentTile.getX(), currentTile.getY(), 0);
@@ -52,16 +54,18 @@ public class CreatureView {
                  System.out.println("t0:" + t0);
 
                  System.out.println();*/
-                return P.add(V);
+                currentLocation = P.add(V);
             } else {
                 previousLocation = currentTile;
                 t0 = timer.getTime();
                 unit = timer.getSleepTime() / animationLength;
 
-                return new Vector(creature.getPath().getCurrentTile().getX(),
+                currentLocation = new Vector(creature.getPath().getCurrentTile().getX(),
                         creature.getPath().getCurrentTile().getY(),
                         0);
+                
             }
         }
+        return currentLocation;
     }
 }
