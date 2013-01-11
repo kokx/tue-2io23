@@ -7,6 +7,7 @@ package ogo.spec.game.lobby;
 import ogo.spec.game.multiplayer.GameProto.Token;
 import ogo.spec.game.multiplayer.client.TokenChangeListener;
 import ogo.spec.game.model.Game;
+import ogo.spec.game.model.Change;
 
 /**
  * Main game class.
@@ -24,9 +25,37 @@ public class GameRun implements TokenChangeListener
         this.game = game;
     }
 
+    // other methods
+
 
     // network methods
     // These methods run in the network thread
+
+    /**
+     * Obtain the queue from the game state.
+     *
+     * @return Game state changes queue
+     */
+    LinkedList<Change> getGameChanges()
+    {
+        LinkedList<Change> changes;
+
+        return changes;
+    }
+
+    /**
+     * Obtain the queue from the token.
+     *
+     * @param token Token to obtain changes from
+     *
+     * @return Token changes queue
+     */
+    LinkedList<Change> getTokenChanges(Token.Builder token)
+    {
+        LinkedList<Change> changes;
+
+        return changes;
+    }
 
     /**
      * Merge info into the token.
