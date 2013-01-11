@@ -157,13 +157,16 @@ public class GUI extends Base {
             }
             GameMap map = new GameMap(types);
             AirCreature a = new AirCreature(map.getTile(0, 0), map);
-            SeaCreature s = new SeaCreature(map.getTile(2, 2), map);
+            SeaCreature s = new SeaCreature(map.getTile(1, 0), map);
+            SeaCreature f = new SeaCreature(map.getTile(2, 0), map);
+            SeaCreature g = new SeaCreature(map.getTile(3, 0), map);
+            SeaCreature j = new SeaCreature(map.getTile(5, 0), map);
             map.getTile(0, 0).setInhabitant(s);
-            map.getTile(1, 1).setInhabitant(new Food());
+            map.getTile(4, 0).setInhabitant(new Food());
             //map.getTile(2, 2).setInhabitant(s);
 
             Player p1 = new Player("1");
-            Creature[] p1c = {s};
+            Creature[] p1c = {s,a,f,g,j};
             p1.setCreatures(p1c);
             currentCreature = s;
             Player p2 = new Player("2");
@@ -365,7 +368,6 @@ public class GUI extends Base {
                         land.bind(gl);
                         break;
                 }
-
                 // Draw tile.
                 gl.glBegin(GL_QUADS);
                 gl.glNormal3f(0, 0, 1);
@@ -462,7 +464,7 @@ public class GUI extends Base {
             for (int j = 0; j < map.getWidth(); j++) {
                 TileType type = map.getTile(i, j).getType();
                 gl.glColor3f(1, 1, 1);
-                Inhabitant inhabitant = map.getTile(j, i).getInhabitant();
+                Inhabitant inhabitant = map.getTile(i, j).getInhabitant();
                 if (inhabitant instanceof Creature) {
                     gl.glColor3f(1, 0, 0);
                     red.bind(gl);
