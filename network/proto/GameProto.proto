@@ -15,6 +15,7 @@ message IsReady {
 message InitialGameState {
 	repeated int32 data = 1;
 	repeated string names = 2;
+	required int32 id = 3;
 }
 message Reply {
     required bool done = 1;
