@@ -1,4 +1,4 @@
-package ogo.spec.game.gui;
+package ogo.spec.game.lobby;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ogo.spec.game.gui;
+package ogo.spec.game.lobby;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
