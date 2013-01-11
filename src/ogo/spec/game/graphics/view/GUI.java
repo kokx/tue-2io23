@@ -33,26 +33,27 @@ public class GUI extends Base {
     ClickListener clickListener;
     KeyListener keyListener;
     int clicki = -1, clickj = -1;
-    int seaCreature = 1;
-    int airCreature = 2;
-    int landCreature = 3;
+    final static int SEACREATURE = 1;
+    final static int AIRCREATURE = 2;
+    final static int LANDCREATURE = 3;
+    final static int FOOD = 4;
     Player player;
     Vector vViewChange = null;
     Creature currentCreature;
     Timer timer = new Timer(30);
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
     Wavefront models;
-    
+
     public GUI() {
         super();
     }
-    
+
     /**
      * Constructs GUI class.
      */
     public GUI(Game game) {
         this.game = game;
-        
+
         // Global state.
         this.gs = new GlobalState();
 
@@ -166,7 +167,7 @@ public class GUI extends Base {
             //map.getTile(2, 2).setInhabitant(s);
 
             Player p1 = new Player("1");
-            Creature[] p1c = {s,a,f,g,j};
+            Creature[] p1c = {s, a, f, g, j};
             p1.setCreatures(p1c);
             currentCreature = s;
             Player p2 = new Player("2");
@@ -196,15 +197,19 @@ public class GUI extends Base {
         String path = "src/ogo/spec/game/graphics/models/";
         try {
             models.readWavefront(path + "land.obj", gl);
-            gl.glNewList(landCreature, GL_COMPILE);
+            gl.glNewList(LANDCREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "sea.obj", gl);
-            gl.glNewList(seaCreature, GL_COMPILE);
+            gl.glNewList(SEACREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "air.obj", gl);
-            gl.glNewList(airCreature, GL_COMPILE);
+            gl.glNewList(AIRCREATURE, GL_COMPILE);
+            models.drawTriangles();
+            gl.glEndList();
+            models.readWavefront(path + "food.obj", gl);
+            gl.glNewList(FOOD, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
         } catch (FileNotFoundException ex) {
@@ -402,7 +407,8 @@ public class GUI extends Base {
                     gl.glColor3f(1, 1, 1);
                     //gl.glRotatef(90, 1, 0, 0);
                     //glut.glutSolidTeapot(0.5);
-                    new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                    //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                    gl.glCallList(FOOD);
                 }
                 gl.glPopMatrix();
 
@@ -432,11 +438,11 @@ public class GUI extends Base {
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 if (c.getLife() > 0) {
                     if (c instanceof LandCreature) {
-                        gl.glCallList(landCreature);
+                        gl.glCallList(LANDCREATURE);
                     } else if (c instanceof SeaCreature) {
-                        gl.glCallList(seaCreature);
+                        gl.glCallList(SEACREATURE);
                     } else if (c instanceof AirCreature) {
-                        gl.glCallList(airCreature);
+                        gl.glCallList(AIRCREATURE);
                     }
                 }
                 gl.glPopMatrix();
@@ -548,8 +554,10 @@ public class GUI extends Base {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            x = e.getX();
-            y = e.getY();
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                x = e.getX();
+                y = e.getY();
+            }
         }
 
         @Override
