@@ -52,8 +52,9 @@ public class GUI extends Base {
     /**
      * Constructs GUI class.
      */
-    public GUI(Game game) {
+    public GUI(Game game, Player player) {
         this.game = game;
+        this.player = player;
 
         // Global state.
         this.gs = new GlobalState();
