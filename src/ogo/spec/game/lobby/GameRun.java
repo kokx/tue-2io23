@@ -59,6 +59,32 @@ public class GameRun implements TokenChangeListener
     {
         Change newChange = new Change();
 
+        switch (change.getType()) {
+            case MOVE_CREATURE:
+                newChange.type = Change.ChangeType.MOVE_CREATURE;
+                newChange.x = change.getX();
+                newChange.y = change.getY();
+                break;
+            case HEALTH:
+                newChange.type = Change.ChangeType.HEALTH;
+                newChange.newValue = change.getNewValue();
+                break;
+            case ENERGY:
+                newChange.type = Change.ChangeType.ENERGY;
+                newChange.newValue = change.getNewValue();
+                break;
+            case ATTACKING_CREATURE:
+                newChange.type = Change.ChangeType.ATTACKING_CREATURE;
+                //newChange.newValue = game.getCreature(change.getOtherCreatureId());
+                break;
+        }
+
+        newChange.tick = change.getTick();
+
+        // TODO: get the player from the game
+        //newChange.player = game.getPlayer(change.getPlayerId());
+        //newChange.creature = game.getCreature(change.getCreatureId());
+
         return newChange;
     }
 
@@ -94,7 +120,7 @@ public class GameRun implements TokenChangeListener
         List<Token.Change> tokenChanges = token.getMessageList();
 
         for (Token.Change change : tokenChanges) {
-            changes.add(new Change(change));
+            changes.add(createChangeFromTokenChange(change));
         }
 
         return changes;
