@@ -43,6 +43,7 @@ public class GUI extends Base {
     Timer timer = new Timer(30);
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
     Wavefront models;
+    float[][] materials = {Materials.BLUE_PLASTIC,Materials.RED_PLASTIC,Materials.YELLOW_PLASTIC,Materials.GREEN_PLASTIC,Materials.ORANGE_PLASTIC,Materials.BROWN_PLASTIC};
 
     public GUI() {
         super();
@@ -167,11 +168,11 @@ public class GUI extends Base {
             //map.getTile(2, 2).setInhabitant(s);
 
             Player p1 = new Player("1");
-            Creature[] p1c = {s, a, f, g, j};
+            Creature[] p1c = {s, a, f};
             p1.setCreatures(p1c);
             currentCreature = s;
             Player p2 = new Player("2");
-            Creature[] p2c = {};
+            Creature[] p2c = {g, j};
             p2.setCreatures(p2c);
             player = p1;
             Player[] players = new Player[2];
@@ -352,6 +353,7 @@ public class GUI extends Base {
             vViewChange = Vector.O;
             gs.cnt = vViewChange;
         }
+        setMaterial(Materials.WHITE);
         for (int i = 0; i < map.getHeight(); i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 // Load unique name for this tile.
@@ -409,7 +411,9 @@ public class GUI extends Base {
                     //glut.glutSolidTeapot(0.5);
                     //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                     empty.bind(gl);
+                    setMaterial(Materials.GOLD);
                     gl.glCallList(FOOD);
+                    setMaterial(Materials.WHITE);
                 }
                 gl.glPopMatrix();
 
@@ -425,7 +429,10 @@ public class GUI extends Base {
         gl.glPopMatrix();
 
         empty.bind(gl);
-        for (Player p : game) {
+        //for (Player p : game) {
+        for (int i = 0; i < game.getPlayers().length; i++) {
+            Player p = game.getPlayers()[i];
+            setMaterial(materials[i]);
             for (Creature c : p) {
                 if (c.getMoveCooldown() == 0) {
                     creatureViews.get(c).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
@@ -550,6 +557,13 @@ public class GUI extends Base {
         gl.glMatrixMode(GL_MODELVIEW);
     }
 
+    private void setMaterial(float[] material) {
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material, 4);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material, 8);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, material, 12);
+    }
+
     private final class ClickListener implements MouseListener {
 
         int x = -1, y = -1;
@@ -602,5 +616,64 @@ public class GUI extends Base {
 
     public static void main(String args[]) {
         new GUI();
+    }
+    
+    public static class Materials {
+        // Array containing parameters for a green plastic material. 
+        public final static float[] GREEN_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            0.1f, 0.35f, 0.1f, 1.0f, //diffuse
+            0.45f, 0.55f, 0.45f, 1.0f, //specular
+            32f //shininess
+        };
+        //Array containing parameteres for a yellow plastic materail.
+        public final static float[] YELLOW_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            0.5f, 0.5f, 0.0f, 1.0f, //diffuse
+            0.60f, 0.60f, 0.50f, 1.0f, //specular
+            32f //shininess
+        };
+        // Array containing parameteres for a red plastic material.
+        public final static float[] RED_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            1.0f, 0f, 0.0f, 1.0f, //diffuse
+            0.60f, 0.60f, 0.50f, 1.0f, //specular
+            32f //shininess
+        };
+        // Array containing parameters for a blue plastci material.
+        public final static float[] BLUE_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            0f, 0.5f, 1.0f, 1.0f, //diffuse
+            0.60f, 0.60f, 0.50f, 1.0f, //specular
+            32f //shininess
+        };
+        // Array containing parameters for an orange plastic material.
+        public final static float[] ORANGE_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            1f, 0.65f, 0.0f, 1.0f, //diffuse
+            0.5f, 0.5f, 0.5f, 1.0f, //specular
+            90f //shininess
+        };
+        // Array containing parameters  for a brown plastic material.
+        public final static float[] BROWN_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            0.36f, 0.2f, 0.01f, 1.0f, //diffuse
+            0.5f, 0.5f, 0.5f, 1.0f, //specular
+            0f //shininess
+        };
+        // Array containing parameters  for a gold material.
+        public final static float[] GOLD = {
+            0.24725f, 0.1995f, 0.0745f, 1.0f, //ambient
+            0.75164f, 0.60648f, 0.22648f, 1.0f, //diffuse
+            0.628281f, 0.555802f, 0.366065f, 1.0f, //specular
+            51.2f //shininess
+        };
+        // Array containing parameters for a white material (for textures).
+        public static float[] WHITE = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            1f, 1f, 1f, 1.0f, //diffuse
+            1f, 1f, 1f, 1.0f, //specular
+            0f //shininess
+        };
     }
 }

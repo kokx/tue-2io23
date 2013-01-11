@@ -72,6 +72,10 @@ public class Game implements Iterable<Player> {
     public GameMap getMap() {
         return map;
     }
+    
+    public Player[] getPlayers() {
+        return players;
+    }
 
     @Override
     public Iterator<Player> iterator() {
