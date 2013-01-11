@@ -158,14 +158,14 @@ public class GUI extends Base {
             GameMap map = new GameMap(types);
             AirCreature a = new AirCreature(map.getTile(0, 0), map);
             SeaCreature s = new SeaCreature(map.getTile(2, 2), map);
-            map.getTile(0, 0).setInhabitant(a);
+            map.getTile(0, 0).setInhabitant(s);
             map.getTile(1, 1).setInhabitant(new Food());
             //map.getTile(2, 2).setInhabitant(s);
 
             Player p1 = new Player("1");
-            Creature[] p1c = {a};
+            Creature[] p1c = {s};
             p1.setCreatures(p1c);
-            currentCreature = a;
+            currentCreature = s;
             Player p2 = new Player("2");
             Creature[] p2c = {};
             p2.setCreatures(p2c);
@@ -261,7 +261,7 @@ public class GUI extends Base {
             handleMouseClick(x, y);
             //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
             if (clicki != -1) {
-                currentCreature.select(game.getMap().getTile(clickj, clicki));
+                currentCreature.select(game.getMap().getTile(clicki, clickj));
                 creatureViews.get(currentCreature).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
             }
 
