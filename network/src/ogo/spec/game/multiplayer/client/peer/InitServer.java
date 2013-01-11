@@ -32,7 +32,7 @@ public class InitServer extends Peer
      * Get the port on which we need to setup a server.
      */
     public int getPort() throws IOException
-    {
+    {;
         byte[] data = read();
         return ChatProto.Init.parseFrom(data).getPort();
     }

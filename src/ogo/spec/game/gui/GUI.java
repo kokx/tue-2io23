@@ -18,28 +18,20 @@ public class GUI implements ActionListener, ListSelectionListener{
     protected JList lobbyList;
     protected JScrollPane lobbyScrollList;
     
-    protected JList clientList;
-    protected JScrollPane clientScrollList;
-    
     protected JPanel startPanel;
     protected JPanel inGamePanel;
     
     protected JPanel startButtonPanel;
-    protected JPanel inGameButtonPanel;
     
     protected JButton startLobby;
     protected JButton searchLobbys;
     protected JButton joinLobby;
     
-    protected JButton leaveLobby;
     protected JButton startGame;
-    protected JButton sendMessage;
     
-    protected JTextField chatInput;
-    protected JTextArea chatOutput;
-    protected JScrollPane chatScroll;
+    protected JTextArea lobbyOutput;
     
-    protected Timer updateLobbyTimer;
+    protected Timer lobbyChecker;
     
     protected int lobbyAmount;
     protected int selectedLobby;
@@ -79,32 +71,15 @@ public class GUI implements ActionListener, ListSelectionListener{
         startPanel.add(lobbyScrollList, BorderLayout.NORTH);
         startPanel.add(startButtonPanel, BorderLayout.SOUTH);
         
-        leaveLobby = new JButton("Back");
         startGame = new JButton("Start Game");
-        sendMessage = new JButton("Send Chat Message");
         
-        leaveLobby.setEnabled(true);
         startGame.setEnabled(false);
-        sendMessage.setEnabled(true);
         
-        /*chatInput = new JTextField(30);
-        chatOutput = new JTextArea(10,30);
-        chatScroll = new JScrollPane(chatOutput);*/
+        lobbyOutput = new JTextArea(1,30);
+        lobbyOutput.setEditable(false);
         
-        clientList = new JList();
-        clientList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
-        clientScrollList = new JScrollPane(clientList);
-        
-        inGameButtonPanel = new JPanel(new GridLayout(1,3));
-        inGameButtonPanel.add(leaveLobby);
-        //inGameButtonPanel.add(sendMessage);
-        inGameButtonPanel.add(startGame);
-        
-        inGamePanel.add(clientScrollList, BorderLayout.EAST);
-        //inGamePanel.add(chatOutput, BorderLayout.NORTH);
-        //inGamePanel.add(chatInput, BorderLayout.CENTER);
-        inGamePanel.add(inGameButtonPanel, BorderLayout.SOUTH);
+        inGamePanel.add(lobbyOutput, BorderLayout.NORTH);
+        //inGamePanel.add(startGame, BorderLayout.SOUTH);
         
         frame.getContentPane().add(startPanel);
         frame.setVisible(true);
@@ -119,12 +94,9 @@ public class GUI implements ActionListener, ListSelectionListener{
         searchLobbys.addActionListener(this);
         joinLobby.addActionListener(this);
         
-        leaveLobby.addActionListener(this);
         startGame.addActionListener(this);
-        sendMessage.addActionListener(this);
         
         lobbyList.addListSelectionListener(this);
-        clientList.addListSelectionListener(this);
     }
     
     private DefaultListModel getListModel(String[] names){
@@ -151,22 +123,59 @@ public class GUI implements ActionListener, ListSelectionListener{
     }
     
     private void startLobby() throws Exception{
-        player.openLobby();
-        
-        startGame.setEnabled(true);
+        inGamePanel.add(startGame, BorderLayout.SOUTH);
         
         switchPanels(true);
+        
+        frame.repaint();
+        
+        player.openLobby();
+        
+        startLobbyChecker();
+    }
+    
+    public void updateLobbyOutput(){
+        int clients = player.getClientCount();
+        lobbyOutput.setText("There are now " + clients + " clients in the Lobby");
+        if(player.isHost && clients > 1){
+            startGame.setEnabled(true);
+        }else{
+            startGame.setEnabled(false);
+        }
+    }
+    
+    private void startLobbyChecker(){
+        lobbyChecker = new Timer(1000, this);
+        lobbyChecker.start();
+    }
+    
+    class JoinLobbyRunnable implements Runnable{
+        Player p;
+        int lobby;
+        public JoinLobbyRunnable(Player player, int selectedLobby){
+            p = player;
+            lobby = selectedLobby;
+        }
+        
+        public void run(){
+            try{
+                p.joinLobby(selectedLobby);
+                p.connectToLobby();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
     
     private void joinLobby() throws Exception{
-        switchPanels(true);
-        player.joinLobby(selectedLobby);
-    }
-    
-    private void closeLobby() throws Exception{
-        player.closeLobby();
         
-        switchPanels(false);
+        new Thread(new JoinLobbyRunnable(player, selectedLobby)).start();
+        
+        switchPanels(true);
+        
+        frame.repaint();
+        
+        lobbyOutput.setText("You Joined a Lobby with IP: ");
     }
     
     private void startGame() throws Exception{
@@ -177,9 +186,13 @@ public class GUI implements ActionListener, ListSelectionListener{
     
     private void switchPanels(boolean forward){
         if(forward){
+            startPanel.setVisible(false);
+            inGamePanel.setVisible(true);
             frame.getContentPane().remove(startPanel);
             frame.getContentPane().add(inGamePanel);
         }else{
+            startPanel.setVisible(true);
+            inGamePanel.setVisible(false);
             frame.getContentPane().remove(inGamePanel);
             frame.getContentPane().add(startPanel);
         }
@@ -196,10 +209,10 @@ public class GUI implements ActionListener, ListSelectionListener{
                 startLobby();
             }else if(e.getSource() == joinLobby){
                 joinLobby();
-            }else if(e.getSource() == leaveLobby){
-                closeLobby();
             }else if(e.getSource() == startGame){
                 startGame();
+            }else if(e.getSource() == lobbyChecker){
+                updateLobbyOutput();
             }
         }catch (Exception ex){
             ex.printStackTrace();
@@ -212,8 +225,6 @@ public class GUI implements ActionListener, ListSelectionListener{
                 selectedLobby = lobbyList.getSelectedIndex();
                 joinLobby.setEnabled(selectedLobby!= -1 && selectedLobby < lobbyAmount);
             }
-        }else if(e.getSource() == clientList){
-            
         }
     }
 }
