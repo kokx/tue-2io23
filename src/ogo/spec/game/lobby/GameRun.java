@@ -41,7 +41,7 @@ public class GameRun implements TokenChangeListener
      */
     void startGraphics()
     {
-        new GUI(game, null); // TODO: replace null reference with player object
+        new GUI(game, game.getPlayer(playerId)); // TODO: replace null reference with player object
     }
 
     // other methods
@@ -84,7 +84,7 @@ public class GameRun implements TokenChangeListener
         newChange.tick = change.getTick();
 
         // TODO: get the player from the game
-        //newChange.player = game.getPlayer(change.getPlayerId());
+        newChange.player = game.getPlayer(change.getPlayerId());
         //newChange.creature = game.getCreature(change.getCreatureId());
 
         return newChange;
