@@ -49,6 +49,20 @@ public class GameRun implements TokenChangeListener
     // These methods run in the network thread
 
     /**
+     * Create a Change from a Token.Change object.
+     *
+     * @param change The change from the token
+     *
+     * @return The new change
+     */
+    Change createChangeFromTokenChange(Token.Change change)
+    {
+        Change newChange = new Change();
+
+        return newChange;
+    }
+
+    /**
      * Obtain the queue from the game state.
      *
      * @return Game state changes queue
