@@ -261,7 +261,8 @@ public class GUI extends Base {
 
             clickListener.x = -1;
             clickListener.y = -1;
-            handleMouseClick(x, y);
+            if (currentCreature.isAlive()) {
+                    handleMouseClick(x, y);}
             //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
             if (clicki != -1) {
                 currentCreature.select(game.getMap().getTile(clicki, clickj));
