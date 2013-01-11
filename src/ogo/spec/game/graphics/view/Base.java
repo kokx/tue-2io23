@@ -164,6 +164,7 @@ abstract public class Base {
             shallowWater = loadTexture(path + "shallow.jpg");
             deepWater = loadTexture(path + "deep.jpg");
             empty = loadTexture(path + "empty.jpg");
+            red = loadTexture(path + "red.jpg");
             
             // Print library version number.
             System.out.println("Using library version " + LIBRARY_VERSION);
