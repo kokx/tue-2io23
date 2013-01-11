@@ -9,6 +9,8 @@ import ogo.spec.game.multiplayer.client.TokenChangeListener;
 import ogo.spec.game.model.Game;
 import ogo.spec.game.model.Change;
 
+import java.util.LinkedList;
+
 /**
  * Main game class.
  */
@@ -38,7 +40,7 @@ public class GameRun implements TokenChangeListener
      */
     LinkedList<Change> getGameChanges()
     {
-        LinkedList<Change> changes;
+        LinkedList<Change> changes = new LinkedList<Change>();
 
         return changes;
     }
@@ -52,7 +54,7 @@ public class GameRun implements TokenChangeListener
      */
     LinkedList<Change> getTokenChanges(Token.Builder token)
     {
-        LinkedList<Change> changes;
+        LinkedList<Change> changes = new LinkedList<Change>();
 
         return changes;
     }
