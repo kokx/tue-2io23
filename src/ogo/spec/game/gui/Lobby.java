@@ -1,123 +1,210 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
- //
+ */
 package ogo.spec.game.gui;
 
-import java.util.LinkedList;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
-import ogo.spec.game.multiplayer.ChatProto;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import javax.swing.JOptionPane;
 import ogo.spec.game.multiplayer.PeerInfo;
-import ogo.spec.game.multiplayer.initserver.ChatServer;
 import ogo.spec.game.multiplayer.client.Client;
-import ogo.spec.game.multiplayer.client.InputReaderRunnable;
 import ogo.spec.game.multiplayer.client.TokenChangeListener;
+import ogo.spec.game.multiplayer.initserver.ChatServer;
+import ogo.spec.game.multiplayer.GameProto.Token;
 
 /**
  *
  * @author florian
- //
-public class Lobby implements TokenChangeListener{
-    
-    String nickname;
-    
-    int nextId;
-    InputReaderRunnable reader;
-    
-    List<PeerInfo> servers;
-    LinkedList<String> newMessages;
-    LinkedList<ChatProto.Token.Message> receivedMessages;
-    
-    int joinedServer;
-    boolean isReady;
-    
-    public Lobby() throws Exception{
-        client = new Client();
-        nextId = 0;
-        joinedServer = -1;
+ */
+public class Lobby {
+    tempGame game;
+
+    GUI theGui;
+
+    Client client;
+    ChatServer initServer;
+
+    List<PeerInfo> serverList;
+
+    boolean isHost;
+
+    public Lobby(){
+        isHost = false;
     }
-    
-    protected void startServer() throws Exception{
-        initServer = new ChatServer();
-        initServer.run();
+
+    private void initGame(){
+        game = new tempGame();
+        client.setTokenChangeListener(game);
     }
-    
-    protected void closeLobby() throws Exception{
-        initServer.close();
+
+    public void runGUI() throws Exception{
+        theGui = new GUI(this);
+        theGui.init();
     }
-    
-    protected String[] getServerNames() throws Exception{
-        client = new Client();
-        servers = client.findServers();
-        String[] names = new String[servers.size()];
-        
-        // Edit to make it more informative 
-        for(int i = 0; i < servers.size(); i++){
-            names[i] = servers.get(i).ip.toString();
+
+    private String[] convertServerList(List<PeerInfo> l){
+        /* Moet nog wat descriptiever worden.. */
+        String[] names = new String[l.size()];
+        for(int i = 0; i < l.size(); i++){
+            names[i] = l.get(i).ip.toString();
         }
-        // Edit to make it more informative 
-        
         return names;
     }
-    
-    protected void joinLobby(int serverNum) throws Exception{
-        joinedServer = serverNum;
+
+    public String[] getServerNames() throws Exception{
+        client = new Client();
+        serverList = client.findServers();
+        return convertServerList(serverList);
     }
-    
-    protected void setReady(boolean flag){
-        isReady = flag;
-        if(flag){
-            client.connect(joinedServer);
+
+    class DatagramReceiverRunnable implements Runnable
+    {
+        DatagramSocket sock;
+
+        ConcurrentLinkedQueue<DatagramPacket> buffer = new ConcurrentLinkedQueue<DatagramPacket>();
+
+        boolean read;
+
+        DatagramReceiverRunnable(DatagramSocket sock)
+        {
+            this.sock = sock;
+            this.read = true;
+        }
+
+        public void stop(){
+            read = false;
+        }
+
+        public void run()
+        {
+            try {
+                while (read) {
+                    DatagramPacket p = new DatagramPacket(new byte[1], 1);
+
+                    sock.receive(p);
+
+                    buffer.add(p);
+                }
+            } catch (IOException e) {
+                if(read){
+                    System.err.println("I/O Error");
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
         }
     }
-    
-    protected void sendChatMessage(String message){
-        newMessages.add(message);
-    }
-    
-    protected void receiveMessages(List<ChatProto.Token.Message> l){
-        receivedMessages.clear();
-        for(ChatProto.Token.Message m : l){
-            receivedMessages.add(m);
+
+    public final static int INIT_PORT = 25945; // this is a UDP port
+    public final static int INIT_LISTEN_PORT = 4444; // this is a UDP port
+    public final static String BROADCAST_IP = "192.168.1.255";
+
+    public void openLobby() throws Exception{
+        isHost = true;
+
+        /* Start new Server to connect to */
+        initServer = new ChatServer();
+        initServer.run();
+
+        boolean done = false;
+
+        DatagramPacket packet;
+        DatagramSocket sendSock;
+        DatagramSocket receiveSock = new DatagramSocket(INIT_PORT);
+
+        while(!done){
+            packet = new DatagramPacket(new byte[]{2}, 1, InetAddress.getByName(BROADCAST_IP), INIT_PORT);
+            sendSock = new DatagramSocket();
+            sendSock.send(packet);
+
+            DatagramReceiverRunnable run = new DatagramReceiverRunnable(receiveSock);
+            new Thread(run).start();
+
+            Thread.sleep(100);
+
+            while((packet = run.buffer.poll()) != null){
+                //System.out.println("Data: " + packet.getData()[0]);
+                if(packet.getData()[0] == 2){
+                    break;
+                }
+
+            }
+            if(packet != null){
+                //System.err.println("Found Packet!");
+                getServerNames();
+
+                PeerInfo ownServer = null;
+                for(PeerInfo p : serverList){
+                    if(packet.getAddress().toString().equals(p.ip.toString())){
+                        ownServer = p;
+                    }
+                }
+
+                client.connectToInitServer(ownServer);
+
+                done = true;
+            }else{
+                System.err.println("LOBBY: Could not find own server; unable to connect self to lobby");
+            }
+            run.stop();
         }
     }
 
-    ChatProto.Token.Builder copyToken(ChatProto.Token token){
-        ChatProto.Token.Builder builder = ChatProto.Token.newBuilder();
+    public void joinLobby(int serverNum) throws Exception{
+        isHost = false;
 
-        builder.mergeFrom(token);
-
-        return builder;
+        client.connectToInitServer(serverList.get(serverNum));
     }
-    /**
-     * Get messages from the input reader.
-     *
-    public Iterable<ChatProto.Token.Message> getMessages(){
-        LinkedList<ChatProto.Token.Message> messages = new LinkedList<ChatProto.Token.Message>();
 
-        for(String s : newMessages){
-            messages.add(ChatProto.Token.Message.newBuilder()
-                    .setId(nextId)
-                    .setName(nickname)
-                    .setMessage(s)
-                    .build());
-            nextId++;
+    public void connectToLobby() throws Exception{
+        client.connectToPeer();
+
+        theGui.stop();
+        initGame();
+
+        client.startTokenRing();
+    }
+
+    class InitConnectionRunnable implements Runnable{
+        ChatServer init;
+
+        public InitConnectionRunnable(ChatServer initServer){
+            init = initServer;
         }
-        
-        newMessages.clear();
 
-        return messages;
+        public void run(){
+            try{
+                init.initConnection();
+            } catch (Exception e){
+                System.err.println("Problem with Init Server:\n" + e.getMessage());
+            }
+        }
     }
 
-    public ChatProto.Token tokenChanged(ChatProto.Token token){
-        receiveMessages(token.getMessageList());
+    public void startGame() throws Exception{
+        assert(isHost);
+        if(initServer.getClientCount() > 1){
+            new Thread(new InitConnectionRunnable(initServer)).start();
 
-        ChatProto.Token.Builder builder = copyToken(token);
-
-        builder.addAllMessage(getMessages());
-
-        builder.setLastId(nextId);
-
-        return builder.build();
+            client.connectToPeer();
+            theGui.stop();
+            initGame();
+            client.startTokenRing();
+        }else{
+            System.out.println("Playing on your own? You pathetic loser!!!!");
+        }
     }
-}*/
+
+    public int getClientCount(){
+        return initServer.getClientCount();
+    }
+    public static void main(String[] args) throws Exception{
+        new Lobby().runGUI();
+    }
+}
