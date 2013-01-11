@@ -52,6 +52,16 @@ public class Game implements Iterable<Player> {
     }
 
     /**
+     * Get the next change.
+     *
+     * @return the next change, or null if none exists
+     */
+    public Change poll()
+    {
+        return changes.poll();
+    }
+
+    /**
      * Get the current tick.
      */
     public long getTick()
