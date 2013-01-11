@@ -82,8 +82,8 @@ public abstract class Creature extends Inhabitant {
             // if attackingCreature == null the creature is not attacking
             // this.canMove() will check if the creature has enough energy to move (only for aircreatures)
             // only do stuff if there is a next tile
-            if(nextTile != null)
-                System.out.println("jan");
+            //if(nextTile != null)
+                //System.out.println("jan");
             if (this.attackingCreature == null
                     && nextTile != null
                     && this.canMove(this.calculateMoveSpeed(super.currentTile, nextTile))
