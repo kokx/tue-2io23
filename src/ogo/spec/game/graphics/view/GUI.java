@@ -408,6 +408,7 @@ public class GUI extends Base {
                     //gl.glRotatef(90, 1, 0, 0);
                     //glut.glutSolidTeapot(0.5);
                     //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                    empty.bind(gl);
                     gl.glCallList(FOOD);
                 }
                 gl.glPopMatrix();
@@ -423,6 +424,7 @@ public class GUI extends Base {
         }
         gl.glPopMatrix();
 
+        empty.bind(gl);
         for (Player p : game) {
             for (Creature c : p) {
                 if (c.getMoveCooldown() == 0) {
