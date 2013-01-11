@@ -7,7 +7,7 @@ public class Player implements Iterable<Creature>
 {
     private String name;
 
-    private Creature[] creatures;
+    private Creature[] creatures = new Creature[0];
 
     public Player(String name) {
         this.name = name;
