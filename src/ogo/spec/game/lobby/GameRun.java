@@ -6,6 +6,7 @@ package ogo.spec.game.lobby;
 
 import ogo.spec.game.multiplayer.GameProto.Token;
 import ogo.spec.game.multiplayer.client.TokenChangeListener;
+import ogo.spec.game.model.Game;
 
 /**
  * Main game class.
@@ -13,13 +14,19 @@ import ogo.spec.game.multiplayer.client.TokenChangeListener;
 public class GameRun implements TokenChangeListener
 {
 
-    int nextId;
-    long lastMessage = -1;
-    int counter = 0;
+    protected int nextId;
+    protected long lastMessage = -1;
+    protected int counter = 0;
+    protected Game game;
 
-    public GameRun()
+    public GameRun(Game game)
     {
+        this.game = game;
     }
+
+
+    // network methods
+    // These methods run in the network thread
 
     /**
      * Merge info into the token.
@@ -35,6 +42,11 @@ public class GameRun implements TokenChangeListener
         return token;
     }
 
+    /**
+     * Copy the received token, and create a token builder from it.
+     *
+     * @return new token
+     */
     Token.Builder copyToken(Token token)
     {
         Token.Builder builder = Token.newBuilder();
@@ -59,6 +71,12 @@ public class GameRun implements TokenChangeListener
         }
     }
 
+    /**
+     * Called when the token has changed.
+     *
+     * Note that this will be called from the network layer. Which runs in a
+     * different thread than the rest of this class.
+     */
     public Token tokenChanged(Token token)
     {
         runStats();
