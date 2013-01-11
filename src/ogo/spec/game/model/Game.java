@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Game implements Iterable<Player> {
 
@@ -22,6 +23,8 @@ public class Game implements Iterable<Player> {
     private Timer timer;
     private Player[] players;
     private GameMap map;
+
+    private ConcurrentLinkedQueue<Change> changes;
 
     public Game(Player[] players, GameMap map) {
         this.players = players;
@@ -51,7 +54,7 @@ public class Game implements Iterable<Player> {
     /**
      * Get the current tick.
      */
-    public int getTick()
+    public long getTick()
     {
         return tick;
     }

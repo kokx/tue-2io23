@@ -30,7 +30,7 @@ public class Game implements TokenChangeListener
      *
      * @param token Token to be processed
      */
-    public void mergeInfo(Token.Builder token)
+    public Token.Builder mergeInfo(Token.Builder token)
     {
         return token;
     }
