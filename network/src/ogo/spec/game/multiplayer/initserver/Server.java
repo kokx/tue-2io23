@@ -28,7 +28,6 @@ class Server
     {
         sock = new ServerSocket(port);
         connectClients = true;
-        
     }
     
     public void close() throws Exception{

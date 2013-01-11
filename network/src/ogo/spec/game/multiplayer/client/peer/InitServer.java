@@ -27,6 +27,10 @@ public class InitServer extends Peer
             .build();
         write(rep);
     }
+    
+    public void sendReady(GameProto.IsReady ready){
+        write(ready);
+    }
 
     /**
      * Get the port on which we need to setup a server.

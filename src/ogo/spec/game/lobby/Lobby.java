@@ -8,15 +8,12 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.swing.JOptionPane;
 import ogo.spec.game.multiplayer.PeerInfo;
 import ogo.spec.game.multiplayer.client.Client;
-import ogo.spec.game.multiplayer.client.TokenChangeListener;
 import ogo.spec.game.multiplayer.initserver.ChatServer;
-import ogo.spec.game.multiplayer.GameProto.Token;
+import ogo.spec.game.multiplayer.GameProto;
 
 /**
  *
@@ -62,7 +59,7 @@ public class Lobby {
         serverList = client.findServers();
         return convertServerList(serverList);
     }
-
+    
     class DatagramReceiverRunnable implements Runnable
     {
         DatagramSocket sock;
@@ -161,14 +158,48 @@ public class Lobby {
 
         client.connectToInitServer(serverList.get(serverNum));
     }
-
-    public void connectToLobby() throws Exception{
+    
+    private GameProto.IsReady parseReadyInfo(){
+        int[] creatures = theGui.getCreatureInfo();
+        return  GameProto.IsReady.newBuilder()
+                .setCreature1(creatures[0])
+                .setCreature2(creatures[1])
+                .setCreature3(creatures[2])
+                .build();
+    }
+    
+    class TokenRingRunnable implements Runnable
+    {
+        Client client;
+        public TokenRingRunnable(Client c){
+            client = c;
+        }
+        
+        public void run(){
+            try{
+                client.startTokenRing();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public void finishConnection() throws Exception
+    {
+        System.out.println("Finish");
         client.connectToPeer();
 
+        System.out.println("Stop Gui");
         theGui.stop();
         initGame();
 
-        client.startTokenRing();
+        new Thread(new TokenRingRunnable(client)).start();
+    }
+    
+    public void setReady() throws Exception{
+        GameProto.IsReady ready = parseReadyInfo();
+        System.out.println("Parse Ready Done");
+        client.setReady(ready);
     }
 
     class InitConnectionRunnable implements Runnable{
@@ -189,13 +220,15 @@ public class Lobby {
 
     public void startGame() throws Exception{
         assert(isHost);
-        if(initServer.getClientCount() > 1){
+        
+        setReady();
+        
+        initServer.stopReadyState();
+        
+        if(canStartGame()){
             new Thread(new InitConnectionRunnable(initServer)).start();
 
-            client.connectToPeer();
-            theGui.stop();
-            initGame();
-            client.startTokenRing();
+            finishConnection();
         }else{
             System.out.println("Playing on your own? You pathetic loser!!!!");
         }
@@ -204,6 +237,11 @@ public class Lobby {
     public int getClientCount(){
         return initServer.getClientCount();
     }
+    
+    public boolean canStartGame(){
+        return initServer.canStartGame();
+    }
+    
     public static void main(String[] args) throws Exception{
         new Lobby().runGUI();
     }
