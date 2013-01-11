@@ -97,7 +97,7 @@ public class GUI extends Base {
         map.getTile(2, 2).setInhabitant(s);
 
         Player p1 = new Player("1");
-        Creature[] p1c = {a, s};
+        Creature[] p1c = {a};
         p1.setCreatures(p1c);
         currentCreature = a;
         Player p2 = new Player("2");
@@ -193,7 +193,7 @@ public class GUI extends Base {
             clickListener.y = -1;
             handleMouseClick(x, y);
             //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
-            if (currentCreature.getPath() != null) {
+            if (clicki != -1) {
                 currentCreature.select(game.getMap().getTile(clickj, clicki));
                 creatureViews.get(currentCreature).move(1000);
             }
@@ -258,10 +258,6 @@ public class GUI extends Base {
             1f, 1f, 1f, 1.0f, //specular
             51.2f //shininess
         };
-
-        bananad.bind(gl);
-        bananan.bind(gl);
-        bananas.bind(gl);
 
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material, 0);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material, 4);
