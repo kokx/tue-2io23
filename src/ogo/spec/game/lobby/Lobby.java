@@ -67,8 +67,9 @@ public class Lobby {
         GameMap map = generateMap();
         
         for(int i = 0; i < data.length; i++){
+            Creature[] creatures = new Creature[3];
             for(int j = 0; j < data[i].length; j++){
-                Inhabitant inh;
+                Creature inh;
                 if(data[i][j] == 0){
                     inh = new LandCreature(map.getTile(i*6, j*6), map);
                 }else if(data[i][j] == 1){
@@ -77,7 +78,10 @@ public class Lobby {
                     inh = new AirCreature(map.getTile(i*6, j*6), map);
                 }
                 map.getTile(i*6, j*6).setInhabitant(inh);
+                
+                creatures[j] = inh;
             }
+            players[i].setCreatures(creatures);
         }
         
         Game game2 = new Game(players, generateMap());
