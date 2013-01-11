@@ -124,64 +124,6 @@ abstract public class Base {
     }
     
     /**
-     * Constructs base class.
-     */
-    public Base(Game game) {
-        this.game = game;
-        
-        // Global state.
-        this.gs = new GlobalState();
-
-        // Enable fancy GUI theme.
-        try {
-            UIManager.setLookAndFeel(
-                    "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch (Exception ex) {
-            Logger.getLogger(Base.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        // GUI frame.
-        frame = new MainFrame(gs);
-
-        // OpenGL utility functions.
-        this.glu = new GLU();
-        this.glut = new GLUT();
-
-        // Redirect OpenGL listener to the abstract render functions.
-        GLJPanel glPanel = (GLJPanel) frame.glPanel;
-        glPanel.addGLEventListener(new GLEventDelegate());
-
-        // Attach mouse and keyboard listeners.
-        GLListener listener = new GLListener();
-        glPanel.addMouseListener(listener);
-        glPanel.addMouseMotionListener(listener);
-        glPanel.addMouseWheelListener(listener);
-        glPanel.addKeyListener(listener);
-        glPanel.setFocusable(true);
-        glPanel.requestFocusInWindow();
-
-        // Attach animator to OpenGL panel and begin refresh
-        // at the specified number of frames per second.
-        final FPSAnimator animator =
-                new FPSAnimator((GLJPanel) frame.glPanel, FPS, true);
-        animator.setIgnoreExceptions(false);
-        animator.setPrintExceptions(true);
-
-        animator.start();
-
-        // Stop animator when window is closed.
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                animator.stop();
-            }
-        });
-
-        // Show frame.
-        frame.setVisible(true);
-    }
-
-    /**
      * Called upon the start of the application. Primarily used to configure
      * OpenGL.
      */
@@ -209,7 +151,7 @@ abstract public class Base {
     /**
      * Delegates OpenGL events to abstract methods.
      */
-    private final class GLEventDelegate implements GLEventListener {
+    public final class GLEventDelegate implements GLEventListener {
 
         /**
          * Initialization of OpenGL state.
@@ -302,7 +244,7 @@ abstract public class Base {
      * Handles mouse events of the GLJPanel to support the interactive change of
      * camera angles and distance in the global state.
      */
-    private final class GLListener implements MouseMotionListener,
+    public final class GLListener implements MouseMotionListener,
             MouseListener,
             MouseWheelListener,
             KeyListener {

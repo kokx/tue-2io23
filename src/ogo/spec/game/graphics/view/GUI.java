@@ -1,5 +1,6 @@
 package ogo.spec.game.graphics.view;
 
+import com.jogamp.opengl.util.FPSAnimator;
 import ogo.spec.game.model.*;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
@@ -23,6 +24,8 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLDrawable;
 import javax.media.opengl.GLException;
 import javax.media.opengl.awt.GLJPanel;
+import javax.media.opengl.glu.GLU;
+import javax.swing.UIManager;
 
 public class GUI extends Base {
 
@@ -38,6 +41,68 @@ public class GUI extends Base {
     Timer timer = new Timer(30);
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
     Wavefront models;
+    
+    public GUI() {
+        super();
+    }
+    
+    /**
+     * Constructs GUI class.
+     */
+    public GUI(Game game) {
+        this.game = game;
+        
+        // Global state.
+        this.gs = new GlobalState();
+
+        // Enable fancy GUI theme.
+        try {
+            UIManager.setLookAndFeel(
+                    "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception ex) {
+            Logger.getLogger(Base.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        // GUI frame.
+        frame = new MainFrame(gs);
+
+        // OpenGL utility functions.
+        this.glu = new GLU();
+        this.glut = new GLUT();
+
+        // Redirect OpenGL listener to the abstract render functions.
+        GLJPanel glPanel = (GLJPanel) frame.glPanel;
+        glPanel.addGLEventListener(new Base.GLEventDelegate());
+
+        // Attach mouse and keyboard listeners.
+        Base.GLListener listener = new Base.GLListener();
+        glPanel.addMouseListener(listener);
+        glPanel.addMouseMotionListener(listener);
+        glPanel.addMouseWheelListener(listener);
+        glPanel.addKeyListener(listener);
+        glPanel.setFocusable(true);
+        glPanel.requestFocusInWindow();
+
+        // Attach animator to OpenGL panel and begin refresh
+        // at the specified number of frames per second.
+        final FPSAnimator animator =
+                new FPSAnimator((GLJPanel) frame.glPanel, FPS, true);
+        animator.setIgnoreExceptions(false);
+        animator.setPrintExceptions(true);
+
+        animator.start();
+
+        // Stop animator when window is closed.
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                animator.stop();
+            }
+        });
+
+        // Show frame.
+        frame.setVisible(true);
+    }
 
     /**
      * Called upon the start of the application. Primarily used to configure
