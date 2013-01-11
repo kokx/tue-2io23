@@ -42,8 +42,11 @@ public class GUI implements ActionListener, ListSelectionListener{
 
     public GUI(Lobby p) throws Exception{
         player = p;
-        
+
         nickname = JOptionPane.showInputDialog(null, "Enter your Nickname", null, 1);
+        while(nickname.isEmpty()){
+            nickname = JOptionPane.showInputDialog(null, "Enter your Nickname, and this time, don't leave it blank!", null, 1);
+        }
 
         frame = new JFrame("Play This Awesome Game!");
 
@@ -150,13 +153,11 @@ public class GUI implements ActionListener, ListSelectionListener{
     }
 
     private void startLobby() throws Exception{
-        switchPanels(true);
+        if(player.openLobby()){
+            switchPanels(true);
 
-        frame.repaint();
-
-        player.openLobby();
-
-        startLobbyChecker();
+            startLobbyChecker();
+        }
     }
 
     public void updateLobbyOutput(){

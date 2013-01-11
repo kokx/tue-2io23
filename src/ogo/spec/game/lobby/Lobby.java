@@ -146,8 +146,10 @@ public class Lobby {
     public final static int INIT_PORT = 25945; // this is a UDP port
     public final static int INIT_LISTEN_PORT = 4444; // this is a UDP port
     public final static String BROADCAST_IP = "192.168.1.255";
+    
+    public final static int MAX_CONNECTION_TRIES = 20;
 
-    public void openLobby() throws Exception{
+    public boolean openLobby() throws Exception{
         isHost = true;
 
         /* Start new Server to connect to */
@@ -160,7 +162,8 @@ public class Lobby {
         DatagramSocket sendSock;
         DatagramSocket receiveSock = new DatagramSocket(INIT_PORT);
 
-        while(!done){
+        int count = 0;
+        while(!done && count < MAX_CONNECTION_TRIES){
             packet = new DatagramPacket(new byte[]{2}, 1, InetAddress.getByName(BROADCAST_IP), INIT_PORT);
             sendSock = new DatagramSocket();
             sendSock.send(packet);
@@ -195,7 +198,13 @@ public class Lobby {
                 System.err.println("LOBBY: Could not find own server; unable to connect self to lobby");
             }
             run.stop();
+            count ++;
         }
+        receiveSock.close();
+        if(!done){
+            initServer.close();
+        }
+        return done;
     }
 
     public void joinLobby(int serverNum) throws Exception{
