@@ -87,14 +87,20 @@ class ConnectClients implements Runnable{
         
     }
     
-    public List<GameProto.InitialGameState.Creature> createCreaturesFromData(int[][] data){
-        return null;
+    public List<Integer> createCreaturesFromData(int[][] data){
+        List<Integer> list = new ArrayList<Integer>();
+        for(int i = 0; i < data.length; i++){
+            for (int j = 0; j < data[i].length; j++) {
+                list.add(data[i][j]);
+            }
+        }
+        return list;
     }
     
     public void sendInitialGameState(int[][] data){
         for(Client c : server.clients){
             GameProto.InitialGameState init = GameProto.InitialGameState.newBuilder()
-                    .addAllCreatures(createCreaturesFromData(data))
+                    .addAllData(createCreaturesFromData(data))
                     .build();
             c.sendInitialGameState(init);
         }

@@ -168,24 +168,20 @@ public class Client {
     public void connectToPeer() throws IOException, UnknownHostException, InterruptedException
     {
         // find initialization port
-        System.out.println("Port");
         int port = init.getPort();
+        
         // create a local server with the given port
-        System.out.println("Open");
+        
         server = new PeerServer(port);
 
         // tell the server we got the message and started a server
-        System.out.println("Reply");
         init.reply(true);
         
         // create a connection to the given peer
-        System.out.println("ConnectTo");
         info = init.getConnectTo();
 
-        System.out.println("Listen");
         new Thread(new ServerConnectionListenRunnable(server)).start();
 
-        System.out.println("Client");
         client = new PeerClient(info);
 
         // wait until we are connected
@@ -194,12 +190,7 @@ public class Client {
             Thread.sleep(100);
         }
         
-        System.out.println("Reply");
         init.reply(true);
-
-        
-        
-        //System.out.println(port + "  "  + info.port);
     }
     
     public void startTokenRing() throws Exception{
@@ -281,7 +272,7 @@ public class Client {
         init.sendReady(ready);
     }
     
-    public int[][] receiveInitialGameState(){
-        return null;
+    public int[][] receiveInitialGameState() throws Exception{
+        return init.receiveInitialGameState();
     }
 }

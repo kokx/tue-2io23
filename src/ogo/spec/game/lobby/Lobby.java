@@ -10,6 +10,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import ogo.spec.game.model.Game;
 import ogo.spec.game.multiplayer.PeerInfo;
 import ogo.spec.game.multiplayer.client.Client;
 import ogo.spec.game.multiplayer.initserver.ChatServer;
@@ -35,8 +36,18 @@ public class Lobby {
         isHost = false;
     }
 
-    private void initGame(int[][] creatureData){
-        game = new GameRun();
+    private void initGame(int[][] data){
+        /*for(int i = 0; i < data.length; i++){
+            for (int j = 0; j < data[i].length; j++) {
+                System.out.print(" " + data[i][j]);
+            }
+            System.out.println("");
+        }*/
+        if(true)return;
+        //Game game2 = new Game();
+        // init Game
+        
+        //game = new GameRun(game2);
         client.setTokenChangeListener(game);
     }
 
