@@ -32,9 +32,9 @@ public abstract class Creature extends Inhabitant {
         this.attackCooldown = 0;
         this.lifeCooldown = 0;
         this.life = 15;
-        
+
         currentTile.setInhabitant(this);
-        
+
         path = new CreaturePath(map, super.currentTile, getAllowedTypes());
     }
 
@@ -58,7 +58,7 @@ public abstract class Creature extends Inhabitant {
      * tick() take care of life, attacking and moving.
      * For each of these actions there is a private function
      */
-    public void tick() {
+    public void tick(long tick) {
         //call life tick
         this.lifeTick();
         //call attack tick
@@ -87,7 +87,7 @@ public abstract class Creature extends Inhabitant {
             if (this.attackingCreature == null
                     && nextTile != null
                     && this.canMove(this.calculateMoveSpeed(super.currentTile, nextTile))
-                    ) {
+               ) {
                 Inhabitant inhabitant = nextTile.getInhabitant();
                 if (inhabitant == null) {
                     //no inhabitant on next tile, lets move there <:)
@@ -171,7 +171,7 @@ public abstract class Creature extends Inhabitant {
     }
 
     protected void die() {
-        
+
     }
 
     public void select(Tile tile) {
