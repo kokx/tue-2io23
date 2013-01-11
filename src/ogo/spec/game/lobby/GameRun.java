@@ -56,7 +56,9 @@ public class GameRun implements TokenChangeListener
     {
         LinkedList<Change> changes = new LinkedList<Change>();
 
-        while ((Change change = game.poll()) != null) {
+        Change change;
+
+        while ((change = game.poll()) != null) {
             changes.add(change);
         }
 
