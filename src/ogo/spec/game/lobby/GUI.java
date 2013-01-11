@@ -37,9 +37,13 @@ public class GUI implements ActionListener, ListSelectionListener{
     protected JRadioButton[][] creatureButtons;
 
     protected String[] noLobbys = {"No Lobbys Were Found"};
+    
+    String nickname;
 
     public GUI(Lobby p) throws Exception{
         player = p;
+        
+        nickname = JOptionPane.showInputDialog(null, "Enter your Nickname", null, 1);
 
         frame = new JFrame("Play This Awesome Game!");
 

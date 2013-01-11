@@ -10,9 +10,11 @@ message IsReady {
     required int32 creature1 = 1;
 	required int32 creature2 = 2;
 	required int32 creature3 = 3;
+	required string name = 4;
 }
 message InitialGameState {
 	repeated int32 data = 1;
+	repeated string names = 2;
 }
 message Reply {
     required bool done = 1;

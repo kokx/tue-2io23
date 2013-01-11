@@ -368,6 +368,10 @@ public final class GameProto {
     // required int32 creature3 = 3;
     boolean hasCreature3();
     int getCreature3();
+    
+    // required string name = 4;
+    boolean hasName();
+    String getName();
   }
   public static final class IsReady extends
       com.google.protobuf.GeneratedMessage
@@ -428,10 +432,43 @@ public final class GameProto {
       return creature3_;
     }
     
+    // required string name = 4;
+    public static final int NAME_FIELD_NUMBER = 4;
+    private java.lang.Object name_;
+    public boolean hasName() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    public String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          name_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       creature1_ = 0;
       creature2_ = 0;
       creature3_ = 0;
+      name_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -450,6 +487,10 @@ public final class GameProto {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!hasName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -465,6 +506,9 @@ public final class GameProto {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt32(3, creature3_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getNameBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -486,6 +530,10 @@ public final class GameProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, creature3_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getNameBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -617,6 +665,8 @@ public final class GameProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         creature3_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
+        name_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
       
@@ -667,6 +717,10 @@ public final class GameProto {
           to_bitField0_ |= 0x00000004;
         }
         result.creature3_ = creature3_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.name_ = name_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -692,6 +746,9 @@ public final class GameProto {
         if (other.hasCreature3()) {
           setCreature3(other.getCreature3());
         }
+        if (other.hasName()) {
+          setName(other.getName());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -706,6 +763,10 @@ public final class GameProto {
           return false;
         }
         if (!hasCreature3()) {
+          
+          return false;
+        }
+        if (!hasName()) {
           
           return false;
         }
@@ -748,6 +809,11 @@ public final class GameProto {
             case 24: {
               bitField0_ |= 0x00000004;
               creature3_ = input.readInt32();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000008;
+              name_ = input.readBytes();
               break;
             }
           }
@@ -819,6 +885,42 @@ public final class GameProto {
         return this;
       }
       
+      // required string name = 4;
+      private java.lang.Object name_ = "";
+      public boolean hasName() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      public String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          name_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setName(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearName() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      void setName(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000008;
+        name_ = value;
+        onChanged();
+      }
+      
       // @@protoc_insertion_point(builder_scope:ogo.spec.game.multiplayer.IsReady)
     }
     
@@ -837,6 +939,11 @@ public final class GameProto {
     java.util.List<java.lang.Integer> getDataList();
     int getDataCount();
     int getData(int index);
+    
+    // repeated string names = 2;
+    java.util.List<String> getNamesList();
+    int getNamesCount();
+    String getNames(int index);
   }
   public static final class InitialGameState extends
       com.google.protobuf.GeneratedMessage
@@ -880,8 +987,23 @@ public final class GameProto {
       return data_.get(index);
     }
     
+    // repeated string names = 2;
+    public static final int NAMES_FIELD_NUMBER = 2;
+    private com.google.protobuf.LazyStringList names_;
+    public java.util.List<String>
+        getNamesList() {
+      return names_;
+    }
+    public int getNamesCount() {
+      return names_.size();
+    }
+    public String getNames(int index) {
+      return names_.get(index);
+    }
+    
     private void initFields() {
       data_ = java.util.Collections.emptyList();;
+      names_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -897,6 +1019,9 @@ public final class GameProto {
       getSerializedSize();
       for (int i = 0; i < data_.size(); i++) {
         output.writeInt32(1, data_.get(i));
+      }
+      for (int i = 0; i < names_.size(); i++) {
+        output.writeBytes(2, names_.getByteString(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -915,6 +1040,15 @@ public final class GameProto {
         }
         size += dataSize;
         size += 1 * getDataList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < names_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(names_.getByteString(i));
+        }
+        size += dataSize;
+        size += 1 * getNamesList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1042,6 +1176,8 @@ public final class GameProto {
         super.clear();
         data_ = java.util.Collections.emptyList();;
         bitField0_ = (bitField0_ & ~0x00000001);
+        names_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
@@ -1084,6 +1220,12 @@ public final class GameProto {
           bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.data_ = data_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          names_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              names_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.names_ = names_;
         onBuilt();
         return result;
       }
@@ -1106,6 +1248,16 @@ public final class GameProto {
           } else {
             ensureDataIsMutable();
             data_.addAll(other.data_);
+          }
+          onChanged();
+        }
+        if (!other.names_.isEmpty()) {
+          if (names_.isEmpty()) {
+            names_ = other.names_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureNamesIsMutable();
+            names_.addAll(other.names_);
           }
           onChanged();
         }
@@ -1152,6 +1304,11 @@ public final class GameProto {
                 addData(input.readInt32());
               }
               input.popLimit(limit);
+              break;
+            }
+            case 18: {
+              ensureNamesIsMutable();
+              names_.add(input.readBytes());
               break;
             }
           }
@@ -1203,6 +1360,62 @@ public final class GameProto {
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
+      }
+      
+      // repeated string names = 2;
+      private com.google.protobuf.LazyStringList names_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureNamesIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          names_ = new com.google.protobuf.LazyStringArrayList(names_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      public java.util.List<String>
+          getNamesList() {
+        return java.util.Collections.unmodifiableList(names_);
+      }
+      public int getNamesCount() {
+        return names_.size();
+      }
+      public String getNames(int index) {
+        return names_.get(index);
+      }
+      public Builder setNames(
+          int index, String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureNamesIsMutable();
+        names_.set(index, value);
+        onChanged();
+        return this;
+      }
+      public Builder addNames(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureNamesIsMutable();
+        names_.add(value);
+        onChanged();
+        return this;
+      }
+      public Builder addAllNames(
+          java.lang.Iterable<String> values) {
+        ensureNamesIsMutable();
+        super.addAll(values, names_);
+        onChanged();
+        return this;
+      }
+      public Builder clearNames() {
+        names_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      void addNames(com.google.protobuf.ByteString value) {
+        ensureNamesIsMutable();
+        names_.add(value);
+        onChanged();
       }
       
       // @@protoc_insertion_point(builder_scope:ogo.spec.game.multiplayer.InitialGameState)
@@ -3635,21 +3848,22 @@ public final class GameProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\017GameProto.proto\022\031ogo.spec.game.multipl" +
-      "ayer\"\024\n\004Init\022\014\n\004port\030\001 \002(\005\"B\n\007IsReady\022\021\n" +
+      "ayer\"\024\n\004Init\022\014\n\004port\030\001 \002(\005\"P\n\007IsReady\022\021\n" +
       "\tcreature1\030\001 \002(\005\022\021\n\tcreature2\030\002 \002(\005\022\021\n\tc" +
-      "reature3\030\003 \002(\005\" \n\020InitialGameState\022\014\n\004da" +
-      "ta\030\001 \003(\005\"\025\n\005Reply\022\014\n\004done\030\001 \002(\010\"3\n\tConne" +
-      "ctTo\022\n\n\002ip\030\001 \002(\014\022\014\n\004port\030\002 \002(\005\022\014\n\004init\030\003" +
-      " \002(\010\"\351\002\n\005Token\0228\n\007message\030\001 \003(\0132\'.ogo.sp" +
-      "ec.game.multiplayer.Token.Change\022\016\n\006last" +
-      "Id\030\002 \002(\005\032\304\001\n\006Change\022\n\n\002id\030\001 \002(\005\022\014\n\004tick\030" +
-      "\002 \002(\003\022\020\n\010playerId\030\003 \002(\005\0229\n\004type\030\004 \002(\0162+.",
-      "ogo.spec.game.multiplayer.Token.ChangeTy" +
-      "pe\022\022\n\ncreatureId\030\005 \002(\005\022\t\n\001x\030\006 \001(\005\022\t\n\001y\030\007" +
-      " \001(\005\022\020\n\010newValue\030\010 \001(\005\022\027\n\017otherCreatureI" +
-      "d\030\t \001(\005\"O\n\nChangeType\022\021\n\rMOVE_CREATURE\020\000" +
-      "\022\n\n\006HEALTH\020\001\022\n\n\006ENERGY\020\002\022\026\n\022ATTACKING_CR" +
-      "EATURE\020\003B\033\n\031ogo.spec.game.multiplayer"
+      "reature3\030\003 \002(\005\022\014\n\004name\030\004 \002(\t\"/\n\020InitialG" +
+      "ameState\022\014\n\004data\030\001 \003(\005\022\r\n\005names\030\002 \003(\t\"\025\n" +
+      "\005Reply\022\014\n\004done\030\001 \002(\010\"3\n\tConnectTo\022\n\n\002ip\030" +
+      "\001 \002(\014\022\014\n\004port\030\002 \002(\005\022\014\n\004init\030\003 \002(\010\"\351\002\n\005To" +
+      "ken\0228\n\007message\030\001 \003(\0132\'.ogo.spec.game.mul" +
+      "tiplayer.Token.Change\022\016\n\006lastId\030\002 \002(\005\032\304\001" +
+      "\n\006Change\022\n\n\002id\030\001 \002(\005\022\014\n\004tick\030\002 \002(\003\022\020\n\010pl",
+      "ayerId\030\003 \002(\005\0229\n\004type\030\004 \002(\0162+.ogo.spec.ga" +
+      "me.multiplayer.Token.ChangeType\022\022\n\ncreat" +
+      "ureId\030\005 \002(\005\022\t\n\001x\030\006 \001(\005\022\t\n\001y\030\007 \001(\005\022\020\n\010new" +
+      "Value\030\010 \001(\005\022\027\n\017otherCreatureId\030\t \001(\005\"O\n\n" +
+      "ChangeType\022\021\n\rMOVE_CREATURE\020\000\022\n\n\006HEALTH\020" +
+      "\001\022\n\n\006ENERGY\020\002\022\026\n\022ATTACKING_CREATURE\020\003B\033\n" +
+      "\031ogo.spec.game.multiplayer"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -3669,7 +3883,7 @@ public final class GameProto {
           internal_static_ogo_spec_game_multiplayer_IsReady_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogo_spec_game_multiplayer_IsReady_descriptor,
-              new java.lang.String[] { "Creature1", "Creature2", "Creature3", },
+              new java.lang.String[] { "Creature1", "Creature2", "Creature3", "Name", },
               ogo.spec.game.multiplayer.GameProto.IsReady.class,
               ogo.spec.game.multiplayer.GameProto.IsReady.Builder.class);
           internal_static_ogo_spec_game_multiplayer_InitialGameState_descriptor =
@@ -3677,7 +3891,7 @@ public final class GameProto {
           internal_static_ogo_spec_game_multiplayer_InitialGameState_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogo_spec_game_multiplayer_InitialGameState_descriptor,
-              new java.lang.String[] { "Data", },
+              new java.lang.String[] { "Data", "Names", },
               ogo.spec.game.multiplayer.GameProto.InitialGameState.class,
               ogo.spec.game.multiplayer.GameProto.InitialGameState.Builder.class);
           internal_static_ogo_spec_game_multiplayer_Reply_descriptor =

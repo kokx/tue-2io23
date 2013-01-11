@@ -97,10 +97,19 @@ class ConnectClients implements Runnable{
         return list;
     }
     
-    public void sendInitialGameState(int[][] data){
+    public List<String> createNamesFromData(String[] names){
+        List<String> list = new ArrayList<String>();
+        for(int i = 0; i < names.length; i++){
+            list.add(names[i]);
+        }
+        return list;
+    }
+    
+    public void sendInitialGameState(int[][] data, String[] names){
         for(Client c : server.clients){
             GameProto.InitialGameState init = GameProto.InitialGameState.newBuilder()
                     .addAllData(createCreaturesFromData(data))
+                    .addAllNames(createNamesFromData(names))
                     .build();
             c.sendInitialGameState(init);
         }
@@ -113,11 +122,14 @@ class ClientsReadyRunnable implements Runnable{
     
     boolean isReady;
     boolean threadRunning;
+    
+    GameProto.IsReady[] data;
     public ClientsReadyRunnable(ConnectClients c){
         connect = c;
         expectingClients = new ArrayList<Client>();
         isReady = false;
         threadRunning = true;
+        data = null;
     }
     
     public void run(){
@@ -157,13 +169,31 @@ class ClientsReadyRunnable implements Runnable{
         threadRunning = false;
     }
     
+    private void getData() throws Exception{
+        if(data == null){
+            data = new GameProto.IsReady[expectingClients.size()];
+            for(int i = 0; i < expectingClients.size(); i++){
+                data[i] = GameProto.IsReady.parseFrom(expectingClients.get(i).getData());
+            }
+        }
+    }
+    
     public int[][] getCreatureTypes() throws Exception{
         int[][] result = new int[expectingClients.size()][3];
-        for(int i = expectingClients.size()-1; i >= 0; i--){
-            GameProto.IsReady ready = GameProto.IsReady.parseFrom(expectingClients.get(i).getData());
-            result[i][0] = ready.getCreature1();
-            result[i][1] = ready.getCreature2();
-            result[i][2] = ready.getCreature3();
+        getData();
+        for(int i = 0; i < data.length; i++){
+            result[i][0] = data[i].getCreature1();
+            result[i][1] = data[i].getCreature2();
+            result[i][2] = data[i].getCreature3();
+        }
+        return result;
+    }
+    
+    public String[] getNames() throws Exception{
+        String[] result = new String[expectingClients.size()];
+        getData();
+        for(int i = 0; i < data.length; i++){
+            result[i] = data[i].getName();
         }
         return result;
     }
@@ -183,8 +213,8 @@ public class ChatServer {
     private DatagramSocket sock = null;
     private BroadcastReceiverRunnable run = null;
     
-    public void sendInitialGameState(int[][] data){
-        connect.sendInitialGameState(data);
+    public void sendInitialGameState(int[][] data, String[] names){
+        connect.sendInitialGameState(data, names);
     }
     
     public void initConnection() throws InterruptedException{
@@ -205,6 +235,10 @@ public class ChatServer {
     
     public int[][] getCreatureTypes() throws Exception{
         return readyState.getCreatureTypes();
+    }
+    
+    public String[] getNames() throws Exception{
+        return readyState.getNames();
     }
     
     public void close() throws Exception{

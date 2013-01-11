@@ -9,8 +9,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import ogo.spec.game.model.Game;
+import ogo.spec.game.model.*;
 import ogo.spec.game.multiplayer.PeerInfo;
 import ogo.spec.game.multiplayer.client.Client;
 import ogo.spec.game.multiplayer.initserver.ChatServer;
@@ -35,19 +36,52 @@ public class Lobby {
     public Lobby(){
         isHost = false;
     }
-
-    private void initGame(int[][] data){
-        /*for(int i = 0; i < data.length; i++){
-            for (int j = 0; j < data[i].length; j++) {
-                System.out.print(" " + data[i][j]);
+    
+    private GameMap generateMap(){
+        Random generator = new Random(0);
+        TileType[][] types = new TileType[50][50];
+        for (int i = 0; i < types.length; i++) {
+            for (int j = 0; j < types[0].length; j++) {
+                int type = generator.nextInt(3);
+                switch (type) {
+                    case 0:
+                        types[j][i] = TileType.DEEP_WATER;
+                        break;
+                    case 1:
+                        types[j][i] = TileType.LAND;
+                        break;
+                    case 2:
+                        types[j][i] = TileType.SHALLOW_WATER;
+                        break;
+                }
             }
-            System.out.println("");
-        }*/
-        if(true)return;
-        //Game game2 = new Game();
-        // init Game
+        }
+        return new GameMap(types);
+    }
+
+    private void initGame(int[][] data, String[] names){
+        Player[] players = new Player[data.length];
+        for (int i = 0; i < data.length; i++) {
+            players[i] = new Player(names[i]);
+        }
+        GameMap map = generateMap();
         
-        //game = new GameRun(game2);
+        for(int i = 0; i < data.length; i++){
+            for(int j = 0; j < data[i].length; j++){
+                Inhabitant inh;
+                if(data[i][j] == 0){
+                    inh = new LandCreature(map.getTile(i*6, j*6), map);
+                }else if(data[i][j] == 1){
+                    inh = new SeaCreature(map.getTile(i*6, j*6), map);
+                }else{
+                    inh = new AirCreature(map.getTile(i*6, j*6), map);
+                }
+                map.getTile(i*6, j*6).setInhabitant(inh);
+            }
+        }
+        Game game2 = new Game(players, generateMap());
+        
+        game = new GameRun(game2);
         client.setTokenChangeListener(game);
     }
 
@@ -170,13 +204,12 @@ public class Lobby {
         client.connectToInitServer(serverList.get(serverNum));
     }
 
-    private GameProto.IsReady parseReadyInfo(){
+    private GameProto.IsReady.Builder parseReadyInfo(){
         int[] creatures = theGui.getCreatureInfo();
         return  GameProto.IsReady.newBuilder()
                 .setCreature1(creatures[0])
                 .setCreature2(creatures[1])
-                .setCreature3(creatures[2])
-                .build();
+                .setCreature3(creatures[2]);
     }
 
     class TokenRingRunnable implements Runnable
@@ -197,33 +230,46 @@ public class Lobby {
 
     public void finishConnection() throws Exception
     {
-        int[][] creatureData = client.receiveInitialGameState();
+        GameProto.InitialGameState data = client.receiveInitialGameState();
+        
+        int players = data.getDataCount()/3;
+        int[][] creatureData = new int[players][3];
+        String[] names = new String[players];
+        for(int i = 0; i < players; i++){
+            for (int j = 0; j < 3; j++) {
+                creatureData[i][j] = data.getData(i*3 + j);
+            }
+            names[i] = data.getNames(i);
+        }
+        
         
         client.connectToPeer();
         
         theGui.stop();
         
-        initGame(creatureData);
+        initGame(creatureData, names);
 
         new Thread(new TokenRingRunnable(client)).start();
     }
 
     public void setReady() throws Exception{
-        GameProto.IsReady ready = parseReadyInfo();
-        client.setReady(ready);
+        GameProto.IsReady.Builder ready = parseReadyInfo();
+        client.setReady(ready.setName(theGui.nickname).build());
     }
 
     class InitConnectionRunnable implements Runnable{
         ChatServer init;
         int[][] data;
-        public InitConnectionRunnable(ChatServer initServer, int[][] creatureData){
+        String[] names;
+        public InitConnectionRunnable(ChatServer initServer, int[][] creatureData, String[] playerNames){
             init = initServer;
             data = creatureData;
+            names = playerNames;
         }
 
         public void run(){
             try{
-                init.sendInitialGameState(data);
+                init.sendInitialGameState(data, names);
                 
                 init.initConnection();
             } catch (Exception e){
@@ -241,7 +287,12 @@ public class Lobby {
         
         int[][] creatureData = initServer.getCreatureTypes();
         
-        new Thread(new InitConnectionRunnable(initServer, creatureData)).start();
+        String[] names = initServer.getNames();
+        for(int i = 0; i < names.length; i++){
+            names[i] = i + "-" + names[i];
+        }
+        
+        new Thread(new InitConnectionRunnable(initServer, creatureData, names)).start();
 
         finishConnection();
     }
