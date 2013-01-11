@@ -4,25 +4,16 @@
  */
 package ogo.spec.game.lobby;
 
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
 import ogo.spec.game.multiplayer.GameProto.Token;
 import ogo.spec.game.multiplayer.client.TokenChangeListener;
 
 /**
- *
- * @author florian
+ * Main game class.
  */
-public class tempGame extends JFrame implements TokenChangeListener{
+public class Game implements TokenChangeListener{
 
     int nextId;
-    public tempGame(){
-        super("This is the AWESOMEST GAME EVUURRR!!!");
-
-        setSize(400, 100);
-
-        setVisible(true);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    public Game(){
     }
 
     public void saveInfo(Token token){

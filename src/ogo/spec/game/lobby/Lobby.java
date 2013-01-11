@@ -23,7 +23,7 @@ import ogo.spec.game.multiplayer.GameProto.Token;
  * @author florian
  */
 public class Lobby {
-    tempGame game;
+    Game game;
 
     GUI theGui;
 
@@ -39,7 +39,7 @@ public class Lobby {
     }
 
     private void initGame(){
-        game = new tempGame();
+        game = new Game();
         client.setTokenChangeListener(game);
     }
 
