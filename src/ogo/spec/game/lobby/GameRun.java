@@ -22,14 +22,16 @@ public class GameRun implements TokenChangeListener
     protected int nextId;
     protected long lastMessage = -1;
     protected int counter = 0;
+    protected int playerId; // the ID of the player behind this computer
     protected Game game;
 
     /**
      * Run the game.
      */
-    public GameRun(Game game)
+    public GameRun(Game game, int playerId)
     {
         this.game = game;
+        this.playerId = playerId;
 
         startGraphics();
     }
