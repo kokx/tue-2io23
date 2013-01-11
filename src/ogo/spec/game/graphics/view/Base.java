@@ -23,6 +23,7 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.swing.UIManager;
+import ogo.spec.game.model.Game;
 
 /**
  * Handles all of the graphics functionality.
@@ -64,11 +65,70 @@ abstract public class Base {
     // Textures.
     protected Texture land, shallowWater, deepWater, empty, red;
     MainFrame frame;
+    Game game;
 
     /**
      * Constructs base class.
      */
     public Base() {
+        // Global state.
+        this.gs = new GlobalState();
+
+        // Enable fancy GUI theme.
+        try {
+            UIManager.setLookAndFeel(
+                    "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception ex) {
+            Logger.getLogger(Base.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        // GUI frame.
+        frame = new MainFrame(gs);
+
+        // OpenGL utility functions.
+        this.glu = new GLU();
+        this.glut = new GLUT();
+
+        // Redirect OpenGL listener to the abstract render functions.
+        GLJPanel glPanel = (GLJPanel) frame.glPanel;
+        glPanel.addGLEventListener(new GLEventDelegate());
+
+        // Attach mouse and keyboard listeners.
+        GLListener listener = new GLListener();
+        glPanel.addMouseListener(listener);
+        glPanel.addMouseMotionListener(listener);
+        glPanel.addMouseWheelListener(listener);
+        glPanel.addKeyListener(listener);
+        glPanel.setFocusable(true);
+        glPanel.requestFocusInWindow();
+
+        // Attach animator to OpenGL panel and begin refresh
+        // at the specified number of frames per second.
+        final FPSAnimator animator =
+                new FPSAnimator((GLJPanel) frame.glPanel, FPS, true);
+        animator.setIgnoreExceptions(false);
+        animator.setPrintExceptions(true);
+
+        animator.start();
+
+        // Stop animator when window is closed.
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                animator.stop();
+            }
+        });
+
+        // Show frame.
+        frame.setVisible(true);
+    }
+    
+    /**
+     * Constructs base class.
+     */
+    public Base(Game game) {
+        this.game = game;
+        
         // Global state.
         this.gs = new GlobalState();
 

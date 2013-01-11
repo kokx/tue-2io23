@@ -26,7 +26,6 @@ import javax.media.opengl.awt.GLJPanel;
 
 public class GUI extends Base {
 
-    Game game;
     ClickListener clickListener;
     KeyListener keyListener;
     int clicki = -1, clickj = -1;
@@ -71,46 +70,48 @@ public class GUI extends Base {
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
         // Create game object
-        Random generator = new Random(0);
-        TileType[][] types = new TileType[50][50];
-        for (int i = 0; i < types.length; i++) {
-            for (int j = 0; j < types[0].length; j++) {
-                int type = generator.nextInt(3);
-                switch (type) {
-                    case 0:
-                        types[j][i] = TileType.DEEP_WATER;
-                        break;
-                    case 1:
-                        types[j][i] = TileType.LAND;
-                        break;
-                    case 2:
-                        types[j][i] = TileType.SHALLOW_WATER;
-                        break;
+        if (game == null) {
+            Random generator = new Random(0);
+            TileType[][] types = new TileType[50][50];
+            for (int i = 0; i < types.length; i++) {
+                for (int j = 0; j < types[0].length; j++) {
+                    int type = generator.nextInt(3);
+                    switch (type) {
+                        case 0:
+                            types[j][i] = TileType.DEEP_WATER;
+                            break;
+                        case 1:
+                            types[j][i] = TileType.LAND;
+                            break;
+                        case 2:
+                            types[j][i] = TileType.SHALLOW_WATER;
+                            break;
+                    }
                 }
             }
-        }
-        GameMap map = new GameMap(types);
-        AirCreature a = new AirCreature(map.getTile(0, 0), map);
-        SeaCreature s = new SeaCreature(map.getTile(2, 2), map);
-        map.getTile(0, 0).setInhabitant(a);
-        map.getTile(1, 1).setInhabitant(new Food());
-        map.getTile(2, 2).setInhabitant(s);
+            GameMap map = new GameMap(types);
+            AirCreature a = new AirCreature(map.getTile(0, 0), map);
+            SeaCreature s = new SeaCreature(map.getTile(2, 2), map);
+            map.getTile(0, 0).setInhabitant(a);
+            map.getTile(1, 1).setInhabitant(new Food());
+            map.getTile(2, 2).setInhabitant(s);
 
-        Player p1 = new Player("1");
-        Creature[] p1c = {a};
-        p1.setCreatures(p1c);
-        currentCreature = a;
-        Player p2 = new Player("2");
-        Creature[] p2c = {};
-        p2.setCreatures(p2c);
-        player = p1;
-        Player[] players = new Player[2];
-        players[0] = p1;
-        players[1] = p2;
-        try {
-            game = new Game(players, map);
-        } catch (Exception ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            Player p1 = new Player("1");
+            Creature[] p1c = {a};
+            p1.setCreatures(p1c);
+            currentCreature = a;
+            Player p2 = new Player("2");
+            Creature[] p2c = {};
+            p2.setCreatures(p2c);
+            player = p1;
+            Player[] players = new Player[2];
+            players[0] = p1;
+            players[1] = p2;
+            try {
+                game = new Game(players, map);
+            } catch (Exception ex) {
+                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
 
         creatureViews = new HashMap<Creature, CreatureView>();
@@ -350,7 +351,7 @@ public class GUI extends Base {
 
         for (Player p : game) {
             for (Creature c : p) {
-                if(c.getMoveCooldown() == 0 ){
+                if (c.getMoveCooldown() == 0) {
                     creatureViews.get(c).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
                 }
                 gl.glPushMatrix();
