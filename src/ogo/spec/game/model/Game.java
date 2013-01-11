@@ -73,6 +73,16 @@ public class Game implements Iterable<Player> {
         return map;
     }
     
+    public Player getPlayer(int id) {
+        return players[id];
+    }
+    
+    public Creature getCreature(int id) {
+        int player = id / 3;
+        int creature = id % 3;
+        return players[player].getCreatures()[creature];
+    }
+    
     public Player[] getPlayers() {
         return players;
     }
