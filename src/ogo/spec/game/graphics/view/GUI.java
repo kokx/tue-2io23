@@ -195,7 +195,7 @@ public class GUI extends Base {
             //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
             if (clicki != -1) {
                 currentCreature.select(game.getMap().getTile(clickj, clicki));
-                creatureViews.get(currentCreature).move(1000);
+                creatureViews.get(currentCreature).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
             }
 
             //gs.cnt = vViewChange.add(new Vector(clickj, clicki, 0));
