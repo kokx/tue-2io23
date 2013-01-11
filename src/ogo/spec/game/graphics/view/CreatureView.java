@@ -21,7 +21,7 @@ public class CreatureView {
     }
 
     public void move(double animationLength) {
-        previousLocation = creature.getPath().getPreviousTile();
+        previousLocation = creature.getPath().getCurrentTile();
         t0 = timer.getTime();
         this.animationLength = animationLength;
         unit = timer.getSleepTime() / animationLength;
@@ -38,7 +38,6 @@ public class CreatureView {
                 double y = (currentTile.getY() - previousLocation.getY()) * scalar;
                 double z = 0;
                 Vector V = new Vector(x, y, z); //vector to move over
-
                 x = previousLocation.getX();
                 y = previousLocation.getY();
                 z = 0;
@@ -53,7 +52,6 @@ public class CreatureView {
                  System.out.println("t0:" + t0);
 
                  System.out.println();*/
-
                 return P.add(V);
             } else {
                 previousLocation = currentTile;
