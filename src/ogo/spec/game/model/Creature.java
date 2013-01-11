@@ -177,6 +177,9 @@ public abstract class Creature extends Inhabitant {
     public void select(Tile tile) {
         path.calculatePath(tile);
     }
+    public int getMoveCooldown(){
+        return moveCooldown;
+    }
 
     /**
      * move to a tile, immediately moving to the next tile
