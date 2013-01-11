@@ -350,6 +350,9 @@ public class GUI extends Base {
 
         for (Player p : game) {
             for (Creature c : p) {
+                if(c.getMoveCooldown() == 0 ){
+                    creatureViews.get(c).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
+                }
                 gl.glPushMatrix();
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
                 gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
@@ -395,7 +398,7 @@ public class GUI extends Base {
                 Inhabitant inhabitant = map.getTile(j, i).getInhabitant();
                 if (inhabitant instanceof Creature) {
                     gl.glColor3f(1, 0, 0);
-                    //red.bind(gl);
+                    red.bind(gl);
                 } else {
                     switch (type) {
                         case DEEP_WATER:
