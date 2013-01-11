@@ -39,7 +39,7 @@ public class GameRun implements TokenChangeListener
      */
     void startGraphics()
     {
-        new GUI(game);
+        new GUI(game, null); // TODO: replace null reference with player object
     }
 
     // other methods
