@@ -6,10 +6,17 @@ message Init {
     // send from server to client
     required int32 port = 1;
 }
-message IsReady{
+message IsReady {
     required int32 creature1 = 1;
 	required int32 creature2 = 2;
 	required int32 creature3 = 3;
+}
+message InitialGameState {
+	message Creature {
+		required int32 player = 1;
+		required int32 type = 2;
+	}
+	repeated Creature creatures = 1;
 }
 message Reply {
     required bool done = 1;

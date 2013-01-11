@@ -280,4 +280,8 @@ public class Client {
     public void setReady(GameProto.IsReady ready){
         init.sendReady(ready);
     }
+    
+    public int[][] receiveInitialGameState(){
+        return null;
+    }
 }

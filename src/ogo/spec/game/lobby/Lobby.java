@@ -35,7 +35,7 @@ public class Lobby {
         isHost = false;
     }
 
-    private void initGame(){
+    private void initGame(int[][] creatureData){
         game = new GameRun();
         client.setTokenChangeListener(game);
     }
@@ -186,31 +186,34 @@ public class Lobby {
 
     public void finishConnection() throws Exception
     {
-        System.out.println("Finish");
+        int[][] creatureData = client.receiveInitialGameState();
+        
         client.connectToPeer();
-
-        System.out.println("Stop Gui");
+        
         theGui.stop();
-        initGame();
+        
+        initGame(creatureData);
 
         new Thread(new TokenRingRunnable(client)).start();
     }
 
     public void setReady() throws Exception{
         GameProto.IsReady ready = parseReadyInfo();
-        System.out.println("Parse Ready Done");
         client.setReady(ready);
     }
 
     class InitConnectionRunnable implements Runnable{
         ChatServer init;
-
-        public InitConnectionRunnable(ChatServer initServer){
+        int[][] data;
+        public InitConnectionRunnable(ChatServer initServer, int[][] creatureData){
             init = initServer;
+            data = creatureData;
         }
 
         public void run(){
             try{
+                init.sendInitialGameState(data);
+                
                 init.initConnection();
             } catch (Exception e){
                 System.err.println("Problem with Init Server:\n" + e.getMessage());
@@ -219,19 +222,17 @@ public class Lobby {
     }
 
     public void startGame() throws Exception{
-        assert(isHost);
-
+        assert(isHost && canStartGame());
+        
         setReady();
 
         initServer.stopReadyState();
+        
+        int[][] creatureData = initServer.getCreatureTypes();
+        
+        new Thread(new InitConnectionRunnable(initServer, creatureData)).start();
 
-        if(canStartGame()){
-            new Thread(new InitConnectionRunnable(initServer)).start();
-
-            finishConnection();
-        }else{
-            System.out.println("Playing on your own? You pathetic loser!!!!");
-        }
+        finishConnection();
     }
 
     public int getClientCount(){
