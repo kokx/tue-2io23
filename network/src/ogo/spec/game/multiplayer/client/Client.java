@@ -164,6 +164,7 @@ public class Client {
         init = new InitServer(serv.ip, serv.port);
     }
     
+    PeerInfo info;
     public void connectToPeer() throws IOException, UnknownHostException, InterruptedException
     {
         // find initialization port
@@ -175,7 +176,7 @@ public class Client {
         init.reply(true);
         
         // create a connection to the given peer
-        PeerInfo info = init.getConnectTo();
+        info = init.getConnectTo();
 
         new Thread(new ServerConnectionListenRunnable(server)).start();
 
@@ -189,16 +190,20 @@ public class Client {
         
         init.reply(true);
 
-        if (info.init) {
-            init();
-        }
+        
+        
+        //System.out.println(port + "  "  + info.port);
     }
     
     public void startTokenRing() throws Exception{
+        if (info.init) {
+            init();
+        }
+        
         while (true) {
             // get the next token and give it to the TokenChangeListener
             Token token = tokenChangeListener.tokenChanged(getToken());
-
+            
             sendToken(token);
             //i++;
         }

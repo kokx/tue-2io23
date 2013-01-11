@@ -76,6 +76,7 @@ public class GUI implements ActionListener, ListSelectionListener{
         startGame.setEnabled(false);
         
         lobbyOutput = new JTextArea(1,30);
+        lobbyOutput.setEditable(false);
         
         inGamePanel.add(lobbyOutput, BorderLayout.NORTH);
         //inGamePanel.add(startGame, BorderLayout.SOUTH);
@@ -148,22 +149,33 @@ public class GUI implements ActionListener, ListSelectionListener{
         lobbyChecker.start();
     }
     
+    class JoinLobbyRunnable implements Runnable{
+        Player p;
+        int lobby;
+        public JoinLobbyRunnable(Player player, int selectedLobby){
+            p = player;
+            lobby = selectedLobby;
+        }
+        
+        public void run(){
+            try{
+                p.joinLobby(selectedLobby);
+                p.connectToLobby();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+    
     private void joinLobby() throws Exception{
-        player.joinLobby(selectedLobby);
+        
+        new Thread(new JoinLobbyRunnable(player, selectedLobby)).start();
         
         switchPanels(true);
         
         frame.repaint();
         
-        try{
-            Thread.sleep(100);
-        }catch (Exception e){
-            
-        }
-        
-        startLobbyChecker();
-        
-        player.connectToLobby();
+        lobbyOutput.setText("You Joined a Lobby with IP: ");
     }
     
     private void startGame() throws Exception{
@@ -174,9 +186,13 @@ public class GUI implements ActionListener, ListSelectionListener{
     
     private void switchPanels(boolean forward){
         if(forward){
+            startPanel.setVisible(false);
+            inGamePanel.setVisible(true);
             frame.getContentPane().remove(startPanel);
             frame.getContentPane().add(inGamePanel);
         }else{
+            startPanel.setVisible(true);
+            inGamePanel.setVisible(false);
             frame.getContentPane().remove(inGamePanel);
             frame.getContentPane().add(startPanel);
         }

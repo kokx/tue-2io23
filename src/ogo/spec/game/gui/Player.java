@@ -23,7 +23,7 @@ import ogo.spec.game.multiplayer.GameProto.Token;
  * @author florian
  */
 public class Player{
-    //Game game;
+    tempGame game;
     
     GUI theGui;
     
@@ -33,10 +33,14 @@ public class Player{
     List<PeerInfo> serverList;
     
     boolean isHost;
-    boolean isReady;
     
     public Player(){
         isHost = false;
+    }
+    
+    private void initGame(){
+        game = new tempGame();
+        client.setTokenChangeListener(game);
     }
     
     public void runGUI() throws Exception{
@@ -103,7 +107,6 @@ public class Player{
     
     public void openLobby() throws Exception{
         isHost = true;
-        isReady = true;
         
         /* Start new Server to connect to */
         initServer = new ChatServer();
@@ -150,17 +153,11 @@ public class Player{
                 System.err.println("LOBBY: Could not find own server; unable to connect self to lobby");
             }
             run.stop();
-            //client.connectToPeer();
-            
-            //game = new Game();
-            
-            //client.setTokenChangeListener(game);
         }
     }
     
     public void joinLobby(int serverNum) throws Exception{
         isHost = false;
-        isReady = false;
         
         client.connectToInitServer(serverList.get(serverNum));
     }
@@ -168,23 +165,10 @@ public class Player{
     public void connectToLobby() throws Exception{
         client.connectToPeer();
         
-        //game = new Game();
-        
-        //client.setTokenChangeListener(game);
-
         theGui.stop();
+        initGame();
+        
         client.startTokenRing();
-    }
-    
-    public void closeLobby() throws Exception{
-        if(isHost){
-            initServer.close();
-        }
-        
-        client.close();
-        
-        isHost = false;
-        isReady = false;
     }
     
     class InitConnectionRunnable implements Runnable{
@@ -210,6 +194,7 @@ public class Player{
 
             client.connectToPeer();
             theGui.stop();
+            initGame();
             client.startTokenRing();
         }else{
             System.out.println("Playing on your own? You pathetic loser!!!!");

@@ -40,7 +40,7 @@ class BroadcastReceiverRunnable implements Runnable
 
                 buffer.add(p);
 
-                System.err.println(p.getAddress().toString());
+                //System.err.println(p.getAddress().toString());
 
                 // simply send a packet back
                 byte[] data = new byte[1];
