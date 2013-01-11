@@ -159,7 +159,7 @@ public class GUI extends Base {
             SeaCreature s = new SeaCreature(map.getTile(2, 2), map);
             map.getTile(0, 0).setInhabitant(a);
             map.getTile(1, 1).setInhabitant(new Food());
-            map.getTile(2, 2).setInhabitant(s);
+            //map.getTile(2, 2).setInhabitant(s);
 
             Player p1 = new Player("1");
             Creature[] p1c = {a};
