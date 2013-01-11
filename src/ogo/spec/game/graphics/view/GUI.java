@@ -185,6 +185,8 @@ public class GUI extends Base {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
+        currentCreature = player.getCreatures()[0];
 
         creatureViews = new HashMap<Creature, CreatureView>();
         for (Player p : game) {
