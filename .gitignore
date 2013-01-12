@@ -11,3 +11,4 @@ build/
 # IntelliJ ProjectFiles
 .idea/
 *.iml
+out/
