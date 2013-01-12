@@ -7,3 +7,7 @@ build/
 *.ear
 /nbproject/private
 /dist/
+
+# IntelliJ ProjectFiles
+.idea/
+*.iml
