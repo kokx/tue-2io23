@@ -266,7 +266,7 @@ public abstract class Creature extends Inhabitant {
     protected abstract Set<TileType> getAllowedTypes();
 
     protected boolean canMove(int ticks) {
-        return true;
+        return this.isAlive();
     }
 
     /**

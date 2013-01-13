@@ -29,11 +29,10 @@ public class CreatureView {
     }
 
     public Vector getCurrentLocation() {
-        
         final Tile currentTile = creature.getPath().getCurrentTile();
         if (previousLocation == null) {
             return new Vector(currentTile.getX(), currentTile.getY(), 0);
-        } else {
+        } else if (creature.isAlive()) {
             final double scalar = unit * (timer.getTime() - t0);
             if (scalar < 1) {
                 double x = (currentTile.getX() - previousLocation.getX()) * scalar;
