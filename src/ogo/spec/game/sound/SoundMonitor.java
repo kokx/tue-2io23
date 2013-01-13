@@ -2,10 +2,7 @@ package ogo.spec.game.sound;
 
 import javax.sound.sampled.*;
 
-public class SoundInput {
-
-    // TargetDataLine on the microphone.
-    TargetDataLine targetDataLine;
+public class SoundMonitor {
 
     // To control the monitoring of the microphone.
     boolean stopCapture = false;
@@ -14,18 +11,19 @@ public class SoundInput {
     /**
      * Starts monitoring audio input from a microphone and calculates the sound level.
      */
-    private void run() {
+    public void run() {
         AudioFormat audioFormat;
         try {
+            // Get all available mixers.
             Mixer.Info[] mixerInfo = AudioSystem.getMixerInfo();
 
-            // Get and display a list of available mixers.
+            // Display a list of available mixers.
             System.out.println("Available mixers:");
             for (Mixer.Info currentMixer : mixerInfo) {
                 System.out.println(currentMixer.getName());
             }
 
-            // Get and display a list of available mixers with record functionality.
+            // Display a list of available mixers with record functionality.
             Mixer microphone = null;
             System.out.println("Available mixers with record functionality:");
             for (Mixer.Info currentMixer : mixerInfo) {
@@ -46,14 +44,14 @@ public class SoundInput {
             // Get a TargetDataLine on the microphone.
             // Microphone == null implies no mixer with record functionality found.
             assert microphone != null;
-            targetDataLine = (TargetDataLine) microphone.getLine(dataLineInfo);
+            TargetDataLine targetDataLine = (TargetDataLine) microphone.getLine(dataLineInfo);
 
             // Prepare the line for use.
             targetDataLine.open(audioFormat);
             targetDataLine.start();
 
             // Create a thread to capture the microphone data and start it.
-            Thread captureThread = new CaptureThread();
+            Thread captureThread = new CaptureThread(targetDataLine);
             captureThread.start();
         } catch (Exception e) {
             System.out.println(e);
@@ -86,8 +84,8 @@ public class SoundInput {
      * Calculates the magnitude of the signal using the Root Mean Square method.
      * http://en.wikipedia.org/wiki/Root_mean_square
      *
-     * @param audioData ByteArray containing the current amplitudes of a signal.
-     * @return The RMS of the signal.
+     * @param audioData ByteArray containing a sample of the signal.
+     * @return The RMS of the sample.
      */
     private int calculateSoundLevel(byte[] audioData) {
         long sum = 0;
@@ -111,22 +109,31 @@ public class SoundInput {
     }
 
     /**
-     * A threat to capture data from the microphone.
+     * A thread to capture data from the microphone.
      */
     class CaptureThread extends Thread {
 
+        // TargetDataLine on the microphone.
+        private final TargetDataLine targetDataLine;
+
         // Temporary buffer of arbitrary sample size.
-        byte tempBuffer[] = new byte[500];
+        private byte tempBuffer[] = new byte[500];
+
+        // Constructor to create a CaptureThread with a TargetDataLine.
+        public CaptureThread(TargetDataLine targetDataLine) {
+            this.targetDataLine = targetDataLine;
+        }
 
         public void run() {
-            System.out.println("SoundInput - Starting CaptureThread");
+            System.out.println("Starting CaptureThread.");
             threadEnded = false;
             stopCapture = false;
             try {
                 while (!stopCapture) {
-                    // Read data from the microphone's data line.
+                    // Read the current data from the microphone's data line.
                     int bufferSize = targetDataLine.read(tempBuffer, 0, tempBuffer.length);
                     if (bufferSize > 0) {
+                        // Calculate the RMS of the sample.
                         calculateSoundLevel(tempBuffer);
                     }
                 }
@@ -140,6 +147,6 @@ public class SoundInput {
     }
 
     public static void main(String args[]) {
-        new SoundInput().run();
+        new SoundMonitor().run();
     }
 }
