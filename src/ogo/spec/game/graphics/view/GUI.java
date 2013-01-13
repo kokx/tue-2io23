@@ -43,7 +43,7 @@ public class GUI extends Base {
     Timer timer = new Timer(30);
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
     Wavefront models;
-    float[][] materials = {Materials.BLUE_PLASTIC,Materials.RED_PLASTIC,Materials.YELLOW_PLASTIC,Materials.GREEN_PLASTIC,Materials.ORANGE_PLASTIC,Materials.BROWN_PLASTIC};
+    float[][] materials = {Materials.BLUE_PLASTIC, Materials.RED_PLASTIC, Materials.YELLOW_PLASTIC, Materials.GREEN_PLASTIC, Materials.ORANGE_PLASTIC, Materials.BROWN_PLASTIC};
 
     public GUI() {
         super();
@@ -185,7 +185,7 @@ public class GUI extends Base {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         currentCreature = player.getCreatures()[0];
 
         creatureViews = new HashMap<Creature, CreatureView>();
@@ -464,18 +464,20 @@ public class GUI extends Base {
     }
 
     private void drawMiniMap() {
+        GameMap map = game.getMap();
         //Set Viewport
         gl.glViewport(gs.w / 2, 0, gs.w / 2, gs.h / 2);
+        gl.glClear(GL_DEPTH_BUFFER_BIT); // clear z buffer
         // Set projection matrix.
         gl.glMatrixMode(GL_PROJECTION);
+        gl.glPushMatrix();
         gl.glLoadIdentity();
         gl.glMatrixMode(GL_MODELVIEW);
+        gl.glPushMatrix();
         gl.glLoadIdentity();
         glu.gluLookAt(0.0, 1.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
         gl.glDisable(GL_LIGHTING);
         gl.glMatrixMode(GL_PROJECTION);
-        gl.glPushMatrix();
-        GameMap map = game.getMap();
         float t = (1.5f / (float) map.getHeight());
         gl.glTranslatef(-0.5f + t, -1f, 0f);
         for (int i = 0; i < map.getHeight(); i++) {
@@ -483,7 +485,7 @@ public class GUI extends Base {
                 TileType type = map.getTile(i, j).getType();
                 gl.glColor3f(1, 1, 1);
                 Inhabitant inhabitant = map.getTile(i, j).getInhabitant();
-                if (inhabitant instanceof Creature) {
+                if (inhabitant instanceof Creature && ((Creature) inhabitant).isAlive()) {
                     gl.glColor3f(1, 0, 0);
                     red.bind(gl);
                 } else {
@@ -515,8 +517,15 @@ public class GUI extends Base {
             }
             gl.glTranslatef(-1.5f, t, 0);
         }
+
+        // Restore the original matrices.
+        gl.glMatrixMode(GL_PROJECTION);
         gl.glPopMatrix();
-        gl.glEnable(GL_LIGHTING);
+        gl.glMatrixMode(GL_MODELVIEW);
+        gl.glPopMatrix();
+
+        gl.glViewport(0, 0, gs.w, gs.h); // restore viewport
+        gl.glEnable(GL_LIGHTING); // re-enable lighting
     }
 
     private void handleMouseClick(int x, int y) {
@@ -620,9 +629,10 @@ public class GUI extends Base {
     public static void main(String args[]) {
         new GUI();
     }
-    
+
     public static class Materials {
         // Array containing parameters for a green plastic material. 
+
         public final static float[] GREEN_PLASTIC = {
             0.0f, 0.0f, 0.0f, 1.0f, //ambient
             0.1f, 0.35f, 0.1f, 1.0f, //diffuse

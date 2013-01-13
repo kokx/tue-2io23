@@ -82,7 +82,8 @@ public class AirCreature extends Creature {
         int requiredEnergy = ticks * AirCreature.ENERGY_DEC / AirCreature.ENERGY_TICKS;
         return (this.energy > requiredEnergy);
     }
-     *
+     * // when re-enabling this, make sure to check if creature is alive
+     * // using this.isAlive().
      */
 
     public String toString()
