@@ -43,4 +43,12 @@ public class ReadRun implements Runnable {
             System.err.println(e.getMessage());
         }
     }
+    
+    public byte[] getData(){
+        if(wasRead){
+            return data;
+        }else{
+            return null;
+        }
+    }
 }

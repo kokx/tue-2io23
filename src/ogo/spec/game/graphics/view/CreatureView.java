@@ -10,10 +10,12 @@ public class CreatureView {
 
     Creature creature;
     Tile previousLocation;
+    Vector currentLocation;
     Timer timer;
     int t0;
     double unit;
     double animationLength;
+    double angle = 0;
 
     public CreatureView(Creature creature, Timer timer) {
         this.creature = creature;
@@ -30,8 +32,8 @@ public class CreatureView {
     public Vector getCurrentLocation() {
         final Tile currentTile = creature.getPath().getCurrentTile();
         if (previousLocation == null) {
-            return new Vector(currentTile.getX() + 0.5, currentTile.getY() + 0.5, 0);
-        } else {
+            return new Vector(currentTile.getX(), currentTile.getY(), 0);
+        } else if (creature.isAlive()) {
             final double scalar = unit * (timer.getTime() - t0);
             if (scalar < 1) {
                 double x = (currentTile.getX() - previousLocation.getX()) * scalar;
@@ -52,16 +54,56 @@ public class CreatureView {
                  System.out.println("t0:" + t0);
 
                  System.out.println();*/
-                return P.add(V);
+                currentLocation = P.add(V);
             } else {
                 previousLocation = currentTile;
                 t0 = timer.getTime();
                 unit = timer.getSleepTime() / animationLength;
 
-                return new Vector(creature.getPath().getCurrentTile().getX(),
+                currentLocation = new Vector(creature.getPath().getCurrentTile().getX(),
                         creature.getPath().getCurrentTile().getY(),
                         0);
+                
             }
         }
+        return currentLocation;
+    }
+        public double getCurrentAngle() {
+        final Tile currentTile = creature.getPath().getCurrentTile();
+        if (previousLocation != null) {
+            Vector P = new Vector(previousLocation.getX(), previousLocation.getY(), 0);
+            Vector T = new Vector(currentTile.getX(), currentTile.getY(), 0);
+            if (P.x < T.x) {
+                if (P.y < T.y) {
+                    angle = 135f;
+                }
+                if (P.y > T.y) {
+                    angle = 45f;
+                }
+                if (P.y == T.y) {
+                    angle = 90f;
+                }
+            }
+            if (P.x == T.x) {
+                if (P.y < T.y) {
+                    angle = 180f;
+                }
+                if (P.y > T.y) {
+                    angle = 0f;
+                }
+            }
+            if (P.x > T.x) {
+                if (P.y < T.y) {
+                    angle = -135f;
+                }
+                if (P.y > T.y) {
+                    angle = -45f;
+                }
+                if (P.y == T.y) {
+                    angle = -90f;
+                }
+            }
+        }
+        return angle;
     }
 }

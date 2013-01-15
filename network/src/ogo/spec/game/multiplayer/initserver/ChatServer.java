@@ -73,6 +73,7 @@ class ConnectClients implements Runnable{
         server.close();
         shouldConnect = false;
     }
+    
     public void run(){
         for (int i = 0; i < ChatServer.MAX_CLIENTS && shouldConnect; i++) {
             try{
@@ -84,6 +85,118 @@ class ConnectClients implements Runnable{
             }
         }
         
+    }
+    
+    public List<Integer> createCreaturesFromData(int[][] data){
+        List<Integer> list = new ArrayList<Integer>();
+        for(int i = 0; i < data.length; i++){
+            for (int j = 0; j < data[i].length; j++) {
+                list.add(data[i][j]);
+            }
+        }
+        return list;
+    }
+    
+    public List<String> createNamesFromData(String[] names){
+        List<String> list = new ArrayList<String>();
+        for(int i = 0; i < names.length; i++){
+            list.add(names[i]);
+        }
+        return list;
+    }
+    
+    public void sendInitialGameState(int[][] data, String[] names){
+        for(int i = 0; i < server.getClientCount(); i++){
+            GameProto.InitialGameState init = GameProto.InitialGameState.newBuilder()
+                    .addAllData(createCreaturesFromData(data))
+                    .addAllNames(createNamesFromData(names))
+                    .setId(i)
+                    .build();
+            server.clients.get(i).sendInitialGameState(init);
+        }
+    }
+}
+
+class ClientsReadyRunnable implements Runnable{
+    ConnectClients connect;
+    ArrayList<Client> expectingClients;
+    
+    boolean isReady;
+    boolean threadRunning;
+    
+    GameProto.IsReady[] data;
+    public ClientsReadyRunnable(ConnectClients c){
+        connect = c;
+        expectingClients = new ArrayList<Client>();
+        isReady = false;
+        threadRunning = true;
+        data = null;
+    }
+    
+    public void run(){
+        try{
+            for(Client c : connect.server.clients){
+                c.expectReply();
+                expectingClients.add(c);
+            }
+            
+            while(threadRunning){
+                Thread.sleep(500);
+                for(Client c : connect.server.clients){
+                    if(!expectingClients.contains(c)){
+                        c.expectReply();
+                        expectingClients.add(c);
+                    }
+                }
+                
+                int count = 0;
+                for(Client c : expectingClients){
+                    if(c.hasReply()){
+                        count++;
+                    }
+                }
+                isReady = (expectingClients.size() == count+1);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public boolean isReady(){
+        return isReady;
+    }
+    
+    public void stop(){
+        threadRunning = false;
+    }
+    
+    private void getData() throws Exception{
+        if(data == null){
+            data = new GameProto.IsReady[expectingClients.size()];
+            for(int i = 0; i < expectingClients.size(); i++){
+                data[i] = GameProto.IsReady.parseFrom(expectingClients.get(i).getData());
+            }
+        }
+    }
+    
+    public int[][] getCreatureTypes() throws Exception{
+        int[][] result = new int[expectingClients.size()][3];
+        getData();
+        for(int i = 0; i < data.length; i++){
+            result[i][0] = data[i].getCreature1();
+            result[i][1] = data[i].getCreature2();
+            result[i][2] = data[i].getCreature3();
+        }
+        return result;
+    }
+    
+    public String[] getNames() throws Exception{
+        String[] result = new String[expectingClients.size()];
+        getData();
+        for(int i = 0; i < data.length; i++){
+            result[i] = data[i].getName();
+        }
+        return result;
     }
 }
 
@@ -97,8 +210,13 @@ public class ChatServer {
 
     // real stuff
     private ConnectClients connect = null;
+    private ClientsReadyRunnable readyState = null;
     private DatagramSocket sock = null;
     private BroadcastReceiverRunnable run = null;
+    
+    public void sendInitialGameState(int[][] data, String[] names){
+        connect.sendInitialGameState(data, names);
+    }
     
     public void initConnection() throws InterruptedException{
         connect.server.init(PORT+1);
@@ -108,10 +226,27 @@ public class ChatServer {
         return connect.server.getClientCount();
     }
     
+    public boolean canStartGame(){
+        return readyState.isReady();
+    }
+    
+    public void stopReadyState(){
+        readyState.stop();
+    }
+    
+    public int[][] getCreatureTypes() throws Exception{
+        return readyState.getCreatureTypes();
+    }
+    
+    public String[] getNames() throws Exception{
+        return readyState.getNames();
+    }
+    
     public void close() throws Exception{
         connect.close();
         run.stop();
         sock.close();
+        readyState.stop();
     }
     
     public void runCLI() throws Exception{
@@ -143,6 +278,10 @@ public class ChatServer {
         connect = new ConnectClients(PORT);
 
         new Thread(connect).start();
+        
+        readyState = new ClientsReadyRunnable(connect);
+        
+        new Thread(readyState).start();
     }
 
     public static void main(String args[]) throws Exception, IOException, InterruptedException {

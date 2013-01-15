@@ -1,5 +1,6 @@
 package ogo.spec.game.graphics.view;
 
+import com.jogamp.opengl.util.FPSAnimator;
 import ogo.spec.game.model.*;
 import com.jogamp.opengl.util.gl2.GLUT;
 import com.jogamp.opengl.util.texture.Texture;
@@ -23,6 +24,8 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GLDrawable;
 import javax.media.opengl.GLException;
 import javax.media.opengl.awt.GLJPanel;
+import javax.media.opengl.glu.GLU;
+import javax.swing.UIManager;
 
 public class GUI extends Base {
 
@@ -30,15 +33,30 @@ public class GUI extends Base {
     ClickListener clickListener;
     KeyListener keyListener;
     int clicki = -1, clickj = -1;
-    int seaCreature = 1;
-    int airCreature = 2;
-    int landCreature = 3;
+    final static int SEACREATURE = 1;
+    final static int AIRCREATURE = 2;
+    final static int LANDCREATURE = 3;
+    final static int FOOD = 4;
     Player player;
     Vector vViewChange = null;
     Creature currentCreature;
     Timer timer = new Timer(30);
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
     Wavefront models;
+    float[][] materials = {Materials.BLUE_PLASTIC, Materials.RED_PLASTIC, Materials.YELLOW_PLASTIC, Materials.GREEN_PLASTIC, Materials.ORANGE_PLASTIC, Materials.BROWN_PLASTIC};
+
+    public GUI() {
+        super();
+    }
+
+    /**
+     * Constructs GUI class.
+     */
+    public GUI(Game game, Player player) {
+        super();
+        this.game = game;
+        this.player = player;
+    }
 
     /**
      * Called upon the start of the application. Primarily used to configure
@@ -71,47 +89,54 @@ public class GUI extends Base {
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
         // Create game object
-        Random generator = new Random(0);
-        TileType[][] types = new TileType[50][50];
-        for (int i = 0; i < types.length; i++) {
-            for (int j = 0; j < types[0].length; j++) {
-                int type = generator.nextInt(3);
-                switch (type) {
-                    case 0:
-                        types[j][i] = TileType.DEEP_WATER;
-                        break;
-                    case 1:
-                        types[j][i] = TileType.LAND;
-                        break;
-                    case 2:
-                        types[j][i] = TileType.SHALLOW_WATER;
-                        break;
+        if (game == null) {
+            Random generator = new Random(0);
+            TileType[][] types = new TileType[50][50];
+            for (int i = 0; i < types.length; i++) {
+                for (int j = 0; j < types[0].length; j++) {
+                    int type = generator.nextInt(3);
+                    switch (type) {
+                        case 0:
+                            types[j][i] = TileType.DEEP_WATER;
+                            break;
+                        case 1:
+                            types[j][i] = TileType.LAND;
+                            break;
+                        case 2:
+                            types[j][i] = TileType.SHALLOW_WATER;
+                            break;
+                    }
                 }
             }
-        }
-        GameMap map = new GameMap(types);
-        AirCreature a = new AirCreature(map.getTile(0, 0), map);
-        SeaCreature s = new SeaCreature(map.getTile(2, 2), map);
-        map.getTile(0, 0).setInhabitant(a);
-        map.getTile(1, 1).setInhabitant(new Food());
-        map.getTile(2, 2).setInhabitant(s);
+            GameMap map = new GameMap(types);
+            AirCreature a = new AirCreature(map.getTile(0, 0), map);
+            SeaCreature s = new SeaCreature(map.getTile(1, 0), map);
+            SeaCreature f = new SeaCreature(map.getTile(2, 0), map);
+            SeaCreature g = new SeaCreature(map.getTile(3, 0), map);
+            SeaCreature j = new SeaCreature(map.getTile(5, 0), map);
+            map.getTile(0, 0).setInhabitant(s);
+            map.getTile(4, 0).setInhabitant(new Food());
+            //map.getTile(2, 2).setInhabitant(s);
 
-        Player p1 = new Player("1");
-        Creature[] p1c = {a};
-        p1.setCreatures(p1c);
-        currentCreature = a;
-        Player p2 = new Player("2");
-        Creature[] p2c = {};
-        p2.setCreatures(p2c);
-        player = p1;
-        Player[] players = new Player[2];
-        players[0] = p1;
-        players[1] = p2;
-        try {
-            game = new Game(players, map);
-        } catch (Exception ex) {
-            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            Player p1 = new Player("1");
+            Creature[] p1c = {s, a, f};
+            p1.setCreatures(p1c);
+            currentCreature = s;
+            Player p2 = new Player("2");
+            Creature[] p2c = {g, j};
+            p2.setCreatures(p2c);
+            player = p1;
+            Player[] players = new Player[2];
+            players[0] = p1;
+            players[1] = p2;
+            try {
+                game = new Game(players, map);
+            } catch (Exception ex) {
+                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+
+        currentCreature = player.getCreatures()[0];
 
         creatureViews = new HashMap<Creature, CreatureView>();
         for (Player p : game) {
@@ -126,15 +151,19 @@ public class GUI extends Base {
         String path = "src/ogo/spec/game/graphics/models/";
         try {
             models.readWavefront(path + "land.obj", gl);
-            gl.glNewList(landCreature, GL_COMPILE);
+            gl.glNewList(LANDCREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "sea.obj", gl);
-            gl.glNewList(seaCreature, GL_COMPILE);
+            gl.glNewList(SEACREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "air.obj", gl);
-            gl.glNewList(airCreature, GL_COMPILE);
+            gl.glNewList(AIRCREATURE, GL_COMPILE);
+            models.drawTriangles();
+            gl.glEndList();
+            models.readWavefront(path + "food.obj", gl);
+            gl.glNewList(FOOD, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
         } catch (FileNotFoundException ex) {
@@ -194,7 +223,7 @@ public class GUI extends Base {
             handleMouseClick(x, y);
             //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
             if (clicki != -1) {
-                currentCreature.select(game.getMap().getTile(clickj, clicki));
+                currentCreature.select(game.getMap().getTile(clicki, clickj));
                 creatureViews.get(currentCreature).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
             }
 
@@ -277,6 +306,7 @@ public class GUI extends Base {
             vViewChange = Vector.O;
             gs.cnt = vViewChange;
         }
+        setMaterial(Materials.WHITE);
         for (int i = 0; i < map.getHeight(); i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 // Load unique name for this tile.
@@ -298,7 +328,6 @@ public class GUI extends Base {
                         land.bind(gl);
                         break;
                 }
-
                 // Draw tile.
                 gl.glBegin(GL_QUADS);
                 gl.glNormal3f(0, 0, 1);
@@ -333,7 +362,11 @@ public class GUI extends Base {
                     gl.glColor3f(1, 1, 1);
                     //gl.glRotatef(90, 1, 0, 0);
                     //glut.glutSolidTeapot(0.5);
-                    new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                    //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
+                    empty.bind(gl);
+                    setMaterial(Materials.GOLD);
+                    gl.glCallList(FOOD);
+                    setMaterial(Materials.WHITE);
                 }
                 gl.glPopMatrix();
 
@@ -348,9 +381,13 @@ public class GUI extends Base {
         }
         gl.glPopMatrix();
 
-        for (Player p : game) {
+        empty.bind(gl);
+        //for (Player p : game) {
+        for (int i = 0; i < game.getPlayers().length; i++) {
+            Player p = game.getPlayers()[i];
+            setMaterial(materials[i]);
             for (Creature c : p) {
-                if(c.getMoveCooldown() == 0 ){
+                if (c.getMoveCooldown() == 0) {
                     creatureViews.get(c).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
                 }
                 gl.glPushMatrix();
@@ -363,11 +400,11 @@ public class GUI extends Base {
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 if (c.getLife() > 0) {
                     if (c instanceof LandCreature) {
-                        gl.glCallList(landCreature);
+                        gl.glCallList(LANDCREATURE);
                     } else if (c instanceof SeaCreature) {
-                        gl.glCallList(seaCreature);
+                        gl.glCallList(SEACREATURE);
                     } else if (c instanceof AirCreature) {
-                        gl.glCallList(airCreature);
+                        gl.glCallList(AIRCREATURE);
                     }
                 }
                 gl.glPopMatrix();
@@ -377,26 +414,28 @@ public class GUI extends Base {
     }
 
     private void drawMiniMap() {
+        GameMap map = game.getMap();
         //Set Viewport
         gl.glViewport(gs.w / 2, 0, gs.w / 2, gs.h / 2);
+        gl.glClear(GL_DEPTH_BUFFER_BIT); // clear z buffer
         // Set projection matrix.
         gl.glMatrixMode(GL_PROJECTION);
+        gl.glPushMatrix();
         gl.glLoadIdentity();
         gl.glMatrixMode(GL_MODELVIEW);
+        gl.glPushMatrix();
         gl.glLoadIdentity();
         glu.gluLookAt(0.0, 1.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
         gl.glDisable(GL_LIGHTING);
         gl.glMatrixMode(GL_PROJECTION);
-        gl.glPushMatrix();
-        GameMap map = game.getMap();
         float t = (1.5f / (float) map.getHeight());
         gl.glTranslatef(-0.5f + t, -1f, 0f);
         for (int i = 0; i < map.getHeight(); i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 TileType type = map.getTile(i, j).getType();
                 gl.glColor3f(1, 1, 1);
-                Inhabitant inhabitant = map.getTile(j, i).getInhabitant();
-                if (inhabitant instanceof Creature) {
+                Inhabitant inhabitant = map.getTile(i, j).getInhabitant();
+                if (inhabitant instanceof Creature && ((Creature) inhabitant).isAlive()) {
                     gl.glColor3f(1, 0, 0);
                     red.bind(gl);
                 } else {
@@ -428,8 +467,15 @@ public class GUI extends Base {
             }
             gl.glTranslatef(-1.5f, t, 0);
         }
+
+        // Restore the original matrices.
+        gl.glMatrixMode(GL_PROJECTION);
         gl.glPopMatrix();
-        gl.glEnable(GL_LIGHTING);
+        gl.glMatrixMode(GL_MODELVIEW);
+        gl.glPopMatrix();
+
+        gl.glViewport(0, 0, gs.w, gs.h); // restore viewport
+        gl.glEnable(GL_LIGHTING); // re-enable lighting
     }
 
     private void handleMouseClick(int x, int y) {
@@ -473,14 +519,23 @@ public class GUI extends Base {
         gl.glMatrixMode(GL_MODELVIEW);
     }
 
+    private void setMaterial(float[] material) {
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, material, 0);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material, 4);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material, 8);
+        gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, material, 12);
+    }
+
     private final class ClickListener implements MouseListener {
 
         int x = -1, y = -1;
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            x = e.getX();
-            y = e.getY();
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                x = e.getX();
+                y = e.getY();
+            }
         }
 
         @Override
@@ -523,5 +578,65 @@ public class GUI extends Base {
 
     public static void main(String args[]) {
         new GUI();
+    }
+
+    public static class Materials {
+        // Array containing parameters for a green plastic material. 
+
+        public final static float[] GREEN_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            0.1f, 0.35f, 0.1f, 1.0f, //diffuse
+            0.45f, 0.55f, 0.45f, 1.0f, //specular
+            32f //shininess
+        };
+        //Array containing parameteres for a yellow plastic materail.
+        public final static float[] YELLOW_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            0.5f, 0.5f, 0.0f, 1.0f, //diffuse
+            0.60f, 0.60f, 0.50f, 1.0f, //specular
+            32f //shininess
+        };
+        // Array containing parameteres for a red plastic material.
+        public final static float[] RED_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            1.0f, 0f, 0.0f, 1.0f, //diffuse
+            0.60f, 0.60f, 0.50f, 1.0f, //specular
+            32f //shininess
+        };
+        // Array containing parameters for a blue plastci material.
+        public final static float[] BLUE_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            0f, 0.5f, 1.0f, 1.0f, //diffuse
+            0.60f, 0.60f, 0.50f, 1.0f, //specular
+            32f //shininess
+        };
+        // Array containing parameters for an orange plastic material.
+        public final static float[] ORANGE_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            1f, 0.65f, 0.0f, 1.0f, //diffuse
+            0.5f, 0.5f, 0.5f, 1.0f, //specular
+            90f //shininess
+        };
+        // Array containing parameters  for a brown plastic material.
+        public final static float[] BROWN_PLASTIC = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            0.36f, 0.2f, 0.01f, 1.0f, //diffuse
+            0.5f, 0.5f, 0.5f, 1.0f, //specular
+            0f //shininess
+        };
+        // Array containing parameters  for a gold material.
+        public final static float[] GOLD = {
+            0.24725f, 0.1995f, 0.0745f, 1.0f, //ambient
+            0.75164f, 0.60648f, 0.22648f, 1.0f, //diffuse
+            0.628281f, 0.555802f, 0.366065f, 1.0f, //specular
+            51.2f //shininess
+        };
+        // Array containing parameters for a white material (for textures).
+        public static float[] WHITE = {
+            0.0f, 0.0f, 0.0f, 1.0f, //ambient
+            1f, 1f, 1f, 1.0f, //diffuse
+            1f, 1f, 1f, 1.0f, //specular
+            0f //shininess
+        };
     }
 }

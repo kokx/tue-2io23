@@ -1,11 +1,12 @@
 package ogo.spec.game.model;
 
-enum ChangeType {
-    MOVE_CREATURE, HEALTH, ENERGY, ATTACKING_CREATURE
-}
-
 public class Change
 {
+
+    public enum ChangeType {
+        MOVE_CREATURE, HEALTH, ENERGY, ATTACKING_CREATURE
+    }
+
     public long tick;
     public Player player;
 

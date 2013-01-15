@@ -169,7 +169,9 @@ public class Client {
     {
         // find initialization port
         int port = init.getPort();
+        
         // create a local server with the given port
+        
         server = new PeerServer(port);
 
         // tell the server we got the message and started a server
@@ -189,10 +191,6 @@ public class Client {
         }
         
         init.reply(true);
-
-        
-        
-        //System.out.println(port + "  "  + info.port);
     }
     
     public void startTokenRing() throws Exception{
@@ -268,5 +266,13 @@ public class Client {
             .setLastId(0)
             .build();
         sendToken(token);
+    }
+    
+    public void setReady(GameProto.IsReady ready){
+        init.sendReady(ready);
+    }
+    
+    public GameProto.InitialGameState receiveInitialGameState() throws Exception{
+        return init.receiveInitialGameState();
     }
 }

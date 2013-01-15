@@ -5,13 +5,12 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 public class GUI implements ActionListener, ListSelectionListener{
-    protected Lobby player;
+    protected Lobby lobby;
 
     protected JFrame frame;
 
@@ -35,11 +34,19 @@ public class GUI implements ActionListener, ListSelectionListener{
 
     protected int lobbyAmount;
     protected int selectedLobby;
+    protected JRadioButton[][] creatureButtons;
 
     protected String[] noLobbys = {"No Lobbys Were Found"};
+    
+    String nickname;
 
-    public GUI(Lobby p) throws Exception{
-        player = p;
+    public GUI(Lobby l) throws Exception{
+        lobby = l;
+
+        nickname = JOptionPane.showInputDialog(null, "Enter your Nickname", null, 1);
+        while(nickname.isEmpty()){
+            nickname = JOptionPane.showInputDialog(null, "Enter your Nickname, and this time, don't leave it blank!", null, 1);
+        }
 
         frame = new JFrame("Play This Awesome Game!");
 
@@ -77,9 +84,26 @@ public class GUI implements ActionListener, ListSelectionListener{
 
         lobbyOutput = new JTextArea(1,30);
         lobbyOutput.setEditable(false);
+        
+        ButtonGroup[] groups = new ButtonGroup[3];
+        creatureButtons = new JRadioButton[3][3];
+        JPanel radioPanel = new JPanel(new GridLayout(3,3));
+        String[] creatures = {"Land Creature", "Sea Creature", "Air Creature"};
+        for(int i = 0; i < 3; i++){
+            groups[i] = new ButtonGroup();
+            for(int j = 0; j < 3; j++){
+                creatureButtons[i][j] = new JRadioButton(creatures[j]);
+                creatureButtons[i][j].setSelected(j == i);
+                groups[i].add(creatureButtons[i][j]);
+                
+                radioPanel.add(creatureButtons[i][j]);
+            }
+        }
+        
 
         inGamePanel.add(lobbyOutput, BorderLayout.NORTH);
-        //inGamePanel.add(startGame, BorderLayout.SOUTH);
+        inGamePanel.add(startGame);
+        inGamePanel.add(radioPanel);
 
         frame.getContentPane().add(startPanel);
         frame.setVisible(true);
@@ -97,6 +121,12 @@ public class GUI implements ActionListener, ListSelectionListener{
         startGame.addActionListener(this);
 
         lobbyList.addListSelectionListener(this);
+        
+        for(int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++) {
+                creatureButtons[i][j].addActionListener(this);
+            }
+        }
     }
 
     private DefaultListModel getListModel(String[] names){
@@ -107,11 +137,12 @@ public class GUI implements ActionListener, ListSelectionListener{
         return list;
     }
 
+    String[] serverNames;
     private void findServers() throws Exception{
-        String[] lobbys = player.getServerNames();
-        lobbyAmount = lobbys.length;
+        serverNames = lobby.getServerNames();
+        lobbyAmount = serverNames.length;
         if(lobbyAmount > 0){
-            lobbyList.setModel(getListModel(lobbys));
+            lobbyList.setModel(getListModel(serverNames));
         }else{
             lobbyList.setModel(getListModel(noLobbys));
         }
@@ -123,21 +154,17 @@ public class GUI implements ActionListener, ListSelectionListener{
     }
 
     private void startLobby() throws Exception{
-        inGamePanel.add(startGame, BorderLayout.SOUTH);
+        if(lobby.openLobby()){
+            switchPanels(true);
 
-        switchPanels(true);
-
-        frame.repaint();
-
-        player.openLobby();
-
-        startLobbyChecker();
+            startLobbyChecker();
+        }
     }
 
     public void updateLobbyOutput(){
-        int clients = player.getClientCount();
+        int clients = lobby.getClientCount();
         lobbyOutput.setText("There are now " + clients + " clients in the Lobby");
-        if(player.isHost && clients > 1){
+        if(lobby.canStartGame() && clients > 1){
             startGame.setEnabled(true);
         }else{
             startGame.setEnabled(false);
@@ -145,42 +172,59 @@ public class GUI implements ActionListener, ListSelectionListener{
     }
 
     private void startLobbyChecker(){
-        lobbyChecker = new Timer(1000, this);
+        lobbyChecker = new Timer(1001, this);
         lobbyChecker.start();
     }
 
     class JoinLobbyRunnable implements Runnable{
-        Lobby p;
-        int lobby;
-        public JoinLobbyRunnable(Lobby player, int selectedLobby){
-            p = player;
-            lobby = selectedLobby;
+        Lobby lobby;
+        int selectedLobby;
+        public JoinLobbyRunnable(Lobby l, int selected){
+            lobby = l;
+            selectedLobby = selected;
         }
 
         public void run(){
             try{
-                p.joinLobby(selectedLobby);
-                p.connectToLobby();
+                lobby.joinLobby(selectedLobby);
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
     }
+    
+    public int[] getCreatureInfo(){
+        int[] result = new int[3];
+        for(int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++) {
+                if(creatureButtons[i][j].isSelected()){
+                    result[i] = j;
+                }
+            }
+        }
+        return result;
+    }
 
     private void joinLobby() throws Exception{
+        startGame.setText("Ready!");
+        startGame.setEnabled(true);
 
-        new Thread(new JoinLobbyRunnable(player, selectedLobby)).start();
+        new Thread(new JoinLobbyRunnable(lobby, selectedLobby)).start();
 
         switchPanels(true);
 
         frame.repaint();
 
-        lobbyOutput.setText("You Joined a Lobby with IP: ");
+        lobbyOutput.setText("You Joined a Lobby with IP: " + serverNames[selectedLobby]);
     }
 
     private void startGame() throws Exception{
-        if(player.isHost){
-            player.startGame();
+        startGame.setEnabled(false);
+        if(lobby.isHost){
+            lobby.startGame();
+        }else{
+            lobby.setReady();
+            lobby.finishConnection();
         }
     }
 
@@ -200,6 +244,36 @@ public class GUI implements ActionListener, ListSelectionListener{
         frame.getContentPane().validate();
         frame.repaint();
     }
+    
+    public void checkRadioButtons(){
+        int[] count = new int[3];
+        for (int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++){
+                if(creatureButtons[i][j].isSelected()){
+                    count[j]++;
+                }
+            }
+        }
+        int over = -1;
+        for(int i = 0; i < 3; i++){
+            if(count[i] >= 2){
+                over = i;
+            }
+        }
+        if(over != -1){
+            for(int i = 0; i < 3; i++){
+                if(!creatureButtons[i][over].isSelected()){
+                    creatureButtons[i][over].setEnabled(false);
+                }
+            }
+        }else{
+            for(int i = 0; i < 3; i++){
+                for(int j = 0; j < 3; j++){
+                    creatureButtons[i][j].setEnabled(true);
+                }
+            }
+        }
+    }
 
     public void actionPerformed(ActionEvent e){
         try{
@@ -213,6 +287,8 @@ public class GUI implements ActionListener, ListSelectionListener{
                 startGame();
             }else if(e.getSource() == lobbyChecker){
                 updateLobbyOutput();
+            }else{
+                checkRadioButtons();
             }
         }catch (Exception ex){
             ex.printStackTrace();

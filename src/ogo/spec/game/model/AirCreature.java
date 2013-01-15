@@ -9,7 +9,7 @@ public class AirCreature extends Creature {
     public final static int ENERGY_INC = 1;
     public final static int ENERGY_DEC = 3;
     public final static int ENERGY_TICKS = 1000 / Game.TICK_TIME_IN_MS;//loose 1 energy per second
-    
+
     private int energy;
     private int energyCooldown = 0;
 
@@ -35,12 +35,12 @@ public class AirCreature extends Creature {
                 this.energy = Math.max(0, this.energy - AirCreature.ENERGY_DEC);
             }
 
-            if (this.energy <= 0 && 
+            if (this.energy <= 0 &&
                     (currentTileType == TileType.DEEP_WATER || currentTileType == TileType.SHALLOW_WATER)
                     ) {
                 this.dealDamage(Creature.MAX_LIFE);
             }
-            
+
             this.energyCooldown = AirCreature.ENERGY_TICKS;
         }
         if (--this.energyCooldown < 0) {
@@ -82,9 +82,10 @@ public class AirCreature extends Creature {
         int requiredEnergy = ticks * AirCreature.ENERGY_DEC / AirCreature.ENERGY_TICKS;
         return (this.energy > requiredEnergy);
     }
-     * 
+     * // when re-enabling this, make sure to check if creature is alive
+     * // using this.isAlive().
      */
-    
+
     public String toString()
     {
         return super.toString() + "\nEnergy: " + this.energy;

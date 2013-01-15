@@ -52,6 +52,16 @@ public class Game implements Iterable<Player> {
     }
 
     /**
+     * Get the next change.
+     *
+     * @return the next change, or null if none exists
+     */
+    public Change poll()
+    {
+        return changes.poll();
+    }
+
+    /**
      * Get the current tick.
      */
     public long getTick()
@@ -61,6 +71,20 @@ public class Game implements Iterable<Player> {
 
     public GameMap getMap() {
         return map;
+    }
+    
+    public Player getPlayer(int id) {
+        return players[id];
+    }
+    
+    public Creature getCreature(int id) {
+        int player = id / 3;
+        int creature = id % 3;
+        return players[player].getCreatures()[creature];
+    }
+    
+    public Player[] getPlayers() {
+        return players;
     }
 
     @Override

@@ -23,6 +23,7 @@ import javax.media.opengl.GLEventListener;
 import javax.media.opengl.awt.GLJPanel;
 import javax.media.opengl.glu.GLU;
 import javax.swing.UIManager;
+import ogo.spec.game.model.Game;
 
 /**
  * Handles all of the graphics functionality.
@@ -120,7 +121,7 @@ abstract public class Base {
         // Show frame.
         frame.setVisible(true);
     }
-
+    
     /**
      * Called upon the start of the application. Primarily used to configure
      * OpenGL.
@@ -149,7 +150,7 @@ abstract public class Base {
     /**
      * Delegates OpenGL events to abstract methods.
      */
-    private final class GLEventDelegate implements GLEventListener {
+    public final class GLEventDelegate implements GLEventListener {
 
         /**
          * Initialization of OpenGL state.
@@ -242,7 +243,7 @@ abstract public class Base {
      * Handles mouse events of the GLJPanel to support the interactive change of
      * camera angles and distance in the global state.
      */
-    private final class GLListener implements MouseMotionListener,
+    public final class GLListener implements MouseMotionListener,
             MouseListener,
             MouseWheelListener,
             KeyListener {
