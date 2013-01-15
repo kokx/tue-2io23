@@ -51,6 +51,8 @@ abstract public class Base {
     static public float DRAG_PIXEL_TO_VWIDTH = 0.1f;
     // Extent of center point change based on key input.
     static public float CENTER_POINT_CHANGE = 1f;
+    // How many control options are enabled.
+    static public boolean DEBUG = false;
     // Desired frames per second.
     static public int FPS = 30;
     // Global state, created at startup.
@@ -63,7 +65,7 @@ abstract public class Base {
     // Start time of animation.
     private long startTime;
     // Textures.
-    protected Texture land, shallowWater, deepWater, empty, red;
+    protected Texture land, shallowWater, deepWater, empty, red, warning;
     MainFrame frame;
 
     /**
@@ -166,6 +168,7 @@ abstract public class Base {
             deepWater = loadTexture(path + "deep.jpg");
             empty = loadTexture(path + "empty.jpg");
             red = loadTexture(path + "red.jpg");
+            warning = loadTexture(path + "warning.jpg");
 
             // Print library version number.
             System.out.println("Using library version " + LIBRARY_VERSION);
@@ -265,7 +268,7 @@ abstract public class Base {
                         Math.min(THETA_MAX,
                         gs.theta + dY * DRAG_PIXEL_TO_RADIAN));
             } // Change vWidth when right button is pressed.
-            else if (mouseButton == MouseEvent.BUTTON3) {
+            else if (mouseButton == MouseEvent.BUTTON3 && DEBUG) {
                 gs.vWidth = Math.max(VWIDTH_MIN,
                         Math.min(VWIDTH_MAX,
                         gs.vWidth + dY * DRAG_PIXEL_TO_VWIDTH));

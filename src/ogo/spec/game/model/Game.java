@@ -52,7 +52,7 @@ public class Game implements Iterable<Player> {
             Creature[] c = players[i].getCreatures();
             for (int j = 0; j < c.length; j++) {
                 c[j].tick(tick);
-//                System.out.println("Player " + String.valueOf(i) + ", creature " + String.valueOf(j) + ":" + c[j].toString());
+                //System.out.println("Player " + String.valueOf(i) + ", creature " + String.valueOf(j) + ":" + c[j].toString());
             }
         }
     }
@@ -92,7 +92,7 @@ public class Game implements Iterable<Player> {
     public Player[] getPlayers() {
         return players;
     }
-    
+
     public Player getPlayer(Creature c)
     {
         for(int i = 0;i<this.players.length;i++){

@@ -104,7 +104,7 @@ public class Lobby {
             players[i].setCreatures(creatures);
         }
         
-        Game game2 = new Game(players, generateMap());
+        Game game2 = new Game(players, map);
         game = new GameRun(game2, id);
         client.setTokenChangeListener(game);
     }

@@ -161,7 +161,7 @@ public class GameMap
 
         Node current;
         while ((current = Q.poll()) != null) {
-            if (current.tile == target) {
+            if (current.tile.getX() == target.getX() && current.tile.getY() == target.getY()) {
                 return current;
             }
 

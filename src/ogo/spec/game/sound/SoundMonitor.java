@@ -57,8 +57,9 @@ public class SoundMonitor {
             Thread captureThread = new CaptureThread(targetDataLine);
             captureThread.start();
         } catch (Exception e) {
-            System.out.println(e);
-            System.exit(0);
+            // Error while opening the microphone's data line.
+            System.out.println("Could not open the microphone's data line.");
+            soundLevel = 0;
         }
     }
 
@@ -136,7 +137,7 @@ public class SoundMonitor {
         }
 
         public void run() {
-            System.out.println("Starting CaptureThread.");
+            System.out.println("Starting CaptureThread...");
             threadEnded = false;
             stopCapture = false;
             try {
@@ -151,8 +152,9 @@ public class SoundMonitor {
                 targetDataLine.close();
                 threadEnded = true;
             } catch (Exception e) {
-                System.out.println(e);
-                System.exit(0);
+                // Error while reading data from the microphone's data line.
+                System.out.println("Could not read data from the microphone.");
+                soundLevel = 0;
             }
         }
     }
