@@ -9,7 +9,7 @@ import java.util.Set;
 public abstract class Creature extends Inhabitant {
 
     //Time between strikes
-    public static final int ATTACK_COOLDOWN_TICKS = 200;
+    public static final int ATTACK_COOLDOWN_TICKS = 20;
     //Time it takes to move to next tile at fastest speed.
     public static final int TICKS_PER_TILE_FAST = 10;
     //Avg speed is 2 * fast
@@ -83,11 +83,9 @@ public abstract class Creature extends Inhabitant {
             // this.canMove() will check if the creature has enough energy to move (only for aircreatures)
             // only do stuff if there is a next tile
             //if(nextTile != null)
-                //System.out.println("jan");
-            if (this.attackingCreature == null
-                    && nextTile != null
-                    && this.canMove(this.calculateMoveSpeed(super.currentTile, nextTile))
-               ) {
+            //System.out.println("jan");
+            if (nextTile != null
+                    && this.canMove(this.calculateMoveSpeed(super.currentTile, nextTile))) {
                 Inhabitant inhabitant = nextTile.getInhabitant();
                 if (inhabitant == null) {
                     //no inhabitant on next tile, lets move there <:)
@@ -162,8 +160,8 @@ public abstract class Creature extends Inhabitant {
     private void lifeTick() {
         if (this.lifeCooldown == 0) {
             this.dealDamage(1);
-            //informal specs say life should decrease with 1 every 5seconds.
-            this.lifeCooldown = 5000 / Game.TICK_TIME_IN_MS;
+            //informal specs say life should decrease with 1 every 5seconds. fuck hun, 10 seconden
+            this.lifeCooldown =  10000 / Game.TICK_TIME_IN_MS;
         }
         if ((--this.lifeCooldown) < 0) {
             this.lifeCooldown = 0;
@@ -171,13 +169,14 @@ public abstract class Creature extends Inhabitant {
     }
 
     protected void die() {
-
+        this.getCurrentTile().setInhabitant(null);
     }
 
     public void select(Tile tile) {
         path.calculatePath(tile);
     }
-    public int getMoveCooldown(){
+
+    public int getMoveCooldown() {
         return moveCooldown;
     }
 

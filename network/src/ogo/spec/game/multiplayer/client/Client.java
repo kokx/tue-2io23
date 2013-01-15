@@ -30,7 +30,7 @@ public class Client {
         DatagramSocket sock;
 
         ConcurrentLinkedQueue<DatagramPacket> buffer = new ConcurrentLinkedQueue<DatagramPacket>();
-        
+
         boolean read;
 
         DatagramReceiverRunnable(DatagramSocket sock)
@@ -38,7 +38,7 @@ public class Client {
             this.sock = sock;
             this.read = true;
         }
-        
+
         public void stop(){
             read = false;
         }
@@ -50,7 +50,7 @@ public class Client {
                     DatagramPacket p = new DatagramPacket(new byte[1], 1);
 
                     sock.receive(p);
-                    
+
                     buffer.add(p);
                 }
             } catch (IOException e) {
@@ -86,17 +86,17 @@ public class Client {
             }
         }
     }
-    
+
     class StartConnectionRunnable implements Runnable
     {
         InitServer initServer;
-        
+
         StartConnectionRunnable(InitServer init){
             initServer = init;
         }
-        
+
         public void run(){
-            
+
         }
     }
 
@@ -106,12 +106,12 @@ public class Client {
     protected TokenChangeListener tokenChangeListener;
     protected PeerServer server;
     protected PeerClient client;
-    
+
     protected InitServer init;
     protected DatagramReceiverRunnable run;
-    
+
     protected String nickname;
-    
+
     public void close() throws IOException
     {
         run.stop();
@@ -127,7 +127,7 @@ public class Client {
         udpSock = new DatagramSocket();//INIT_LISTEN_PORT);
         nickname = name;
     }
-    
+
     public Client() throws SocketException
     {
         udpSock = new DatagramSocket();//INIT_LISTEN_PORT);
@@ -163,20 +163,20 @@ public class Client {
     {
         init = new InitServer(serv.ip, serv.port);
     }
-    
+
     PeerInfo info;
     public void connectToPeer() throws IOException, UnknownHostException, InterruptedException
     {
         // find initialization port
         int port = init.getPort();
-        
+
         // create a local server with the given port
-        
+
         server = new PeerServer(port);
 
         // tell the server we got the message and started a server
         init.reply(true);
-        
+
         // create a connection to the given peer
         info = init.getConnectTo();
 
@@ -185,23 +185,23 @@ public class Client {
         client = new PeerClient(info);
 
         // wait until we are connected
-        
+
         while (!server.isConnected()) {
             Thread.sleep(100);
         }
-        
+
         init.reply(true);
     }
-    
+
     public void startTokenRing() throws Exception{
         if (info.init) {
             init();
         }
-        
+
         while (true) {
             // get the next token and give it to the TokenChangeListener
             Token token = tokenChangeListener.tokenChanged(getToken());
-            
+
             sendToken(token);
             //i++;
         }
@@ -263,15 +263,14 @@ public class Client {
     protected void init()
     {
         Token token = Token.newBuilder()
-            .setLastId(0)
             .build();
         sendToken(token);
     }
-    
+
     public void setReady(GameProto.IsReady ready){
         init.sendReady(ready);
     }
-    
+
     public GameProto.InitialGameState receiveInitialGameState() throws Exception{
         return init.receiveInitialGameState();
     }

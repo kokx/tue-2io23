@@ -120,7 +120,6 @@ public class GUI extends Base {
             Player p1 = new Player("1");
             Creature[] p1c = {a1, s1, l1};
             p1.setCreatures(p1c);
-            currentCreature = s;
             Player p2 = new Player("2");
             Creature[] p2c = {a2, s2, l2};
             p2.setCreatures(p2c);
