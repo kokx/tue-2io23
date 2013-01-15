@@ -7,6 +7,7 @@ package ogo.spec.game.lobby;
 import ogo.spec.game.multiplayer.GameProto.Token;
 import ogo.spec.game.multiplayer.client.TokenChangeListener;
 import ogo.spec.game.model.Game;
+import ogo.spec.game.model.Tile;
 import ogo.spec.game.model.Change;
 import ogo.spec.game.graphics.view.GUI;
 
