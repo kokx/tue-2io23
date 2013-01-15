@@ -20,11 +20,12 @@ import java.util.List;
 public class GameRun implements TokenChangeListener
 {
 
-    protected int nextId;
     protected long lastMessage = -1;
     protected int counter = 0;
     protected int playerId; // the ID of the player behind this computer
     protected Game game;
+    protected long lastTick = 0;
+    protected long nextLastTick = 0;
 
     /**
      * Run the game.
@@ -164,19 +165,35 @@ public class GameRun implements TokenChangeListener
         List<Token.Change> tokenChanges = token.getMessageList();
 
         for (Token.Change change : tokenChanges) {
-            changes.add(createChangeFromTokenChange(change));
+            if (change.getTick() > lastTick) {
+                changes.add(createChangeFromTokenChange(change));
+            }
         }
 
         return changes;
     }
 
+    /**
+     * Check if two changes have a conflict.
+     */
     boolean hasConflict(Change a, Change b)
     {
         // check if the changes have a conflict
         return false;
     }
 
+    /**
+     * Roll back a change.
+     */
     void rollBack(Change a)
+    {
+        // undo the change
+    }
+
+    /**
+     * Apply a change.
+     */
+    void applyChange(Change a)
     {
         // undo the change
     }
@@ -219,6 +236,11 @@ public class GameRun implements TokenChangeListener
             if (accepted) {
                 newChanges.add(gameChange);
             }
+        }
+        // now, add the token changes
+        while ((gameChange = tokenChanges.poll()) != null) {
+            newChanges.add(gameChange);
+            applyChange(gameChange);
         }
 
         // add stuff to the token
@@ -268,14 +290,13 @@ public class GameRun implements TokenChangeListener
     public Token tokenChanged(Token token)
     {
         runStats();
-        nextId = token.getLastId();
 
         // first copy the token
         Token.Builder builder = copyToken(token);
 
+        nextLastTick = game.getTick();
         mergeInfo(builder);
-
-        builder.setLastId(nextId);
+        lastTick = nextLastTick;
 
         return builder.build();
     }

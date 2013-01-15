@@ -36,7 +36,7 @@ message Token {
     }
     message Change {
         // basic info
-        required int32 id = 1;
+        //required int32 id = 1;
         required int64 tick = 2;
         required int32 playerId = 3;
 
@@ -56,5 +56,4 @@ message Token {
         optional int32 otherCreatureId = 9;
     }
     repeated Change message = 1;
-    required int32 lastId = 2; // should be increased by one for every sent message
 }
