@@ -117,10 +117,10 @@ public class GUI extends Base {
             LandCreature l2 = new LandCreature(map.getTile(3, 1), map);
             map.getTile(5, 0).setInhabitant(new Food());
 
-            Player p1 = new Player("1");
+            Player p1 = new Player("1",0);
             Creature[] p1c = {a1, s1, l1};
             p1.setCreatures(p1c);
-            Player p2 = new Player("2");
+            Player p2 = new Player("2",1);
             Creature[] p2c = {a2, s2, l2};
             p2.setCreatures(p2c);
             player = p1;
