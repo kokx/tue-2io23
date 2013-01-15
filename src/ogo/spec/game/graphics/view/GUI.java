@@ -202,7 +202,7 @@ public class GUI extends Base {
 
         Vector eye = gs.cnt.add(dir.scale(gs.vDist));
 
-        glu.gluLookAt(-40f, -40f, 30f, // eye point
+        glu.gluLookAt(gs.cnt.x()-40f, gs.cnt.y()-40f, gs.cnt.z()+30f, // eye point
                 gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
                 0.0, 0.0, 1.0);   // up axis
 
@@ -396,6 +396,8 @@ public class GUI extends Base {
                 gl.glPushMatrix();
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
                 gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
+                Tile currentTile = c.getPath().getCurrentTile();
+                gl.glLoadName(currentTile.getY() * map.getHeight() + currentTile.getX() + 1);
                 //System.out.println(currentLocation);
                 if (c == currentCreature) {
                     gs.cnt = currentLocation;
