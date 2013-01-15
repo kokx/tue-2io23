@@ -284,10 +284,11 @@ abstract public class Base {
 
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
+            if (DEBUG) {
             gs.vDist = (float) Math.max(MIN_CAMERA_DISTANCE,
                     gs.vDist
                     * Math.pow(MOUSE_WHEEL_FACTOR,
-                    e.getWheelRotation()));
+                    e.getWheelRotation()));}
         }
 
         @Override
@@ -319,7 +320,8 @@ abstract public class Base {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            // Move center point.
+            if (DEBUG) {
+                // Move center point.
             double phiQ = gs.phi + Math.PI / 2.0;
 
             switch (e.getKeyChar()) {
@@ -358,7 +360,7 @@ abstract public class Base {
                     gs.cnt = new Vector(gs.cnt.x,
                             gs.cnt.y,
                             gs.cnt.z - CENTER_POINT_CHANGE);
-                    break;
+                    break;}
             }
         }
 
