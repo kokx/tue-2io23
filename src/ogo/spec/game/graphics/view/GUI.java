@@ -426,6 +426,7 @@ public class GUI extends Base {
                         gl.glCallList(AIRCREATURE);
                     }
                 }
+                System.out.println("Test");
                 gl.glPopMatrix();
             }
         }
