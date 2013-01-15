@@ -148,6 +148,10 @@ public class GameRun implements TokenChangeListener
             changes.add(change);
         }
 
+        if (changes.size() > 0) {
+            System.err.println("CHANGES YAY!!!!!");
+        }
+
         return changes;
     }
 
@@ -168,6 +172,9 @@ public class GameRun implements TokenChangeListener
             if (change.getTick() > lastTick) {
                 changes.add(createChangeFromTokenChange(change));
             }
+        }
+        if (changes.size() > 0) {
+            System.err.println("TOKEN CHANGES YAY!!!!! " + changes.size());
         }
 
         return changes;
@@ -196,6 +203,7 @@ public class GameRun implements TokenChangeListener
     void applyChange(Change a)
     {
         // undo the change
+        //System.err.println("APPLY ALL THE THINGS!");
     }
 
     /**
