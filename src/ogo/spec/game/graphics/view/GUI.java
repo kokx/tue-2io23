@@ -212,8 +212,8 @@ public class GUI extends Base {
                 sin(gs.theta));
 
         Vector eye;
-        //eye = gs.cnt.add(dir.scale(gs.vDist));
-        eye = new Vector(gs.cnt.x() - 40f, gs.cnt.y() - 40f, gs.cnt.z() + 30f);
+        eye = DEBUG ? gs.cnt.add(dir.scale(gs.vDist)):
+        new Vector(gs.cnt.x() - 40f, gs.cnt.y() - 40f, gs.cnt.z() + 30f);
 
         glu.gluLookAt(eye.x(), eye.y(), eye.z(), // eye point
                 gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
