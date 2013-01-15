@@ -56,7 +56,7 @@ public class Lobby {
         byte[] data = ((DataBufferByte)img.getRaster().getDataBuffer()).getData();
         int[] newData = new int[data.length];
         for(int i = 0; i < data.length; i++){
-            newData[i] = (data[i]+256)%256;
+            newData[i] = (data[i]+512)%256;
         }
         return newData;
     }
