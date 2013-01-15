@@ -23,6 +23,8 @@ public abstract class Creature extends Inhabitant {
     protected int moveCooldown;
     protected int attackCooldown;
     protected int lifeCooldown;
+    
+    protected long tick;
 
     /**
      * Big ass constructor
@@ -61,6 +63,7 @@ public abstract class Creature extends Inhabitant {
      * For each of these actions there is a private function
      */
     public void tick(long tick) {
+        this.tick = tick;
         //call life tick
         this.lifeTick();
         //call attack tick
@@ -145,8 +148,15 @@ public abstract class Creature extends Inhabitant {
      */
     private void strike() {
         int soundLevel = Game.globalGameObject.getSoundLevel();
-        System.out.println(soundLevel);
-        int damage = soundLevel;
+        int damage;
+        if (soundLevel < 40) {
+            damage = 3;
+        } else if (soundLevel < 100) {
+            damage = 4;
+        } else {
+            damage = 5;
+        }
+        System.out.println(damage);
         //TODO: listen to mic for damage
         if (this.attackingCreature.dealDamage(damage)) {
             //he dead, lets eat it
@@ -163,7 +173,7 @@ public abstract class Creature extends Inhabitant {
         if (this.lifeCooldown == 0) {
             this.dealDamage(1);
             //informal specs say life should decrease with 1 every 5seconds. fuck hun, 10 seconden
-            this.lifeCooldown =  10000 / Game.TICK_TIME_IN_MS;
+            this.lifeCooldown = 10000 / Game.TICK_TIME_IN_MS;
         }
         if ((--this.lifeCooldown) < 0) {
             this.lifeCooldown = 0;
@@ -196,6 +206,24 @@ public abstract class Creature extends Inhabitant {
 
         //creature is moved, calculate moveCooldown
         this.moveCooldown = this.calculateMoveSpeed(oldTile, tile);
+        
+        Change c = this.getChange();
+        c.type = Change.ChangeType.MOVE_CREATURE;
+        c.x = tile.x;
+        c.y = tile.y;
+        Game.globalGameObject.addChange(c);
+    }
+    
+    private Change getChange()
+    {
+        
+        Change c = new Change();
+        c.tick = this.tick;
+        c.player = Game.globalGameObject.getPlayer(this);
+        c.playerId = c.player.getId();
+        c.creature = this;
+        c.creatureId = super.getId();
+        return c;
     }
 
     private int calculateMoveSpeed(Tile oldTile, Tile tile) {
@@ -224,12 +252,13 @@ public abstract class Creature extends Inhabitant {
      * @param creature
      */
     private void doAttack(Creature creature) {
-        if(Game.globalGameObject.getPlayer(this).equals(Game.globalGameObject.getPlayer(creature)))
+        if (Game.globalGameObject.getPlayer(this).equals(Game.globalGameObject.getPlayer(creature))) {
             this.moveCooldown = -1;
-        else
+        } else {
             this.attackingCreature = creature;
+        }
     }
-    
+
     /**
      * dealDamage is called from another creature, damage is done to this creature.
      * Returns true if this creature dies.
