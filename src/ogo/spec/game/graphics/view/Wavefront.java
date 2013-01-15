@@ -168,21 +168,21 @@ public class Wavefront {
     }
 
     public void normalize() {
-        double[] min = vertices.get(0).clone(), max = vertices.get(0).clone();
+        double min = vertices.get(0)[0], max = vertices.get(0)[0];
         for (double[] vertex : vertices) {
             for (int i = 0; i < vertex.length; i++) {
-                if (vertex[i] > max[i]) {
-                    max[i] = vertex[i];
-                } else if (vertex[i] < min[i]) {
-                    min[i] = vertex[i];
+                if (vertex[i] > max) {
+                    max = vertex[i];
+                } else if (vertex[i] < min) {
+                    min = vertex[i];
                 }
             }
         }
 
         for (double[] vertex : vertices) {
             for (int i = 0; i < vertex.length; i++) {
-                vertex[i] -= min[i];
-                vertex[i] = vertex[i] / (max[i] - min[i]);
+                vertex[i] -= min;
+                vertex[i] = vertex[i] / (max - min);
             }
         }
     }
