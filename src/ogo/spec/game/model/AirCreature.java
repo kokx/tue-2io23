@@ -19,9 +19,9 @@ public class AirCreature extends Creature {
     }
 
     @Override
-    public void tick() {
+    public void tick(long tick) {
         energyTick();
-        super.tick();
+        super.tick(tick);
     }
 
     private void energyTick() {
