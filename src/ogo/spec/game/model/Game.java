@@ -5,9 +5,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import ogo.spec.game.sound.SoundMonitor;
 
 public class Game implements Iterable<Player> {
-
+    public static Game globalGameObject;
     /*
     public static void main(String[] args)
     {
@@ -23,6 +24,7 @@ public class Game implements Iterable<Player> {
     private Timer timer;
     private Player[] players;
     private GameMap map;
+    private SoundMonitor sm;
 
     private ConcurrentLinkedQueue<Change> changes = new ConcurrentLinkedQueue<Change>();
 
@@ -33,6 +35,9 @@ public class Game implements Iterable<Player> {
     }
 
     public void start() {
+        this.sm = new SoundMonitor();
+        this.sm.run();
+        globalGameObject = this;
         this.timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -47,7 +52,7 @@ public class Game implements Iterable<Player> {
             Creature[] c = players[i].getCreatures();
             for (int j = 0; j < c.length; j++) {
                 c[j].tick(tick);
-                System.out.println("Player " + String.valueOf(i) + ", creature " + String.valueOf(j) + ":" + c[j].toString());
+//                System.out.println("Player " + String.valueOf(i) + ", creature " + String.valueOf(j) + ":" + c[j].toString());
             }
         }
     }
@@ -87,7 +92,23 @@ public class Game implements Iterable<Player> {
     public Player[] getPlayers() {
         return players;
     }
+    
+    public Player getPlayer(Creature c)
+    {
+        for(int i = 0;i<this.players.length;i++){
+            for(int j = 0;j<this.players[i].getCreatures().length;j++)
+            {
+                if(this.players[i].getCreatures()[j].equals(c))
+                    return this.players[i];
+            }
+        }
+        return null;
+    }
 
+    public int getSoundLevel()
+    {
+        return this.sm.getSoundLevel();
+    }
     @Override
     public Iterator<Player> iterator() {
         return Arrays.asList(players).iterator();
