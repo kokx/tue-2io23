@@ -149,7 +149,7 @@ public class GameRun implements TokenChangeListener
         }
 
         if (changes.size() > 0) {
-            System.err.println("CHANGES YAY!!!!!");
+            System.err.println("CHANGES YAY!!!!! " + changes.size());
         }
 
         return changes;
@@ -202,8 +202,12 @@ public class GameRun implements TokenChangeListener
      */
     void applyChange(Change a)
     {
-        // undo the change
-        //System.err.println("APPLY ALL THE THINGS!");
+        switch (a.type) {
+            case MOVE_CREATURE:
+                Tile t = game.getMap().getTile(a.x, a.y);
+                a.creature.getPath().setNextTile(t);
+                break;
+        }
     }
 
     /**
