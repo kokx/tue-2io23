@@ -23,16 +23,25 @@ public class AirCreature extends Creature {
         energyTick();
         super.tick(tick);
     }
+    
+    private void setEnergy(int e)
+    {
+        this.energy = e;
+        Change c = super.getChange();
+        c.type = Change.ChangeType.ENERGY;
+        c.newValue = e;
+        Game.globalGameObject.addChange(c);
+    }
 
     private void energyTick() {
         if (this.energyCooldown == 0) {
             TileType currentTileType = super.currentTile.getType();
             if (super.moveCooldown == -1 && currentTileType == TileType.LAND) {
                 //not moving and on land recharge that focking bird
-                this.energy = Math.min(AirCreature.MAX_ENERGY, this.energy + AirCreature.ENERGY_INC);
+                this.setEnergy(Math.min(AirCreature.MAX_ENERGY, this.energy + AirCreature.ENERGY_INC));
             } else {
                 //moving or not on land, decrease energy
-                this.energy = Math.max(0, this.energy - AirCreature.ENERGY_DEC);
+                this.setEnergy(Math.max(0, this.energy - AirCreature.ENERGY_DEC));
             }
 
             if (this.energy <= 0 &&
