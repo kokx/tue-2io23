@@ -201,6 +201,12 @@ public abstract class Creature extends Inhabitant {
 
         //creature is moved, calculate moveCooldown
         this.moveCooldown = this.calculateMoveSpeed(oldTile, tile);
+        Change c = new Change();
+        c.type = Change.ChangeType.MOVE_CREATURE;
+        c.x = tile.x;
+        c.y = tile.y;
+        c.creature = this;
+        //Game.globalGameObject.get
     }
 
     private int calculateMoveSpeed(Tile oldTile, Tile tile) {
