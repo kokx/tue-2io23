@@ -250,6 +250,9 @@ public class GUI extends Base {
 
         // Draw stuff.
         draw();
+        if (player.isAttacking()) {
+            drawAttackNotice(200);
+        }
         drawMiniMap();
     }
 
@@ -376,7 +379,7 @@ public class GUI extends Base {
                     //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                     empty.bind(gl);
                     gl.glPushMatrix();
-                    gl.glTranslated(-0.6,-0.5,0);
+                    gl.glTranslated(-0.6, -0.5, 0);
                     setMaterial(Materials.GOLD);
                     gl.glCallList(FOOD);
                     setMaterial(Materials.WHITE);
@@ -519,6 +522,46 @@ public class GUI extends Base {
 
         gl.glViewport(0, 0, gs.w, gs.h); // restore viewport
         gl.glEnable(GL_LIGHTING); // re-enable lighting
+    }
+
+    private void drawAttackNotice(int w) {
+        int width = 1, height = 1;
+
+        final double AR = width / height;  // aspect ratio
+        int h = (int) (w / AR); // height of the clock in pixels
+        gl.glViewport(0, 0, w, h); // define a viewport for the clock
+
+        // Set projection matrix to display the clock with the correct size.
+        gl.glMatrixMode(GL_PROJECTION);
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+
+        gl.glOrtho(0.0f, width, height, 0.0f, 0.0f, 0.01f);
+
+        setMaterial(Materials.WHITE);
+        warning.bind(gl);
+        // Draw the clock.
+        gl.glMatrixMode(GL_MODELVIEW);
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+        gl.glBegin(GL_QUADS);
+        gl.glTexCoord2f(0, 0);
+        gl.glVertex2f(0, 0);
+        gl.glTexCoord2f(0, 1);
+        gl.glVertex2f(0, 1);
+        gl.glTexCoord2f(1, 1);
+        gl.glVertex2f(1, 1);
+        gl.glTexCoord2f(1, 0);
+        gl.glVertex2f(1, 0);
+        gl.glEnd();
+
+        // Restore the original projection and modelview matrices.
+        gl.glMatrixMode(GL_PROJECTION);
+        gl.glPopMatrix();
+        gl.glMatrixMode(GL_MODELVIEW);
+        gl.glPopMatrix();
+
+        gl.glViewport(0, 0, gs.w, gs.h); // restore viewport
     }
 
     private void handleMouseClick(int x, int y) {

@@ -63,7 +63,7 @@ abstract public class Base {
     // Start time of animation.
     private long startTime;
     // Textures.
-    protected Texture land, shallowWater, deepWater, empty, red;
+    protected Texture land, shallowWater, deepWater, empty, red, warning;
     MainFrame frame;
 
     /**
@@ -166,6 +166,7 @@ abstract public class Base {
             deepWater = loadTexture(path + "deep.jpg");
             empty = loadTexture(path + "empty.jpg");
             red = loadTexture(path + "red.jpg");
+            warning = loadTexture(path + "warning.jpg");
 
             // Print library version number.
             System.out.println("Using library version " + LIBRARY_VERSION);
