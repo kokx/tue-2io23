@@ -9,7 +9,7 @@ import java.util.Set;
 public abstract class Creature extends Inhabitant {
 
     //Time between strikes
-    public static final int ATTACK_COOLDOWN_TICKS = 200;
+    public static final int ATTACK_COOLDOWN_TICKS = 20;
     //Time it takes to move to next tile at fastest speed.
     public static final int TICKS_PER_TILE_FAST = 10;
     //Avg speed is 2 * fast
@@ -84,8 +84,7 @@ public abstract class Creature extends Inhabitant {
             // only do stuff if there is a next tile
             //if(nextTile != null)
                 //System.out.println("jan");
-            if (this.attackingCreature == null
-                    && nextTile != null
+            if (nextTile != null
                     && this.canMove(this.calculateMoveSpeed(super.currentTile, nextTile))
                ) {
                 Inhabitant inhabitant = nextTile.getInhabitant();
