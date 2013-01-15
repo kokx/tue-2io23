@@ -443,12 +443,31 @@ public class GUI extends Base {
                     creatureViews.get(c).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
                 }
                 gl.glPushMatrix();
+                double angle = creatureViews.get(c).getCurrentAngle();
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
-                gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
-                //System.out.println(currentLocation);
                 if (c == currentCreature) {
                     gs.cnt = currentLocation;
                 }
+                gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
+                if (angle == -90 || angle == 180) {
+                    gl.glTranslatef(0f, 1.0f, 0.0f);
+                }
+                if (angle == 90 || angle == 180) {
+                    gl.glTranslatef(1f, 0.0f, 0.0f);
+                }
+                if (angle == 135f) {
+                    gl.glTranslatef(1.4f, 0.5f, 0f);
+                }
+                if (angle == -135f) {
+                    gl.glTranslatef(0.5f, 1.4f, 0f);
+                }
+                if (angle == 45f) {
+                    gl.glTranslatef(0.6f, -0.25f, 0f);
+                }
+                if (angle == -45f) {
+                    gl.glTranslatef(-0.25f, 0.6f, 0f);
+                }
+                gl.glRotatef((float) angle, 0f, 0f, 1f);
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 if (c.getLife() > 0) {
                     if (c instanceof LandCreature) {
@@ -460,7 +479,7 @@ public class GUI extends Base {
                     }
                 }
                 gl.glPopMatrix();
-
+                gl.glPopMatrix();
             }
         }
     }
