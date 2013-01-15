@@ -4,6 +4,7 @@
  */
 package ogo.spec.game.lobby;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -98,7 +99,7 @@ public class Lobby {
         /* Moet nog wat descriptiever worden.. */
         String[] names = new String[l.size()];
         for(int i = 0; i < l.size(); i++){
-            names[i] = l.get(i).ip.toString();
+            names[i] = l.get(i).ip.toString().substring(1);
         }
         return names;
     }
@@ -116,11 +117,14 @@ public class Lobby {
         ConcurrentLinkedQueue<DatagramPacket> buffer = new ConcurrentLinkedQueue<DatagramPacket>();
 
         boolean read;
+        
+        int length;
 
-        DatagramReceiverRunnable(DatagramSocket sock)
+        DatagramReceiverRunnable(DatagramSocket sock, int length)
         {
             this.sock = sock;
             this.read = true;
+            this.length = length;
         }
 
         public void stop(){
@@ -131,7 +135,7 @@ public class Lobby {
         {
             try {
                 while (read) {
-                    DatagramPacket p = new DatagramPacket(new byte[1], 1);
+                    DatagramPacket p = new DatagramPacket(new byte[length], 1);
 
                     sock.receive(p);
 
@@ -172,7 +176,7 @@ public class Lobby {
             sendSock = new DatagramSocket();
             sendSock.send(packet);
 
-            DatagramReceiverRunnable run = new DatagramReceiverRunnable(receiveSock);
+            DatagramReceiverRunnable run = new DatagramReceiverRunnable(receiveSock, 1);
             new Thread(run).start();
 
             Thread.sleep(100);
@@ -213,7 +217,6 @@ public class Lobby {
 
     public void joinLobby(int serverNum) throws Exception{
         isHost = false;
-
         client.connectToInitServer(serverList.get(serverNum));
     }
 
@@ -236,7 +239,17 @@ public class Lobby {
             try{
                 client.startTokenRing();
             }catch (Exception e){
-                e.printStackTrace();
+                if(e instanceof EOFException){
+                    try{
+                        client.close();
+                        System.out.println("Closed Connection To Next Person");
+                        System.exit(0);
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                    }
+                }else{
+                    e.printStackTrace();
+                }
             }
         }
     }
