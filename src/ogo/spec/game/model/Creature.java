@@ -199,6 +199,7 @@ public abstract class Creature extends Inhabitant {
      * @param tile
      */
     private void doMove(Tile tile) {
+        this.attackingCreature = null;
         Tile oldTile = super.currentTile;
         super.currentTile.setInhabitant(null);
         tile.setInhabitant(this);
