@@ -43,7 +43,7 @@ public class CreaturePath
     /**
      * Get the current tile.
      */
-    synchronized public Tile getCurrentTile()
+    public Tile getCurrentTile()
     {
         return current;
     }
@@ -51,7 +51,7 @@ public class CreaturePath
     /**
      * Get the previous tile.
      */
-    synchronized public Tile getPreviousTile()
+    public Tile getPreviousTile()
     {
         return previous;
     }
@@ -59,7 +59,7 @@ public class CreaturePath
     /**
      * Get the next tile.
      */
-    synchronized public Tile getNextTile()
+    public Tile getNextTile()
     {
         return path.peek();
     }
@@ -67,7 +67,7 @@ public class CreaturePath
     /**
      * Go to the next tile.
      */
-    synchronized public Tile step()
+    public Tile step()
     {
         previous = current;
         current = path.poll();

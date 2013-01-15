@@ -186,4 +186,24 @@ public class Wavefront {
             }
         }
     }
+    
+        public void normalize2() {
+        double min = vertices.get(0)[0], max = vertices.get(0)[0];
+        for (double[] vertex : vertices) {
+            for (int i = 0; i < vertex.length; i++) {
+                if (vertex[i] > max) {
+                    max = vertex[i];
+                } else if (vertex[i] < min) {
+                    min = vertex[i];
+                }
+            }
+        }
+
+        for (double[] vertex : vertices) {
+            for (int i = 0; i < vertex.length; i++) {
+                vertex[i] -= min;
+                vertex[i] = vertex[i] / (max - min);
+            }
+        }
+    }
 }

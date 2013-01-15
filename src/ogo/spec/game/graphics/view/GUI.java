@@ -154,18 +154,29 @@ public class GUI extends Base {
             gl.glNewList(LANDCREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
+            //Seacreature
             models.readWavefront(path + "sea.obj", gl);
             models.normalize();
             gl.glNewList(SEACREATURE, GL_COMPILE);
+            gl.glPushMatrix();
+            gl.glTranslatef(0f, 1f, 0f);
+            gl.glRotatef(90f, 1f, 0f, 0f);
             models.drawTriangles();
+            gl.glPopMatrix();
             gl.glEndList();
+            //Aircreature
             models.readWavefront(path + "air.obj", gl);
             models.normalize();
             gl.glNewList(AIRCREATURE, GL_COMPILE);
+            gl.glPushMatrix();
+            gl.glTranslatef(0f, 1f, 0f);
+            gl.glRotatef(90f, 1f, 0f, 0f);
             models.drawTriangles();
+            gl.glPopMatrix();
             gl.glEndList();
+            //Food
             models.readWavefront(path + "food.obj", gl);
-            models.normalize();
+            models.normalize2();
             gl.glNewList(FOOD, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
@@ -200,16 +211,13 @@ public class GUI extends Base {
                 sin(gs.phi) * cos(gs.theta),
                 sin(gs.theta));
 
-        Vector eye = gs.cnt.add(dir.scale(gs.vDist));
+        Vector eye;
+        //eye = gs.cnt.add(dir.scale(gs.vDist));
+        eye = new Vector(gs.cnt.x() - 40f, gs.cnt.y() - 40f, gs.cnt.z() + 30f);
 
-        glu.gluLookAt(-40f, -40f, 30f, // eye point
+        glu.gluLookAt(eye.x(), eye.y(), eye.z(), // eye point
                 gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
-                0.0, 0.0, 1.0);   // up axis
-
-
-        //glu.gluLookAt(eye.x(), eye.y(), eye.z(), // eye point
-        //        gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
-        //        0, 0, 1); // up axis
+                0, 0, 1); // up axis
     }
 
     /**
@@ -242,6 +250,9 @@ public class GUI extends Base {
 
         // Draw stuff.
         draw();
+        if (player.isAttacking()) {
+            drawAttackNotice(200);
+        }
         drawMiniMap();
     }
 
@@ -367,9 +378,12 @@ public class GUI extends Base {
                     //glut.glutSolidTeapot(0.5);
                     //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                     empty.bind(gl);
+                    gl.glPushMatrix();
+                    gl.glTranslated(-0.6, -0.5, 0);
                     setMaterial(Materials.GOLD);
                     gl.glCallList(FOOD);
                     setMaterial(Materials.WHITE);
+                    gl.glPopMatrix();
                 }
                 gl.glPopMatrix();
 
@@ -394,30 +408,50 @@ public class GUI extends Base {
                     creatureViews.get(c).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
                 }
                 gl.glPushMatrix();
+                double angle = creatureViews.get(c).getCurrentAngle();
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
-                gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
+                Tile currentTile = c.getPath().getCurrentTile();
+                gl.glLoadName(currentTile.getY() * map.getHeight() + currentTile.getX() + 1);
                 //System.out.println(currentLocation);
                 if (c == currentCreature) {
                     gs.cnt = currentLocation;
                 }
-                //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 if (c.isAlive()) {
+                    gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
+                    drawBar((double) c.getLife() / Creature.MAX_LIFE, 1, false);
+                    gl.glPushMatrix();
+                    if (angle == -90 || angle == 180) {
+                        gl.glTranslatef(0f, 1.0f, 0.0f);
+                    }
+                    if (angle == 90 || angle == 180) {
+                        gl.glTranslatef(1f, 0.0f, 0.0f);
+                    }
+                    if (angle == 135f) {
+                        gl.glTranslatef(1.2f, 0.5f, 0f);
+                    }
+                    if (angle == -135f) {
+                        gl.glTranslatef(0.5f, 1.2f, 0f);
+                    }
+                    if (angle == 45f) {
+                        gl.glTranslatef(0.6f, -0.25f, 0f);
+                    }
+                    if (angle == -45f) {
+                        gl.glTranslatef(-0.25f, 0.5f, 0f);
+                    }
+                    gl.glRotatef((float) angle, 0f, 0f, 1f);
                     if (c instanceof LandCreature) {
                         gl.glCallList(LANDCREATURE);
+                        gl.glPopMatrix();
                     } else if (c instanceof SeaCreature) {
                         gl.glCallList(SEACREATURE);
+                        //Extra popmatrix, if-statement
+                        gl.glPopMatrix();
                     } else if (c instanceof AirCreature) {
                         gl.glCallList(AIRCREATURE);
+                        //Extra popmatrix, if-statement
+                        gl.glPopMatrix();
+                        drawBar((double) ((AirCreature) c).getEnergy() / AirCreature.MAX_ENERGY, 1.3, true);
                     }
-                    gl.glPushMatrix();
-                    red.disable(gl); // disable texture
-                    gl.glTranslated(0, 1, 1);
-                    gl.glRotated(-45, 0, 0, 1);
-                    gl.glRotated(90, 1, 0, 0);
-                    gl.glTranslated((sqrt(2) - 1) / 2, 0, 0);
-                    HealthBar.draw(gl, (double)c.getLife()/Creature.MAX_LIFE, 0.25);
-                    red.enable(gl); // enable texture
-                    gl.glPopMatrix();
                 }
                 gl.glPopMatrix();
 
@@ -490,6 +524,46 @@ public class GUI extends Base {
         gl.glEnable(GL_LIGHTING); // re-enable lighting
     }
 
+    private void drawAttackNotice(int w) {
+        int width = 1, height = 1;
+
+        final double AR = width / height;  // aspect ratio
+        int h = (int) (w / AR); // height of the clock in pixels
+        gl.glViewport(0, 0, w, h); // define a viewport for the clock
+
+        // Set projection matrix to display the clock with the correct size.
+        gl.glMatrixMode(GL_PROJECTION);
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+
+        gl.glOrtho(0.0f, width, height, 0.0f, 0.0f, 0.01f);
+
+        setMaterial(Materials.WHITE);
+        warning.bind(gl);
+        // Draw the clock.
+        gl.glMatrixMode(GL_MODELVIEW);
+        gl.glPushMatrix();
+        gl.glLoadIdentity();
+        gl.glBegin(GL_QUADS);
+        gl.glTexCoord2f(0, 0);
+        gl.glVertex2f(0, 0);
+        gl.glTexCoord2f(0, 1);
+        gl.glVertex2f(0, 1);
+        gl.glTexCoord2f(1, 1);
+        gl.glVertex2f(1, 1);
+        gl.glTexCoord2f(1, 0);
+        gl.glVertex2f(1, 0);
+        gl.glEnd();
+
+        // Restore the original projection and modelview matrices.
+        gl.glMatrixMode(GL_PROJECTION);
+        gl.glPopMatrix();
+        gl.glMatrixMode(GL_MODELVIEW);
+        gl.glPopMatrix();
+
+        gl.glViewport(0, 0, gs.w, gs.h); // restore viewport
+    }
+
     private void handleMouseClick(int x, int y) {
         y = gs.h - y;
         int buffsize = 64;
@@ -536,6 +610,18 @@ public class GUI extends Base {
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material, 4);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material, 8);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, material, 12);
+    }
+
+    private void drawBar(double life, double height, boolean yellow) {
+        gl.glPushMatrix();
+        red.disable(gl); // disable texture
+        gl.glTranslated(0, 1, height);
+        gl.glRotated(-45, 0, 0, 1);
+        gl.glRotated(90, 1, 0, 0);
+        gl.glTranslated((sqrt(2) - 1) / 2, 0, 0);
+        HealthBar.draw(gl, life, 0.25, yellow);
+        red.enable(gl); // enable texture
+        gl.glPopMatrix();
     }
 
     private final class ClickListener implements MouseListener {
