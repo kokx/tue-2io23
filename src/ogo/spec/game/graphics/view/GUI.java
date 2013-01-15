@@ -154,16 +154,27 @@ public class GUI extends Base {
             gl.glNewList(LANDCREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
+            //Seacreature
             models.readWavefront(path + "sea.obj", gl);
             models.normalize();
             gl.glNewList(SEACREATURE, GL_COMPILE);
+            gl.glPushMatrix();
+            gl.glTranslatef(0f, 1f, 0f);
+            gl.glRotatef(90f, 1f, 0f, 0f);
             models.drawTriangles();
+            gl.glPopMatrix();
             gl.glEndList();
+            //Aircreature
             models.readWavefront(path + "air.obj", gl);
             models.normalize();
             gl.glNewList(AIRCREATURE, GL_COMPILE);
+            gl.glPushMatrix();
+            gl.glTranslatef(0f, 1f, 0f);
+            gl.glRotatef(90f, 1f, 0f, 0f);
             models.drawTriangles();
+            gl.glPopMatrix();
             gl.glEndList();
+            //Food
             models.readWavefront(path + "food.obj", gl);
             models.normalize2();
             gl.glNewList(FOOD, GL_COMPILE);
@@ -394,23 +405,48 @@ public class GUI extends Base {
                     creatureViews.get(c).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
                 }
                 gl.glPushMatrix();
+                double angle = creatureViews.get(c).getCurrentAngle();
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
-                gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
                 Tile currentTile = c.getPath().getCurrentTile();
                 gl.glLoadName(currentTile.getY() * map.getHeight() + currentTile.getX() + 1);
                 //System.out.println(currentLocation);
                 if (c == currentCreature) {
                     gs.cnt = currentLocation;
                 }
-                //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 if (c.isAlive()) {
+                    gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
                     drawBar((double) c.getLife() / Creature.MAX_LIFE, 1, false);
+                    gl.glPushMatrix();
+                    if (angle == -90 || angle == 180) {
+                        gl.glTranslatef(0f, 1.0f, 0.0f);
+                    }
+                    if (angle == 90 || angle == 180) {
+                        gl.glTranslatef(1f, 0.0f, 0.0f);
+                    }
+                    if (angle == 135f) {
+                        gl.glTranslatef(1.2f, 0.5f, 0f);
+                    }
+                    if (angle == -135f) {
+                        gl.glTranslatef(0.5f, 1.2f, 0f);
+                    }
+                    if (angle == 45f) {
+                        gl.glTranslatef(0.6f, -0.25f, 0f);
+                    }
+                    if (angle == -45f) {
+                        gl.glTranslatef(-0.25f, 0.5f, 0f);
+                    }
+                    gl.glRotatef((float) angle, 0f, 0f, 1f);
                     if (c instanceof LandCreature) {
                         gl.glCallList(LANDCREATURE);
+                        gl.glPopMatrix();
                     } else if (c instanceof SeaCreature) {
                         gl.glCallList(SEACREATURE);
+                        //Extra popmatrix, if-statement
+                        gl.glPopMatrix();
                     } else if (c instanceof AirCreature) {
                         gl.glCallList(AIRCREATURE);
+                        //Extra popmatrix, if-statement
+                        gl.glPopMatrix();
                         drawBar((double) ((AirCreature) c).getEnergy() / AirCreature.MAX_ENERGY, 1.3, true);
                     }
                 }
