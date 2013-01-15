@@ -85,7 +85,11 @@ public class AirCreature extends Creature {
      * // when re-enabling this, make sure to check if creature is alive
      * // using this.isAlive().
      */
-
+    
+    public int getEnergy() {
+        return energy;
+    }
+    
     public String toString()
     {
         return super.toString() + "\nEnergy: " + this.energy;
