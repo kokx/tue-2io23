@@ -10,6 +10,7 @@ import ogo.spec.game.model.Game;
 import ogo.spec.game.model.Change;
 import ogo.spec.game.graphics.view.GUI;
 
+import java.util.PriorityQueue;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -51,6 +52,46 @@ public class GameRun implements TokenChangeListener
     // These methods run in the network thread
 
     /**
+     * Create a Token.Change from a Change object.
+     *
+     * @param change The change from the token
+     *
+     * @return The new change
+     */
+    Token.Change createTokenChangeFromChange(Change change)
+    {
+        Token.Change.Builder newChange = Token.Change.newBuilder();
+
+        switch (change.type) {
+            case MOVE_CREATURE:
+                newChange.setType(Token.ChangeType.MOVE_CREATURE);
+                newChange.setX(change.x);
+                newChange.setY(change.y);
+                break;
+            case HEALTH:
+                newChange.setType(Token.ChangeType.HEALTH);
+                newChange.setNewValue(change.newValue);
+                break;
+            case ENERGY:
+                newChange.setType(Token.ChangeType.ENERGY);
+                newChange.setNewValue(change.newValue);
+                break;
+            case ATTACKING_CREATURE:
+                newChange.setType(Token.ChangeType.ATTACKING_CREATURE);
+                //newChange.newValue = game.getCreature(change.getOtherCreatureId());
+                break;
+        }
+
+        newChange.setTick(change.tick);
+
+        // TODO: get the player from the game
+        newChange.setPlayerId(change.playerId);
+        newChange.setCreatureId(change.creatureId);
+
+        return newChange.build();
+    }
+
+    /**
      * Create a Change from a Token.Change object.
      *
      * @param change The change from the token
@@ -77,7 +118,6 @@ public class GameRun implements TokenChangeListener
                 break;
             case ATTACKING_CREATURE:
                 newChange.type = Change.ChangeType.ATTACKING_CREATURE;
-                //newChange.newValue = game.getCreature(change.getOtherCreatureId());
                 break;
         }
 
@@ -85,7 +125,9 @@ public class GameRun implements TokenChangeListener
 
         // TODO: get the player from the game
         newChange.player = game.getPlayer(change.getPlayerId());
-        //newChange.creature = game.getCreature(change.getCreatureId());
+        newChange.playerId = change.getPlayerId();
+        newChange.creature = game.getCreature(change.getCreatureId());
+        newChange.creatureId = change.getPlayerId();
 
         return newChange;
     }
@@ -128,6 +170,17 @@ public class GameRun implements TokenChangeListener
         return changes;
     }
 
+    boolean hasConflict(Change a, Change b)
+    {
+        // check if the changes have a conflict
+        return false;
+    }
+
+    void rollBack(Change a)
+    {
+        // undo the change
+    }
+
     /**
      * Merge info into the token.
      *
@@ -144,10 +197,35 @@ public class GameRun implements TokenChangeListener
         LinkedList<Change> gameChanges = getGameChanges();
         LinkedList<Change> tokenChanges = getTokenChanges(token);
 
+        // we will merge everything into this list
+        PriorityQueue<Change> newChanges = new PriorityQueue<Change>();
+
         // merge the two change lists
         // when we revert a change from game, also apply this to the game
         // state
         // when we add a change from token, also apply this to the game state
+
+        Change gameChange;
+
+        while ((gameChange = gameChanges.poll()) != null) {
+            boolean accepted = true;
+            for (Change tokenChange : tokenChanges) {
+                if (hasConflict(gameChange, tokenChange)) {
+                    rollBack(gameChange);
+                    accepted = false;
+                    break;
+                }
+            }
+            if (accepted) {
+                newChanges.add(gameChange);
+            }
+        }
+
+        // add stuff to the token
+        Change ch;
+        while ((ch = newChanges.poll()) != null) {
+            token.addMessage(createTokenChangeFromChange(ch));
+        }
 
         return token;
     }
