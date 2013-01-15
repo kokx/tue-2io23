@@ -53,11 +53,13 @@ public class GUI extends Base {
      * Constructs GUI class.
      */
     public GUI(Game game, Player player) {
+        super();
+        
         this.game = game;
         this.player = player;
 
         // Global state.
-        this.gs = new GlobalState();
+        /*this.gs = new GlobalState();
 
         // Enable fancy GUI theme.
         try {
@@ -105,7 +107,7 @@ public class GUI extends Base {
         });
 
         // Show frame.
-        frame.setVisible(true);
+        frame.setVisible(true);*/
     }
 
     /**
@@ -627,7 +629,7 @@ public class GUI extends Base {
     }
 
     public static void main(String args[]) {
-        new GUI();
+        new GUI(null, new Player("Jan"));
     }
 
     public static class Materials {
