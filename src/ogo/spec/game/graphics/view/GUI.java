@@ -150,18 +150,22 @@ public class GUI extends Base {
         String path = "src/ogo/spec/game/graphics/models/";
         try {
             models.readWavefront(path + "land.obj", gl);
+            models.normalize();
             gl.glNewList(LANDCREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "sea.obj", gl);
+            models.normalize();
             gl.glNewList(SEACREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "air.obj", gl);
+            models.normalize();
             gl.glNewList(AIRCREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "food.obj", gl);
+            models.normalize();
             gl.glNewList(FOOD, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
@@ -397,7 +401,7 @@ public class GUI extends Base {
                     gs.cnt = currentLocation;
                 }
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
-                if (c.getLife() > 0) {
+                if (c.isAlive()) {
                     if (c instanceof LandCreature) {
                         gl.glCallList(LANDCREATURE);
                     } else if (c instanceof SeaCreature) {
@@ -405,6 +409,15 @@ public class GUI extends Base {
                     } else if (c instanceof AirCreature) {
                         gl.glCallList(AIRCREATURE);
                     }
+                    gl.glPushMatrix();
+                    red.disable(gl); // disable texture
+                    gl.glTranslated(0, 1, 1);
+                    gl.glRotated(-45, 0, 0, 1);
+                    gl.glRotated(90, 1, 0, 0);
+                    gl.glTranslated((sqrt(2) - 1) / 2, 0, 0);
+                    HealthBar.draw(gl, (double)c.getLife()/Creature.MAX_LIFE, 0.25);
+                    red.enable(gl); // enable texture
+                    gl.glPopMatrix();
                 }
                 gl.glPopMatrix();
 
