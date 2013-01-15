@@ -165,7 +165,7 @@ public class GUI extends Base {
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "food.obj", gl);
-            models.normalize();
+            models.normalize2();
             gl.glNewList(FOOD, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
@@ -200,16 +200,13 @@ public class GUI extends Base {
                 sin(gs.phi) * cos(gs.theta),
                 sin(gs.theta));
 
-        Vector eye = gs.cnt.add(dir.scale(gs.vDist));
+        Vector eye;
+        //eye = gs.cnt.add(dir.scale(gs.vDist));
+        eye = new Vector(gs.cnt.x() - 40f, gs.cnt.y() - 40f, gs.cnt.z() + 30f);
 
-        glu.gluLookAt(gs.cnt.x() - 40f, gs.cnt.y() - 40f, gs.cnt.z() + 30f, // eye point
+        glu.gluLookAt(eye.x(), eye.y(), eye.z(), // eye point
                 gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
-                0.0, 0.0, 1.0);   // up axis
-
-
-        //glu.gluLookAt(eye.x(), eye.y(), eye.z(), // eye point
-        //        gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
-        //        0, 0, 1); // up axis
+                0, 0, 1); // up axis
     }
 
     /**
@@ -367,9 +364,12 @@ public class GUI extends Base {
                     //glut.glutSolidTeapot(0.5);
                     //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                     empty.bind(gl);
+                    gl.glPushMatrix();
+                    gl.glTranslated(-0.6,-0.5,0);
                     setMaterial(Materials.GOLD);
                     gl.glCallList(FOOD);
                     setMaterial(Materials.WHITE);
+                    gl.glPopMatrix();
                 }
                 gl.glPopMatrix();
 
