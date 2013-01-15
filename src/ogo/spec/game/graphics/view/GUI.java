@@ -109,23 +109,22 @@ public class GUI extends Base {
                 }
             }
             GameMap map = new GameMap(types);
-            AirCreature a = new AirCreature(map.getTile(0, 0), map);
-            SeaCreature s = new SeaCreature(map.getTile(1, 0), map);
-            SeaCreature f = new SeaCreature(map.getTile(2, 0), map);
-            SeaCreature g = new SeaCreature(map.getTile(3, 0), map);
-            SeaCreature j = new SeaCreature(map.getTile(5, 0), map);
-            map.getTile(0, 0).setInhabitant(s);
-            map.getTile(4, 0).setInhabitant(new Food());
-            //map.getTile(2, 2).setInhabitant(s);
+            AirCreature a1 = new AirCreature(map.getTile(1, 0), map);
+            SeaCreature s1 = new SeaCreature(map.getTile(2, 0), map);
+            LandCreature l1 = new LandCreature(map.getTile(3, 0), map);
+            AirCreature a2 = new AirCreature(map.getTile(1, 1), map);
+            SeaCreature s2 = new SeaCreature(map.getTile(2, 1), map);
+            LandCreature l2 = new LandCreature(map.getTile(3, 1), map);
+            map.getTile(5, 0).setInhabitant(new Food());
 
             Player p1 = new Player("1");
-            Creature[] p1c = {s, a, f};
+            Creature[] p1c = {a1, s1, l1};
             p1.setCreatures(p1c);
-            currentCreature = s;
             Player p2 = new Player("2");
-            Creature[] p2c = {g, j};
+            Creature[] p2c = {a2, s2, l2};
             p2.setCreatures(p2c);
             player = p1;
+            currentCreature = a1;
             Player[] players = new Player[2];
             players[0] = p1;
             players[1] = p2;
@@ -151,18 +150,22 @@ public class GUI extends Base {
         String path = "src/ogo/spec/game/graphics/models/";
         try {
             models.readWavefront(path + "land.obj", gl);
+            models.normalize();
             gl.glNewList(LANDCREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "sea.obj", gl);
+            models.normalize();
             gl.glNewList(SEACREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "air.obj", gl);
+            models.normalize();
             gl.glNewList(AIRCREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "food.obj", gl);
+            models.normalize();
             gl.glNewList(FOOD, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
@@ -391,33 +394,14 @@ public class GUI extends Base {
                     creatureViews.get(c).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
                 }
                 gl.glPushMatrix();
-                double angle = creatureViews.get(c).getCurrentAngle();
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
+                gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
+                //System.out.println(currentLocation);
                 if (c == currentCreature) {
                     gs.cnt = currentLocation;
                 }
-                gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
-                if (angle == -90 || angle == 180) {
-                    gl.glTranslatef(0f, 1.0f, 0.0f);
-                }
-                if (angle == 90 || angle == 180) {
-                    gl.glTranslatef(1f, 0.0f, 0.0f);
-                }
-                if (angle == 135f) {
-                    gl.glTranslatef(1.4f, 0.5f, 0f);
-                }
-                if (angle == -135f) {
-                    gl.glTranslatef(0.5f, 1.4f, 0f);
-                }
-                if (angle == 45f) {
-                    gl.glTranslatef(0.6f, -0.25f, 0f);
-                }
-                if (angle == -45f) {
-                    gl.glTranslatef(-0.25f, 0.6f, 0f);
-                }
-                gl.glRotatef((float) angle, 0f, 0f, 1f);
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
-                if (c.getLife() > 0) {
+                if (c.isAlive()) {
                     if (c instanceof LandCreature) {
                         gl.glCallList(LANDCREATURE);
                     } else if (c instanceof SeaCreature) {
@@ -425,9 +409,19 @@ public class GUI extends Base {
                     } else if (c instanceof AirCreature) {
                         gl.glCallList(AIRCREATURE);
                     }
+                    gl.glPushMatrix();
+                    red.disable(gl); // disable texture
+                    gl.glTranslated(0, 1, 1);
+                    gl.glRotated(-45, 0, 0, 1);
+                    gl.glRotated(90, 1, 0, 0);
+                    gl.glTranslated((sqrt(2) - 1) / 2, 0, 0);
+                    HealthBar.draw(gl, (double)c.getLife()/Creature.MAX_LIFE, 0.25);
+                    red.enable(gl); // enable texture
+                    gl.glPopMatrix();
                 }
                 System.out.println("Test");
                 gl.glPopMatrix();
+
             }
         }
     }
@@ -485,7 +479,8 @@ public class GUI extends Base {
                 gl.glTranslatef(t, 0f, 0f);
             }
             gl.glTranslatef(-1.5f, t, 0);
-        }            
+        }
+
         // Restore the original matrices.
         gl.glMatrixMode(GL_PROJECTION);
         gl.glPopMatrix();

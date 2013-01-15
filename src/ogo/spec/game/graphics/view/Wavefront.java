@@ -133,7 +133,6 @@ public class Wavefront {
     }
 
     public void drawTriangles() {
-        normalize();
         gl.glBegin(GL2.GL_TRIANGLES);
         for (int[] face : faces) {
             for (int i = 0; i < face.length; i++) {
@@ -168,7 +167,7 @@ public class Wavefront {
          */
     }
 
-    private void normalize() {
+    public void normalize() {
         double[] min = vertices.get(0).clone(), max = vertices.get(0).clone();
         for (double[] vertex : vertices) {
             for (int i = 0; i < vertex.length; i++) {

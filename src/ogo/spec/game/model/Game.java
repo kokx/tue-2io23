@@ -24,7 +24,7 @@ public class Game implements Iterable<Player> {
     private Player[] players;
     private GameMap map;
 
-    private ConcurrentLinkedQueue<Change> changes;
+    private ConcurrentLinkedQueue<Change> changes = new ConcurrentLinkedQueue<Change>();
 
     public Game(Player[] players, GameMap map) {
         this.players = players;
@@ -47,6 +47,7 @@ public class Game implements Iterable<Player> {
             Creature[] c = players[i].getCreatures();
             for (int j = 0; j < c.length; j++) {
                 c[j].tick(tick);
+                System.out.println("Player " + String.valueOf(i) + ", creature " + String.valueOf(j) + ":" + c[j].toString());
             }
         }
     }
@@ -72,17 +73,17 @@ public class Game implements Iterable<Player> {
     public GameMap getMap() {
         return map;
     }
-    
+
     public Player getPlayer(int id) {
         return players[id];
     }
-    
+
     public Creature getCreature(int id) {
         int player = id / 3;
         int creature = id % 3;
         return players[player].getCreatures()[creature];
     }
-    
+
     public Player[] getPlayers() {
         return players;
     }
