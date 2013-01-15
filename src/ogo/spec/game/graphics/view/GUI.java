@@ -202,7 +202,7 @@ public class GUI extends Base {
 
         Vector eye = gs.cnt.add(dir.scale(gs.vDist));
 
-        glu.gluLookAt(-40f, -40f, 30f, // eye point
+        glu.gluLookAt(gs.cnt.x() - 40f, gs.cnt.y() - 40f, gs.cnt.z() + 30f, // eye point
                 gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
                 0.0, 0.0, 1.0);   // up axis
 
@@ -396,28 +396,23 @@ public class GUI extends Base {
                 gl.glPushMatrix();
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
                 gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
+                Tile currentTile = c.getPath().getCurrentTile();
+                gl.glLoadName(currentTile.getY() * map.getHeight() + currentTile.getX() + 1);
                 //System.out.println(currentLocation);
                 if (c == currentCreature) {
                     gs.cnt = currentLocation;
                 }
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 if (c.isAlive()) {
+                    drawBar((double) c.getLife() / Creature.MAX_LIFE, 1, false);
                     if (c instanceof LandCreature) {
                         gl.glCallList(LANDCREATURE);
                     } else if (c instanceof SeaCreature) {
                         gl.glCallList(SEACREATURE);
                     } else if (c instanceof AirCreature) {
                         gl.glCallList(AIRCREATURE);
+                        drawBar((double) ((AirCreature) c).getEnergy() / AirCreature.MAX_ENERGY, 1.3, true);
                     }
-                    gl.glPushMatrix();
-                    red.disable(gl); // disable texture
-                    gl.glTranslated(0, 1, 1);
-                    gl.glRotated(-45, 0, 0, 1);
-                    gl.glRotated(90, 1, 0, 0);
-                    gl.glTranslated((sqrt(2) - 1) / 2, 0, 0);
-                    HealthBar.draw(gl, (double)c.getLife()/Creature.MAX_LIFE, 0.25);
-                    red.enable(gl); // enable texture
-                    gl.glPopMatrix();
                 }
                 gl.glPopMatrix();
 
@@ -536,6 +531,18 @@ public class GUI extends Base {
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material, 4);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material, 8);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, material, 12);
+    }
+
+    private void drawBar(double life, double height, boolean yellow) {
+        gl.glPushMatrix();
+        red.disable(gl); // disable texture
+        gl.glTranslated(0, 1, height);
+        gl.glRotated(-45, 0, 0, 1);
+        gl.glRotated(90, 1, 0, 0);
+        gl.glTranslated((sqrt(2) - 1) / 2, 0, 0);
+        HealthBar.draw(gl, life, 0.25, yellow);
+        red.enable(gl); // enable texture
+        gl.glPopMatrix();
     }
 
     private final class ClickListener implements MouseListener {
