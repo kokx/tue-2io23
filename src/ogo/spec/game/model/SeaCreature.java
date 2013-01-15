@@ -19,7 +19,6 @@ public class SeaCreature extends Creature
 
     @Override
     protected int getEatValue(Creature creature) {
-        assert !(creature instanceof SeaCreature);
         if(creature instanceof AirCreature)
         {
             return 4;

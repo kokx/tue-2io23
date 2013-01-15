@@ -8,6 +8,9 @@ public class SoundMonitor {
     boolean stopCapture = false;
     boolean threadEnded = true;
 
+    // Stores the current sound level.
+    int soundLevel;
+
     /**
      * Starts monitoring audio input from a microphone and calculates the sound level.
      */
@@ -87,7 +90,7 @@ public class SoundMonitor {
      * @param audioData ByteArray containing a sample of the signal.
      * @return The RMS of the sample.
      */
-    private int calculateSoundLevel(byte[] audioData) {
+    private void calculateSoundLevel(byte[] audioData) {
         long sum = 0;
         for (byte amplitude : audioData) {
             sum += amplitude;
@@ -105,7 +108,15 @@ public class SoundMonitor {
         int rms = (int) (Math.pow(averageMeanSquare, 0.5));
 
         System.out.println("RMS: " + rms);
-        return rms;
+        soundLevel = rms;
+    }
+
+    /**
+     * Getter to obtain the current sound level.
+     * @return sound level.
+     */
+    public int getSoundLevel() {
+        return soundLevel;
     }
 
     /**
