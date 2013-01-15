@@ -6,15 +6,22 @@ import java.util.Iterator;
 public class Player implements Iterable<Creature>
 {
     private String name;
+    
+    private int id;
 
     private Creature[] creatures = new Creature[0];
 
-    public Player(String name) {
+    public Player(String name, int id) {
         this.name = name;
+        this.id = id;
     }
 
     public void setCreatures(Creature[] creatures) {
         this.creatures = creatures;
+    }
+    
+    public int getId(){
+        return id;
     }
 
     @Override

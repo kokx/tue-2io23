@@ -4,6 +4,16 @@ public class Inhabitant
 {
 
     protected Tile currentTile;
+    
+    protected int id;
+    
+    public Inhabitant(int id){
+        this.id = id;
+    }
+    
+    public int getId(){
+        return id;
+    }
 
     /**
      * Set the tile.

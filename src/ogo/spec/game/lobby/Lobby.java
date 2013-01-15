@@ -82,7 +82,7 @@ public class Lobby {
     private void initGame(int[][] data, String[] names, int id){
         Player[] players = new Player[names.length];
         for (int i = 0; i < names.length; i++) {
-            players[i] = new Player(names[i]);
+            players[i] = new Player(names[i], i);
         }
         GameMap map = generateMap();
         
@@ -91,11 +91,11 @@ public class Lobby {
             for(int j = 0; j < data[i].length; j++){
                 Creature inh;
                 if(data[i][j] == 0){
-                    inh = new LandCreature(map.getTile(i*6, j*6), map);
+                    inh = new LandCreature(map.getTile(i*6, j*6), map, i*3 + j);
                 }else if(data[i][j] == 1){
-                    inh = new SeaCreature(map.getTile(i*6, j*6), map);
+                    inh = new SeaCreature(map.getTile(i*6, j*6), map, i*3 + j);
                 }else{
-                    inh = new AirCreature(map.getTile(i*6, j*6), map);
+                    inh = new AirCreature(map.getTile(i*6, j*6), map, i*3 + j);
                 }
                 map.getTile(i*6, j*6).setInhabitant(inh);
                 

@@ -6,9 +6,9 @@ import java.util.HashSet;
 public class SeaCreature extends Creature
 {
 
-    public SeaCreature(Tile currentTile, GameMap map)
+    public SeaCreature(Tile currentTile, GameMap map, int id)
     {
-        super(currentTile, map);
+        super(currentTile, map, id);
     }
 
     @Override
