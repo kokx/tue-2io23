@@ -27,11 +27,13 @@ public abstract class Creature extends Inhabitant {
     /**
      * Big ass constructor
      */
-    public Creature(Tile currentTile, GameMap map) {
+    public Creature(Tile currentTile, GameMap map, int id) {
+        super(id);
         this.moveCooldown = -1;
         this.attackCooldown = 0;
         this.lifeCooldown = 0;
         this.life = 15;
+        this.id = id;
 
         currentTile.setInhabitant(this);
 
