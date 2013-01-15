@@ -23,6 +23,8 @@ public abstract class Creature extends Inhabitant {
     protected int moveCooldown;
     protected int attackCooldown;
     protected int lifeCooldown;
+    
+    protected long tick;
 
     /**
      * Big ass constructor
@@ -61,6 +63,7 @@ public abstract class Creature extends Inhabitant {
      * For each of these actions there is a private function
      */
     public void tick(long tick) {
+        this.tick = tick;
         //call life tick
         this.lifeTick();
         //call attack tick
@@ -203,12 +206,24 @@ public abstract class Creature extends Inhabitant {
 
         //creature is moved, calculate moveCooldown
         this.moveCooldown = this.calculateMoveSpeed(oldTile, tile);
-        Change c = new Change();
+        
+        Change c = this.getChange();
         c.type = Change.ChangeType.MOVE_CREATURE;
         c.x = tile.x;
         c.y = tile.y;
+        Game.globalGameObject.addChange(c);
+    }
+    
+    private Change getChange()
+    {
+        
+        Change c = new Change();
+        c.tick = this.tick;
+        c.player = Game.globalGameObject.getPlayer(this);
+        c.playerId = c.player.getId();
         c.creature = this;
-        //Game.globalGameObject.get
+        c.creatureId = super.getId();
+        return c;
     }
 
     private int calculateMoveSpeed(Tile oldTile, Tile tile) {

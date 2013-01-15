@@ -25,10 +25,13 @@ public class Game implements Iterable<Player> {
     private Player[] players;
     private GameMap map;
     private SoundMonitor sm;
+    
+    private int myPlayerId;
 
     private ConcurrentLinkedQueue<Change> changes = new ConcurrentLinkedQueue<Change>();
-
-    public Game(Player[] players, GameMap map) {
+    
+    public Game(Player[] players, GameMap map, int myPlayerId) {
+        this.myPlayerId = myPlayerId;
         this.players = players;
         this.map = map;
         this.timer = new Timer();
@@ -49,6 +52,8 @@ public class Game implements Iterable<Player> {
     private void tick() {
         tick++;
         for (int i = 0; i < players.length; i++) {
+            if(this.myPlayerId != players[i].getId())
+                continue;//only call tick for my own creatures
             Creature[] c = players[i].getCreatures();
             for (int j = 0; j < c.length; j++) {
                 c[j].tick(tick);
@@ -65,6 +70,12 @@ public class Game implements Iterable<Player> {
     public Change poll()
     {
         return changes.poll();
+    }
+    
+    
+    public void addChange(Change c)
+    {
+        this.changes.add(c);
     }
 
     /**
