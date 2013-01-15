@@ -27,7 +27,6 @@ public class LandCreature extends Creature
 
     @Override
     protected int getEatValue(Creature creature) {
-        assert !(creature instanceof LandCreature);
         if(creature instanceof AirCreature)
         {
             return 4;
