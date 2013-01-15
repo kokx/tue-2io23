@@ -629,7 +629,7 @@ public class GUI extends Base {
     }
 
     public static void main(String args[]) {
-        new GUI(null, new Player("Jan"));
+        new GUI();
     }
 
     public static class Materials {
