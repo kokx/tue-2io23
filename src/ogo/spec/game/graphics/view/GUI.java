@@ -54,7 +54,7 @@ public class GUI extends Base {
      */
     public GUI(Game game, Player player) {
         super();
-        
+
         this.game = game;
         this.player = player;
 
@@ -633,7 +633,7 @@ public class GUI extends Base {
     }
 
     public static class Materials {
-        // Array containing parameters for a green plastic material. 
+        // Array containing parameters for a green plastic material.
 
         public final static float[] GREEN_PLASTIC = {
             0.0f, 0.0f, 0.0f, 1.0f, //ambient
