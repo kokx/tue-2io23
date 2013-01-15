@@ -199,6 +199,7 @@ public abstract class Creature extends Inhabitant {
      * @param tile
      */
     private void doMove(Tile tile) {
+        this.attackingCreature = null;
         Tile oldTile = super.currentTile;
         super.currentTile.setInhabitant(null);
         tile.setInhabitant(this);
@@ -214,7 +215,7 @@ public abstract class Creature extends Inhabitant {
         Game.globalGameObject.addChange(c);
     }
     
-    private Change getChange()
+    protected Change getChange()
     {
         
         Change c = new Change();
@@ -264,7 +265,8 @@ public abstract class Creature extends Inhabitant {
      * Returns true if this creature dies.
      */
     public boolean dealDamage(int damage) {
-        this.life -= damage;
+        int life = this.life - damage;
+        this.setLife(life);
         if (this.life <= 0) {
             this.die();
             return true;
@@ -285,11 +287,21 @@ public abstract class Creature extends Inhabitant {
      * add life, max life at 20
      * @param life
      */
-    protected void addLife(int life) {
-        this.life += life;
-        if (this.life > MAX_LIFE) {
-            this.life = MAX_LIFE;
+    protected void addLife(int inc) {
+        int life = this.life + inc;
+        if (life > MAX_LIFE) {
+            life = MAX_LIFE;
         }
+        this.setLife(life);
+    }
+    
+    protected void setLife(int life)
+    {
+        this.life = life;
+        Change c = this.getChange();
+        c.type = Change.ChangeType.HEALTH;
+        c.newValue = life;
+        Game.globalGameObject.addChange(c);
     }
 
     protected abstract int getMoveSpeed(TileType tileType);
