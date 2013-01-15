@@ -2334,10 +2334,6 @@ public final class GameProto {
         getMessageOrBuilderList();
     ogo.spec.game.multiplayer.GameProto.Token.ChangeOrBuilder getMessageOrBuilder(
         int index);
-    
-    // required int32 lastId = 2;
-    boolean hasLastId();
-    int getLastId();
   }
   public static final class Token extends
       com.google.protobuf.GeneratedMessage
@@ -2445,10 +2441,6 @@ public final class GameProto {
     public interface ChangeOrBuilder
         extends com.google.protobuf.MessageOrBuilder {
       
-      // required int32 id = 1;
-      boolean hasId();
-      int getId();
-      
       // required int64 tick = 2;
       boolean hasTick();
       long getTick();
@@ -2510,21 +2502,11 @@ public final class GameProto {
       }
       
       private int bitField0_;
-      // required int32 id = 1;
-      public static final int ID_FIELD_NUMBER = 1;
-      private int id_;
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      public int getId() {
-        return id_;
-      }
-      
       // required int64 tick = 2;
       public static final int TICK_FIELD_NUMBER = 2;
       private long tick_;
       public boolean hasTick() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       public long getTick() {
         return tick_;
@@ -2534,7 +2516,7 @@ public final class GameProto {
       public static final int PLAYERID_FIELD_NUMBER = 3;
       private int playerId_;
       public boolean hasPlayerId() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       public int getPlayerId() {
         return playerId_;
@@ -2544,7 +2526,7 @@ public final class GameProto {
       public static final int TYPE_FIELD_NUMBER = 4;
       private ogo.spec.game.multiplayer.GameProto.Token.ChangeType type_;
       public boolean hasType() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
+        return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       public ogo.spec.game.multiplayer.GameProto.Token.ChangeType getType() {
         return type_;
@@ -2554,7 +2536,7 @@ public final class GameProto {
       public static final int CREATUREID_FIELD_NUMBER = 5;
       private int creatureId_;
       public boolean hasCreatureId() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       public int getCreatureId() {
         return creatureId_;
@@ -2564,7 +2546,7 @@ public final class GameProto {
       public static final int X_FIELD_NUMBER = 6;
       private int x_;
       public boolean hasX() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       public int getX() {
         return x_;
@@ -2574,7 +2556,7 @@ public final class GameProto {
       public static final int Y_FIELD_NUMBER = 7;
       private int y_;
       public boolean hasY() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       public int getY() {
         return y_;
@@ -2584,7 +2566,7 @@ public final class GameProto {
       public static final int NEWVALUE_FIELD_NUMBER = 8;
       private int newValue_;
       public boolean hasNewValue() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
+        return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       public int getNewValue() {
         return newValue_;
@@ -2594,14 +2576,13 @@ public final class GameProto {
       public static final int OTHERCREATUREID_FIELD_NUMBER = 9;
       private int otherCreatureId_;
       public boolean hasOtherCreatureId() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
+        return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       public int getOtherCreatureId() {
         return otherCreatureId_;
       }
       
       private void initFields() {
-        id_ = 0;
         tick_ = 0L;
         playerId_ = 0;
         type_ = ogo.spec.game.multiplayer.GameProto.Token.ChangeType.MOVE_CREATURE;
@@ -2616,10 +2597,6 @@ public final class GameProto {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized != -1) return isInitialized == 1;
         
-        if (!hasId()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
         if (!hasTick()) {
           memoizedIsInitialized = 0;
           return false;
@@ -2644,30 +2621,27 @@ public final class GameProto {
                           throws java.io.IOException {
         getSerializedSize();
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeInt32(1, id_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeInt64(2, tick_);
         }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
           output.writeInt32(3, playerId_);
         }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
           output.writeEnum(4, type_.getNumber());
         }
-        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
           output.writeInt32(5, creatureId_);
         }
-        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
           output.writeInt32(6, x_);
         }
-        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
           output.writeInt32(7, y_);
         }
-        if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        if (((bitField0_ & 0x00000040) == 0x00000040)) {
           output.writeInt32(8, newValue_);
         }
-        if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        if (((bitField0_ & 0x00000080) == 0x00000080)) {
           output.writeInt32(9, otherCreatureId_);
         }
         getUnknownFields().writeTo(output);
@@ -2681,37 +2655,33 @@ public final class GameProto {
         size = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(1, id_);
+            .computeInt64Size(2, tick_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt64Size(2, tick_);
+            .computeInt32Size(3, playerId_);
         }
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(3, playerId_);
+            .computeEnumSize(4, type_.getNumber());
         }
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeEnumSize(4, type_.getNumber());
+            .computeInt32Size(5, creatureId_);
         }
         if (((bitField0_ & 0x00000010) == 0x00000010)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(5, creatureId_);
+            .computeInt32Size(6, x_);
         }
         if (((bitField0_ & 0x00000020) == 0x00000020)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(6, x_);
+            .computeInt32Size(7, y_);
         }
         if (((bitField0_ & 0x00000040) == 0x00000040)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(7, y_);
-        }
-        if (((bitField0_ & 0x00000080) == 0x00000080)) {
-          size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(8, newValue_);
         }
-        if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        if (((bitField0_ & 0x00000080) == 0x00000080)) {
           size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(9, otherCreatureId_);
         }
@@ -2839,24 +2809,22 @@ public final class GameProto {
         
         public Builder clear() {
           super.clear();
-          id_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000001);
           tick_ = 0L;
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000001);
           playerId_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000002);
           type_ = ogo.spec.game.multiplayer.GameProto.Token.ChangeType.MOVE_CREATURE;
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000004);
           creatureId_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000010);
+          bitField0_ = (bitField0_ & ~0x00000008);
           x_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000010);
           y_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000040);
+          bitField0_ = (bitField0_ & ~0x00000020);
           newValue_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000040);
           otherCreatureId_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000100);
+          bitField0_ = (bitField0_ & ~0x00000080);
           return this;
         }
         
@@ -2898,37 +2866,33 @@ public final class GameProto {
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
             to_bitField0_ |= 0x00000001;
           }
-          result.id_ = id_;
+          result.tick_ = tick_;
           if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
             to_bitField0_ |= 0x00000002;
           }
-          result.tick_ = tick_;
+          result.playerId_ = playerId_;
           if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
             to_bitField0_ |= 0x00000004;
           }
-          result.playerId_ = playerId_;
+          result.type_ = type_;
           if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
             to_bitField0_ |= 0x00000008;
           }
-          result.type_ = type_;
+          result.creatureId_ = creatureId_;
           if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
             to_bitField0_ |= 0x00000010;
           }
-          result.creatureId_ = creatureId_;
+          result.x_ = x_;
           if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
             to_bitField0_ |= 0x00000020;
           }
-          result.x_ = x_;
+          result.y_ = y_;
           if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
             to_bitField0_ |= 0x00000040;
           }
-          result.y_ = y_;
+          result.newValue_ = newValue_;
           if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
             to_bitField0_ |= 0x00000080;
-          }
-          result.newValue_ = newValue_;
-          if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-            to_bitField0_ |= 0x00000100;
           }
           result.otherCreatureId_ = otherCreatureId_;
           result.bitField0_ = to_bitField0_;
@@ -2947,9 +2911,6 @@ public final class GameProto {
         
         public Builder mergeFrom(ogo.spec.game.multiplayer.GameProto.Token.Change other) {
           if (other == ogo.spec.game.multiplayer.GameProto.Token.Change.getDefaultInstance()) return this;
-          if (other.hasId()) {
-            setId(other.getId());
-          }
           if (other.hasTick()) {
             setTick(other.getTick());
           }
@@ -2979,10 +2940,6 @@ public final class GameProto {
         }
         
         public final boolean isInitialized() {
-          if (!hasId()) {
-            
-            return false;
-          }
           if (!hasTick()) {
             
             return false;
@@ -3025,18 +2982,13 @@ public final class GameProto {
                 }
                 break;
               }
-              case 8: {
-                bitField0_ |= 0x00000001;
-                id_ = input.readInt32();
-                break;
-              }
               case 16: {
-                bitField0_ |= 0x00000002;
+                bitField0_ |= 0x00000001;
                 tick_ = input.readInt64();
                 break;
               }
               case 24: {
-                bitField0_ |= 0x00000004;
+                bitField0_ |= 0x00000002;
                 playerId_ = input.readInt32();
                 break;
               }
@@ -3046,33 +2998,33 @@ public final class GameProto {
                 if (value == null) {
                   unknownFields.mergeVarintField(4, rawValue);
                 } else {
-                  bitField0_ |= 0x00000008;
+                  bitField0_ |= 0x00000004;
                   type_ = value;
                 }
                 break;
               }
               case 40: {
-                bitField0_ |= 0x00000010;
+                bitField0_ |= 0x00000008;
                 creatureId_ = input.readInt32();
                 break;
               }
               case 48: {
-                bitField0_ |= 0x00000020;
+                bitField0_ |= 0x00000010;
                 x_ = input.readInt32();
                 break;
               }
               case 56: {
-                bitField0_ |= 0x00000040;
+                bitField0_ |= 0x00000020;
                 y_ = input.readInt32();
                 break;
               }
               case 64: {
-                bitField0_ |= 0x00000080;
+                bitField0_ |= 0x00000040;
                 newValue_ = input.readInt32();
                 break;
               }
               case 72: {
-                bitField0_ |= 0x00000100;
+                bitField0_ |= 0x00000080;
                 otherCreatureId_ = input.readInt32();
                 break;
               }
@@ -3082,43 +3034,22 @@ public final class GameProto {
         
         private int bitField0_;
         
-        // required int32 id = 1;
-        private int id_ ;
-        public boolean hasId() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-        public int getId() {
-          return id_;
-        }
-        public Builder setId(int value) {
-          bitField0_ |= 0x00000001;
-          id_ = value;
-          onChanged();
-          return this;
-        }
-        public Builder clearId() {
-          bitField0_ = (bitField0_ & ~0x00000001);
-          id_ = 0;
-          onChanged();
-          return this;
-        }
-        
         // required int64 tick = 2;
         private long tick_ ;
         public boolean hasTick() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
+          return ((bitField0_ & 0x00000001) == 0x00000001);
         }
         public long getTick() {
           return tick_;
         }
         public Builder setTick(long value) {
-          bitField0_ |= 0x00000002;
+          bitField0_ |= 0x00000001;
           tick_ = value;
           onChanged();
           return this;
         }
         public Builder clearTick() {
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000001);
           tick_ = 0L;
           onChanged();
           return this;
@@ -3127,19 +3058,19 @@ public final class GameProto {
         // required int32 playerId = 3;
         private int playerId_ ;
         public boolean hasPlayerId() {
-          return ((bitField0_ & 0x00000004) == 0x00000004);
+          return ((bitField0_ & 0x00000002) == 0x00000002);
         }
         public int getPlayerId() {
           return playerId_;
         }
         public Builder setPlayerId(int value) {
-          bitField0_ |= 0x00000004;
+          bitField0_ |= 0x00000002;
           playerId_ = value;
           onChanged();
           return this;
         }
         public Builder clearPlayerId() {
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000002);
           playerId_ = 0;
           onChanged();
           return this;
@@ -3148,7 +3079,7 @@ public final class GameProto {
         // required .ogo.spec.game.multiplayer.Token.ChangeType type = 4;
         private ogo.spec.game.multiplayer.GameProto.Token.ChangeType type_ = ogo.spec.game.multiplayer.GameProto.Token.ChangeType.MOVE_CREATURE;
         public boolean hasType() {
-          return ((bitField0_ & 0x00000008) == 0x00000008);
+          return ((bitField0_ & 0x00000004) == 0x00000004);
         }
         public ogo.spec.game.multiplayer.GameProto.Token.ChangeType getType() {
           return type_;
@@ -3157,13 +3088,13 @@ public final class GameProto {
           if (value == null) {
             throw new NullPointerException();
           }
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000004;
           type_ = value;
           onChanged();
           return this;
         }
         public Builder clearType() {
-          bitField0_ = (bitField0_ & ~0x00000008);
+          bitField0_ = (bitField0_ & ~0x00000004);
           type_ = ogo.spec.game.multiplayer.GameProto.Token.ChangeType.MOVE_CREATURE;
           onChanged();
           return this;
@@ -3172,19 +3103,19 @@ public final class GameProto {
         // required int32 creatureId = 5;
         private int creatureId_ ;
         public boolean hasCreatureId() {
-          return ((bitField0_ & 0x00000010) == 0x00000010);
+          return ((bitField0_ & 0x00000008) == 0x00000008);
         }
         public int getCreatureId() {
           return creatureId_;
         }
         public Builder setCreatureId(int value) {
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000008;
           creatureId_ = value;
           onChanged();
           return this;
         }
         public Builder clearCreatureId() {
-          bitField0_ = (bitField0_ & ~0x00000010);
+          bitField0_ = (bitField0_ & ~0x00000008);
           creatureId_ = 0;
           onChanged();
           return this;
@@ -3193,19 +3124,19 @@ public final class GameProto {
         // optional int32 x = 6;
         private int x_ ;
         public boolean hasX() {
-          return ((bitField0_ & 0x00000020) == 0x00000020);
+          return ((bitField0_ & 0x00000010) == 0x00000010);
         }
         public int getX() {
           return x_;
         }
         public Builder setX(int value) {
-          bitField0_ |= 0x00000020;
+          bitField0_ |= 0x00000010;
           x_ = value;
           onChanged();
           return this;
         }
         public Builder clearX() {
-          bitField0_ = (bitField0_ & ~0x00000020);
+          bitField0_ = (bitField0_ & ~0x00000010);
           x_ = 0;
           onChanged();
           return this;
@@ -3214,19 +3145,19 @@ public final class GameProto {
         // optional int32 y = 7;
         private int y_ ;
         public boolean hasY() {
-          return ((bitField0_ & 0x00000040) == 0x00000040);
+          return ((bitField0_ & 0x00000020) == 0x00000020);
         }
         public int getY() {
           return y_;
         }
         public Builder setY(int value) {
-          bitField0_ |= 0x00000040;
+          bitField0_ |= 0x00000020;
           y_ = value;
           onChanged();
           return this;
         }
         public Builder clearY() {
-          bitField0_ = (bitField0_ & ~0x00000040);
+          bitField0_ = (bitField0_ & ~0x00000020);
           y_ = 0;
           onChanged();
           return this;
@@ -3235,19 +3166,19 @@ public final class GameProto {
         // optional int32 newValue = 8;
         private int newValue_ ;
         public boolean hasNewValue() {
-          return ((bitField0_ & 0x00000080) == 0x00000080);
+          return ((bitField0_ & 0x00000040) == 0x00000040);
         }
         public int getNewValue() {
           return newValue_;
         }
         public Builder setNewValue(int value) {
-          bitField0_ |= 0x00000080;
+          bitField0_ |= 0x00000040;
           newValue_ = value;
           onChanged();
           return this;
         }
         public Builder clearNewValue() {
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000040);
           newValue_ = 0;
           onChanged();
           return this;
@@ -3256,19 +3187,19 @@ public final class GameProto {
         // optional int32 otherCreatureId = 9;
         private int otherCreatureId_ ;
         public boolean hasOtherCreatureId() {
-          return ((bitField0_ & 0x00000100) == 0x00000100);
+          return ((bitField0_ & 0x00000080) == 0x00000080);
         }
         public int getOtherCreatureId() {
           return otherCreatureId_;
         }
         public Builder setOtherCreatureId(int value) {
-          bitField0_ |= 0x00000100;
+          bitField0_ |= 0x00000080;
           otherCreatureId_ = value;
           onChanged();
           return this;
         }
         public Builder clearOtherCreatureId() {
-          bitField0_ = (bitField0_ & ~0x00000100);
+          bitField0_ = (bitField0_ & ~0x00000080);
           otherCreatureId_ = 0;
           onChanged();
           return this;
@@ -3285,7 +3216,6 @@ public final class GameProto {
       // @@protoc_insertion_point(class_scope:ogo.spec.game.multiplayer.Token.Change)
     }
     
-    private int bitField0_;
     // repeated .ogo.spec.game.multiplayer.Token.Change message = 1;
     public static final int MESSAGE_FIELD_NUMBER = 1;
     private java.util.List<ogo.spec.game.multiplayer.GameProto.Token.Change> message_;
@@ -3307,29 +3237,14 @@ public final class GameProto {
       return message_.get(index);
     }
     
-    // required int32 lastId = 2;
-    public static final int LASTID_FIELD_NUMBER = 2;
-    private int lastId_;
-    public boolean hasLastId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public int getLastId() {
-      return lastId_;
-    }
-    
     private void initFields() {
       message_ = java.util.Collections.emptyList();
-      lastId_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
       
-      if (!hasLastId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       for (int i = 0; i < getMessageCount(); i++) {
         if (!getMessage(i).isInitialized()) {
           memoizedIsInitialized = 0;
@@ -3346,9 +3261,6 @@ public final class GameProto {
       for (int i = 0; i < message_.size(); i++) {
         output.writeMessage(1, message_.get(i));
       }
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(2, lastId_);
-      }
       getUnknownFields().writeTo(output);
     }
     
@@ -3361,10 +3273,6 @@ public final class GameProto {
       for (int i = 0; i < message_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, message_.get(i));
-      }
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, lastId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3497,8 +3405,6 @@ public final class GameProto {
         } else {
           messageBuilder_.clear();
         }
-        lastId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       
@@ -3536,7 +3442,6 @@ public final class GameProto {
       public ogo.spec.game.multiplayer.GameProto.Token buildPartial() {
         ogo.spec.game.multiplayer.GameProto.Token result = new ogo.spec.game.multiplayer.GameProto.Token(this);
         int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
         if (messageBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
             message_ = java.util.Collections.unmodifiableList(message_);
@@ -3546,11 +3451,6 @@ public final class GameProto {
         } else {
           result.message_ = messageBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.lastId_ = lastId_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -3592,18 +3492,11 @@ public final class GameProto {
             }
           }
         }
-        if (other.hasLastId()) {
-          setLastId(other.getLastId());
-        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
       
       public final boolean isInitialized() {
-        if (!hasLastId()) {
-          
-          return false;
-        }
         for (int i = 0; i < getMessageCount(); i++) {
           if (!getMessage(i).isInitialized()) {
             
@@ -3640,11 +3533,6 @@ public final class GameProto {
               ogo.spec.game.multiplayer.GameProto.Token.Change.Builder subBuilder = ogo.spec.game.multiplayer.GameProto.Token.Change.newBuilder();
               input.readMessage(subBuilder, extensionRegistry);
               addMessage(subBuilder.buildPartial());
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              lastId_ = input.readInt32();
               break;
             }
           }
@@ -3839,27 +3727,6 @@ public final class GameProto {
         return messageBuilder_;
       }
       
-      // required int32 lastId = 2;
-      private int lastId_ ;
-      public boolean hasLastId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public int getLastId() {
-        return lastId_;
-      }
-      public Builder setLastId(int value) {
-        bitField0_ |= 0x00000002;
-        lastId_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearLastId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        lastId_ = 0;
-        onChanged();
-        return this;
-      }
-      
       // @@protoc_insertion_point(builder_scope:ogo.spec.game.multiplayer.Token)
     }
     
@@ -3922,16 +3789,16 @@ public final class GameProto {
       "ameState\022\014\n\004data\030\001 \003(\005\022\r\n\005names\030\002 \003(\t\022\n\n" +
       "\002id\030\003 \002(\005\"\025\n\005Reply\022\014\n\004done\030\001 \002(\010\"3\n\tConn" +
       "ectTo\022\n\n\002ip\030\001 \002(\014\022\014\n\004port\030\002 \002(\005\022\014\n\004init\030" +
-      "\003 \002(\010\"\351\002\n\005Token\0228\n\007message\030\001 \003(\0132\'.ogo.s" +
-      "pec.game.multiplayer.Token.Change\022\016\n\006las" +
-      "tId\030\002 \002(\005\032\304\001\n\006Change\022\n\n\002id\030\001 \002(\005\022\014\n\004tick",
-      "\030\002 \002(\003\022\020\n\010playerId\030\003 \002(\005\0229\n\004type\030\004 \002(\0162+" +
-      ".ogo.spec.game.multiplayer.Token.ChangeT" +
-      "ype\022\022\n\ncreatureId\030\005 \002(\005\022\t\n\001x\030\006 \001(\005\022\t\n\001y\030" +
-      "\007 \001(\005\022\020\n\010newValue\030\010 \001(\005\022\027\n\017otherCreature" +
-      "Id\030\t \001(\005\"O\n\nChangeType\022\021\n\rMOVE_CREATURE\020" +
-      "\000\022\n\n\006HEALTH\020\001\022\n\n\006ENERGY\020\002\022\026\n\022ATTACKING_C" +
-      "REATURE\020\003B\033\n\031ogo.spec.game.multiplayer"
+      "\003 \002(\010\"\315\002\n\005Token\0228\n\007message\030\001 \003(\0132\'.ogo.s" +
+      "pec.game.multiplayer.Token.Change\032\270\001\n\006Ch" +
+      "ange\022\014\n\004tick\030\002 \002(\003\022\020\n\010playerId\030\003 \002(\005\0229\n\004",
+      "type\030\004 \002(\0162+.ogo.spec.game.multiplayer.T" +
+      "oken.ChangeType\022\022\n\ncreatureId\030\005 \002(\005\022\t\n\001x" +
+      "\030\006 \001(\005\022\t\n\001y\030\007 \001(\005\022\020\n\010newValue\030\010 \001(\005\022\027\n\017o" +
+      "therCreatureId\030\t \001(\005\"O\n\nChangeType\022\021\n\rMO" +
+      "VE_CREATURE\020\000\022\n\n\006HEALTH\020\001\022\n\n\006ENERGY\020\002\022\026\n" +
+      "\022ATTACKING_CREATURE\020\003B\033\n\031ogo.spec.game.m" +
+      "ultiplayer"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -3983,7 +3850,7 @@ public final class GameProto {
           internal_static_ogo_spec_game_multiplayer_Token_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogo_spec_game_multiplayer_Token_descriptor,
-              new java.lang.String[] { "Message", "LastId", },
+              new java.lang.String[] { "Message", },
               ogo.spec.game.multiplayer.GameProto.Token.class,
               ogo.spec.game.multiplayer.GameProto.Token.Builder.class);
           internal_static_ogo_spec_game_multiplayer_Token_Change_descriptor =
@@ -3991,7 +3858,7 @@ public final class GameProto {
           internal_static_ogo_spec_game_multiplayer_Token_Change_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ogo_spec_game_multiplayer_Token_Change_descriptor,
-              new java.lang.String[] { "Id", "Tick", "PlayerId", "Type", "CreatureId", "X", "Y", "NewValue", "OtherCreatureId", },
+              new java.lang.String[] { "Tick", "PlayerId", "Type", "CreatureId", "X", "Y", "NewValue", "OtherCreatureId", },
               ogo.spec.game.multiplayer.GameProto.Token.Change.class,
               ogo.spec.game.multiplayer.GameProto.Token.Change.Builder.class);
           return null;
