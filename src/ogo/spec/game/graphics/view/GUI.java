@@ -54,60 +54,8 @@ public class GUI extends Base {
      */
     public GUI(Game game, Player player) {
         super();
-        
         this.game = game;
         this.player = player;
-
-        // Global state.
-        /*this.gs = new GlobalState();
-
-        // Enable fancy GUI theme.
-        try {
-            UIManager.setLookAndFeel(
-                    "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-        } catch (Exception ex) {
-            Logger.getLogger(Base.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        // GUI frame.
-        frame = new MainFrame(gs);
-
-        // OpenGL utility functions.
-        this.glu = new GLU();
-        this.glut = new GLUT();
-
-        // Redirect OpenGL listener to the abstract render functions.
-        GLJPanel glPanel = (GLJPanel) frame.glPanel;
-        glPanel.addGLEventListener(new Base.GLEventDelegate());
-
-        // Attach mouse and keyboard listeners.
-        Base.GLListener listener = new Base.GLListener();
-        glPanel.addMouseListener(listener);
-        glPanel.addMouseMotionListener(listener);
-        glPanel.addMouseWheelListener(listener);
-        glPanel.addKeyListener(listener);
-        glPanel.setFocusable(true);
-        glPanel.requestFocusInWindow();
-
-        // Attach animator to OpenGL panel and begin refresh
-        // at the specified number of frames per second.
-        final FPSAnimator animator =
-                new FPSAnimator((GLJPanel) frame.glPanel, FPS, true);
-        animator.setIgnoreExceptions(false);
-        animator.setPrintExceptions(true);
-
-        animator.start();
-
-        // Stop animator when window is closed.
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                animator.stop();
-            }
-        });
-
-        // Show frame.
-        frame.setVisible(true);*/
     }
 
     /**
@@ -443,31 +391,12 @@ public class GUI extends Base {
                     creatureViews.get(c).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
                 }
                 gl.glPushMatrix();
-                double angle = creatureViews.get(c).getCurrentAngle();
                 Vector currentLocation = creatureViews.get(c).getCurrentLocation();
+                gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
+                //System.out.println(currentLocation);
                 if (c == currentCreature) {
                     gs.cnt = currentLocation;
                 }
-                gl.glTranslated(currentLocation.x(), currentLocation.y(), currentLocation.z());
-                if (angle == -90 || angle == 180) {
-                    gl.glTranslatef(0f, 1.0f, 0.0f);
-                }
-                if (angle == 90 || angle == 180) {
-                    gl.glTranslatef(1f, 0.0f, 0.0f);
-                }
-                if (angle == 135f) {
-                    gl.glTranslatef(1.4f, 0.5f, 0f);
-                }
-                if (angle == -135f) {
-                    gl.glTranslatef(0.5f, 1.4f, 0f);
-                }
-                if (angle == 45f) {
-                    gl.glTranslatef(0.6f, -0.25f, 0f);
-                }
-                if (angle == -45f) {
-                    gl.glTranslatef(-0.25f, 0.6f, 0f);
-                }
-                gl.glRotatef((float) angle, 0f, 0f, 1f);
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
                 if (c.getLife() > 0) {
                     if (c instanceof LandCreature) {
@@ -479,7 +408,7 @@ public class GUI extends Base {
                     }
                 }
                 gl.glPopMatrix();
-                gl.glPopMatrix();
+
             }
         }
     }
