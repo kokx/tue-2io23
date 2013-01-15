@@ -82,8 +82,6 @@ public abstract class Creature extends Inhabitant {
             // if attackingCreature == null the creature is not attacking
             // this.canMove() will check if the creature has enough energy to move (only for aircreatures)
             // only do stuff if there is a next tile
-            //if(nextTile != null)
-            //System.out.println("jan");
             if (nextTile != null
                     && this.canMove(this.calculateMoveSpeed(super.currentTile, nextTile))) {
                 Inhabitant inhabitant = nextTile.getInhabitant();
@@ -144,7 +142,9 @@ public abstract class Creature extends Inhabitant {
      * Strike the enemy, dealing some damage and shit
      */
     private void strike() {
-        int damage = 3;
+        int soundLevel = Game.globalGameObject.getSoundLevel();
+        System.out.println(soundLevel);
+        int damage = soundLevel;
         //TODO: listen to mic for damage
         if (this.attackingCreature.dealDamage(damage)) {
             //he dead, lets eat it
@@ -222,9 +222,12 @@ public abstract class Creature extends Inhabitant {
      * @param creature
      */
     private void doAttack(Creature creature) {
-        this.attackingCreature = creature;
+        if(Game.globalGameObject.getPlayer(this).equals(Game.globalGameObject.getPlayer(creature)))
+            this.moveCooldown = -1;
+        else
+            this.attackingCreature = creature;
     }
-
+    
     /**
      * dealDamage is called from another creature, damage is done to this creature.
      * Returns true if this creature dies.
