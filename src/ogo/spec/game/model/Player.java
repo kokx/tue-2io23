@@ -26,4 +26,15 @@ public class Player implements Iterable<Creature>
     {
         return this.creatures;
     }
+    
+    public boolean isAttacking() {
+        boolean result = false;
+        for(Creature creature : creatures) {
+            if (creature.attackingCreature != null) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
 }
