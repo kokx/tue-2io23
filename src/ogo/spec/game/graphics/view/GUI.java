@@ -151,14 +151,17 @@ public class GUI extends Base {
         String path = "src/ogo/spec/game/graphics/models/";
         try {
             models.readWavefront(path + "land.obj", gl);
+            models.normalize();
             gl.glNewList(LANDCREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "sea.obj", gl);
+            models.normalize();
             gl.glNewList(SEACREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "air.obj", gl);
+            models.normalize();
             gl.glNewList(AIRCREATURE, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
@@ -238,8 +241,18 @@ public class GUI extends Base {
         gl.glEnable(GL_NORMALIZE);
 
         // Draw stuff.
-        draw();
-        drawMiniMap();
+        //draw();
+        //drawMiniMap();
+        
+        // Background color.
+        gl.glClearColor(1f, 1f, 1f, 0f);
+
+        // Clear background.
+        gl.glClear(GL_COLOR_BUFFER_BIT);
+
+        // Clear depth buffer.
+        gl.glClear(GL_DEPTH_BUFFER_BIT);
+        HealthBar.draw(gl, 0.75, 0.25);
     }
 
     private void draw() {
