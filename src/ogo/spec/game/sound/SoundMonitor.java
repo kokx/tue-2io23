@@ -57,8 +57,9 @@ public class SoundMonitor {
             Thread captureThread = new CaptureThread(targetDataLine);
             captureThread.start();
         } catch (Exception e) {
-            System.out.println(e);
-            System.exit(0);
+            // Error while opening the microphone's data line.
+            System.out.println("Could not open the microphone's data line.");
+            soundLevel = 0;
         }
     }
 
