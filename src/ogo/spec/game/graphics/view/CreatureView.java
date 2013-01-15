@@ -15,6 +15,7 @@ public class CreatureView {
     int t0;
     double unit;
     double animationLength;
+    double angle = 0;
 
     public CreatureView(Creature creature, Timer timer) {
         this.creature = creature;
@@ -62,9 +63,47 @@ public class CreatureView {
                 currentLocation = new Vector(creature.getPath().getCurrentTile().getX(),
                         creature.getPath().getCurrentTile().getY(),
                         0);
-
+                
             }
         }
         return currentLocation;
+    }
+        public double getCurrentAngle() {
+        final Tile currentTile = creature.getPath().getCurrentTile();
+        if (previousLocation != null) {
+            Vector P = new Vector(previousLocation.getX(), previousLocation.getY(), 0);
+            Vector T = new Vector(currentTile.getX(), currentTile.getY(), 0);
+            if (P.x < T.x) {
+                if (P.y < T.y) {
+                    angle = 135f;
+                }
+                if (P.y > T.y) {
+                    angle = 45f;
+                }
+                if (P.y == T.y) {
+                    angle = 90f;
+                }
+            }
+            if (P.x == T.x) {
+                if (P.y < T.y) {
+                    angle = 180f;
+                }
+                if (P.y > T.y) {
+                    angle = 0f;
+                }
+            }
+            if (P.x > T.x) {
+                if (P.y < T.y) {
+                    angle = -135f;
+                }
+                if (P.y > T.y) {
+                    angle = -45f;
+                }
+                if (P.y == T.y) {
+                    angle = -90f;
+                }
+            }
+        }
+        return angle;
     }
 }
