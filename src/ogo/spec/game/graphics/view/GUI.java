@@ -166,6 +166,7 @@ public class GUI extends Base {
             models.drawTriangles();
             gl.glEndList();
             models.readWavefront(path + "food.obj", gl);
+            models.normalize();
             gl.glNewList(FOOD, GL_COMPILE);
             models.drawTriangles();
             gl.glEndList();
@@ -202,14 +203,14 @@ public class GUI extends Base {
 
         Vector eye = gs.cnt.add(dir.scale(gs.vDist));
 
-        glu.gluLookAt(-40f, -40f, 30f, // eye point
+        //glu.gluLookAt(-40f, -40f, 30f, // eye point
+        //      gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
+        //    0.0, 0.0, 1.0);   // up axis
+
+
+        glu.gluLookAt(eye.x(), eye.y(), eye.z(), // eye point
                 gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
-                0.0, 0.0, 1.0);   // up axis
-
-
-        //glu.gluLookAt(eye.x(), eye.y(), eye.z(), // eye point
-        //        gs.cnt.x(), gs.cnt.y(), gs.cnt.z(), // center point
-        //        0, 0, 1); // up axis
+                0, 0, 1); // up axis
     }
 
     /**
@@ -241,18 +242,8 @@ public class GUI extends Base {
         gl.glEnable(GL_NORMALIZE);
 
         // Draw stuff.
-        //draw();
-        //drawMiniMap();
-        
-        // Background color.
-        gl.glClearColor(1f, 1f, 1f, 0f);
-
-        // Clear background.
-        gl.glClear(GL_COLOR_BUFFER_BIT);
-
-        // Clear depth buffer.
-        gl.glClear(GL_DEPTH_BUFFER_BIT);
-        HealthBar.draw(gl, 0.75, 0.25);
+        draw();
+        drawMiniMap();
     }
 
     private void draw() {
@@ -305,7 +296,7 @@ public class GUI extends Base {
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, material, 4);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, material, 8);
         gl.glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, material, 12);
-        gl.glTranslated(0.5, 0.5, 0.5);
+        //gl.glTranslated(0.5, 0.5, 0.5);
         //glut.glutWireCube(1);
         //gl.glTranslated(-0.5, -0.5, -0.5);
         //w.drawTriangles();
@@ -411,7 +402,7 @@ public class GUI extends Base {
                     gs.cnt = currentLocation;
                 }
                 //new GraphicalObjects(gl).drawCylinder(0.5f, 2);
-                if (c.getLife() > 0) {
+                if (c.isAlive()) {
                     if (c instanceof LandCreature) {
                         gl.glCallList(LANDCREATURE);
                     } else if (c instanceof SeaCreature) {
@@ -419,6 +410,15 @@ public class GUI extends Base {
                     } else if (c instanceof AirCreature) {
                         gl.glCallList(AIRCREATURE);
                     }
+                    gl.glPushMatrix();
+                    red.disable(gl); // disable texture
+                    gl.glTranslated(0, 1, 1);
+                    gl.glRotated(-45, 0, 0, 1);
+                    gl.glRotated(90, 1, 0, 0);
+                    gl.glTranslated((sqrt(2) - 1) / 2, 0, 0);
+                    HealthBar.draw(gl, (double)c.getLife()/Creature.MAX_LIFE, 0.25);
+                    red.enable(gl); // enable texture
+                    gl.glPopMatrix();
                 }
                 gl.glPopMatrix();
 
