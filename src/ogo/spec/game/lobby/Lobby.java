@@ -4,7 +4,11 @@
  */
 package ogo.spec.game.lobby;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.io.EOFException;
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -12,6 +16,7 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import javax.imageio.ImageIO;
 import ogo.spec.game.model.*;
 import ogo.spec.game.multiplayer.PeerInfo;
 import ogo.spec.game.multiplayer.client.Client;
@@ -33,30 +38,44 @@ public class Lobby {
     List<PeerInfo> serverList;
 
     boolean isHost;
+    
+    public final static String mapImagePath = "src/ogo/spec/game/lobby/Map.bmp";
 
     public Lobby(){
         isHost = false;
     }
     
+    private int[] loadMapImage(){
+        BufferedImage img = null;
+        try {
+            img = ImageIO.read(new File(mapImagePath));
+        } catch (IOException e) {
+            
+        }
+        
+        byte[] data = ((DataBufferByte)img.getRaster().getDataBuffer()).getData();
+        int[] newData = new int[data.length];
+        for(int i = 0; i < data.length; i++){
+            newData[i] = (data[i]+512)%256;
+        }
+        return newData;
+    }
+    
     private GameMap generateMap(){
-        Random generator = new Random(0);
+        int[] data = loadMapImage();
         TileType[][] types = new TileType[50][50];
-        for (int i = 0; i < types.length; i++) {
-            for (int j = 0; j < types[0].length; j++) {
-                int type = generator.nextInt(3);
-                switch (type) {
-                    case 0:
-                        types[j][i] = TileType.DEEP_WATER;
-                        break;
-                    case 1:
-                        types[j][i] = TileType.LAND;
-                        break;
-                    case 2:
-                        types[j][i] = TileType.SHALLOW_WATER;
-                        break;
+        for(int i = 0; i < 50; i++){
+            for(int j = 0; j < 50; j++){
+                if(data[i*150 + j*3 + 0] == 0 && data[i*150 + j*3 + 1] == 0 && data[i*150 + j*3 + 2] == 0){
+                    types[i][j] = TileType.LAND;
+                }else if(data[i*150 + j*3 + 0] == 255 && data[i*150 + j*3 + 1] == 255 && data[i*150 + j*3 + 2] == 255){
+                    types[i][j] = TileType.DEEP_WATER;
+                }else{
+                    types[i][j] = TileType.SHALLOW_WATER;
                 }
             }
         }
+        
         return new GameMap(types);
     }
 
