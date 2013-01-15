@@ -144,19 +144,9 @@ public abstract class Creature extends Inhabitant {
      * Strike the enemy, dealing some damage and shit
      */
     private void strike() {
-        int damage = 3;
         int soundLevel = Game.globalGameObject.getSoundLevel();
-        System.out.println("Sound level: " + soundLevel);
-        if (soundLevel == 0) {
-            damage = 3;
-        } else if (soundLevel > 0 && soundLevel < 30) {
-            damage = 3;
-        } else if (soundLevel > 0 && soundLevel < 60) {
-            damage = 4;
-        } else if (soundLevel > 0) {
-            damage = 5;
-        }
-        System.out.println("Damage " +damage);
+        System.out.println(soundLevel);
+        int damage = soundLevel;
         //TODO: listen to mic for damage
         if (this.attackingCreature.dealDamage(damage)) {
             //he dead, lets eat it
