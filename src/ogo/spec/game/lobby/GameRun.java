@@ -177,7 +177,7 @@ public class GameRun implements TokenChangeListener
             }
         }
         if (changes.size() > 0) {
-            System.err.println("RECEIVED " + changes.size() + " changes");
+            System.err.println("RECEIVED " + changes.size() + " changes, lastTick: " + lastTick);
             for (Change ch : changes) {
                 System.err.print("- ");
                 switch (ch.type) {
@@ -268,7 +268,6 @@ public class GameRun implements TokenChangeListener
         }
         // now, add the token changes
         while ((gameChange = tokenChanges.poll()) != null) {
-            newChanges.add(gameChange);
             applyChange(gameChange);
         }
 
