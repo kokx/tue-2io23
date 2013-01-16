@@ -263,6 +263,7 @@ public class Client {
     protected void init()
     {
         Token token = Token.newBuilder()
+            .setLastId(0)
             .build();
         sendToken(token);
     }
