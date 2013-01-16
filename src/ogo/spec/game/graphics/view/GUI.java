@@ -196,11 +196,12 @@ public class GUI extends Base {
     public void setView() {
         // Select part of window.
         gl.glViewport(0, 0, gs.w, gs.h);
+        System.out.println(gs.w + "," + gs.h);
 
         // Set projection matrix.
         gl.glMatrixMode(GL_PROJECTION);
         gl.glLoadIdentity();
-        float height = gs.vWidth / (gs.w / gs.h);
+        float height = gs.vWidth / ((float)gs.w / gs.h);
         gl.glOrtho(-0.5 * gs.vWidth, 0.5 * gs.vWidth, -0.5 * height, 0.5 * height, 0.1, 1000);
         // Set camera.
         gl.glMatrixMode(GL_MODELVIEW);
@@ -253,7 +254,7 @@ public class GUI extends Base {
         if (player.isAttacking()) {
             drawAttackNotice(200);
         }
-        drawMiniMap();
+        drawMiniMap(gs.h/2);
     }
 
     private void draw() {
@@ -459,10 +460,16 @@ public class GUI extends Base {
         }
     }
 
-    private void drawMiniMap() {
+    private void drawMiniMap(int w) {
+    int width = 1, height = 1;
+
+        final double AR = (double) width / height;  // aspect ratio
+        int h = (int) (w / AR); // height of the clock in pixels
+    
+    
         GameMap map = game.getMap();
         //Set Viewport
-        gl.glViewport(gs.w / 2, 0, gs.w / 2, gs.h / 2);
+        gl.glViewport(gs.w-w, 0, w, h); // define a viewport for the clock
         gl.glClear(GL_DEPTH_BUFFER_BIT); // clear z buffer
         // Set projection matrix.
         gl.glMatrixMode(GL_PROJECTION);
@@ -527,7 +534,7 @@ public class GUI extends Base {
     private void drawAttackNotice(int w) {
         int width = 1, height = 1;
 
-        final double AR = width / height;  // aspect ratio
+        final double AR = (double) width / height;  // aspect ratio
         int h = (int) (w / AR); // height of the clock in pixels
         gl.glViewport(0, 0, w, h); // define a viewport for the clock
 
