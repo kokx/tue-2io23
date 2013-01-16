@@ -67,6 +67,50 @@ public class Lobby {
         return newData;
     }
     
+    private static int[][][] getStartingLocations(){
+        int[][][] data = new int[6][3][2];
+        
+        data[0][0][0] = 7;
+        data[0][0][1] = 27;
+        data[0][1][0] = 8;
+        data[0][1][1] = 26;
+        data[0][2][0] = 9;
+        data[0][2][1] = 25;
+        data[1][0][0] = 34;
+        data[1][0][1] = 12;
+        data[1][1][0] = 35;
+        data[1][1][1] = 11;
+        data[1][2][0] = 36;
+        data[1][2][1] = 10;
+        data[2][0][0] = 33;
+        data[2][0][1] = 39;
+        data[2][1][0] = 34;
+        data[2][1][1] = 38;
+        data[2][2][0] = 35;
+        data[2][2][1] = 37;
+        data[3][0][0] = 16;
+        data[3][0][1] = 40;
+        data[3][1][0] = 17;
+        data[3][1][1] = 39;
+        data[3][2][0] = 18;
+        data[3][2][1] = 38;
+        data[4][0][0] = 15;
+        data[4][0][1] = 11;
+        data[4][1][0] = 16;
+        data[4][1][1] = 10;
+        data[4][2][0] = 17;
+        data[4][2][1] = 9;
+        
+        data[5][0][0] = 41;
+        data[5][0][1] = 26;
+        data[5][1][0] = 42;
+        data[5][1][1] = 25;
+        data[5][2][0] = 43;
+        data[5][2][1] = 24;
+        
+        return null;
+    }
+    
     private static GameMap generateMap(){
         int[] data = loadMapImage();
         TileType[][] types = new TileType[50][50];
@@ -92,18 +136,20 @@ public class Lobby {
         }
         GameMap map = generateMap();
         
+        int[][][] startingLocs = getStartingLocations();
+        
         for(int i = 0; i < data.length; i++){
             Creature[] creatures = new Creature[3];
             for(int j = 0; j < data[i].length; j++){
                 Creature inh;
                 if(data[i][j] == 0){
-                    inh = new LandCreature(map.getTile(i*6, j*6), map, i*3 + j);
+                    inh = new LandCreature(map.getTile(startingLocs[i][j][0],startingLocs[i][j][1]), map, i*3 + j);
                 }else if(data[i][j] == 1){
-                    inh = new SeaCreature(map.getTile(i*6, j*6), map, i*3 + j);
+                    inh = new SeaCreature(map.getTile(startingLocs[i][j][0],startingLocs[i][j][1]), map, i*3 + j);
                 }else{
-                    inh = new AirCreature(map.getTile(i*6, j*6), map, i*3 + j);
+                    inh = new AirCreature(map.getTile(startingLocs[i][j][0],startingLocs[i][j][1]), map, i*3 + j);
                 }
-                map.getTile(i*6, j*6).setInhabitant(inh);
+                map.getTile(startingLocs[i][j][0],startingLocs[i][j][1]).setInhabitant(inh);
                 
                 creatures[j] = inh;
             }
