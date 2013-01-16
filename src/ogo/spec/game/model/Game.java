@@ -20,7 +20,7 @@ public class Game implements Iterable<Player> {
             if (!pause) {
                 tick();
             }
-            System.out.println(getWinner());
+            
             if(getWinner() != null){
                 Lobby.stopGame();
             }
