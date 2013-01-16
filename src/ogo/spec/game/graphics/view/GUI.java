@@ -254,7 +254,7 @@ public class GUI extends Base {
         if (player.isAttacking()) {
             drawAttackNotice(200);
         }
-        drawMiniMap();
+        drawMiniMap(gs.h/2);
     }
 
     private void draw() {
@@ -460,10 +460,16 @@ public class GUI extends Base {
         }
     }
 
-    private void drawMiniMap() {
+    private void drawMiniMap(int w) {
+    int width = 1, height = 1;
+
+        final double AR = (double) width / height;  // aspect ratio
+        int h = (int) (w / AR); // height of the clock in pixels
+    
+    
         GameMap map = game.getMap();
         //Set Viewport
-        gl.glViewport(gs.w / 2, 0, gs.w / 2, gs.h / 2);
+        gl.glViewport(gs.w-w, 0, w, h); // define a viewport for the clock
         gl.glClear(GL_DEPTH_BUFFER_BIT); // clear z buffer
         // Set projection matrix.
         gl.glMatrixMode(GL_PROJECTION);
@@ -528,7 +534,7 @@ public class GUI extends Base {
     private void drawAttackNotice(int w) {
         int width = 1, height = 1;
 
-        final double AR = width / height;  // aspect ratio
+        final double AR = (double) width / height;  // aspect ratio
         int h = (int) (w / AR); // height of the clock in pixels
         gl.glViewport(0, 0, w, h); // define a viewport for the clock
 
