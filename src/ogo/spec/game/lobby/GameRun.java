@@ -50,6 +50,7 @@ public class GameRun implements TokenChangeListener
     }
 
     void close(){
+        game.close();
         gui.close();
     }
 

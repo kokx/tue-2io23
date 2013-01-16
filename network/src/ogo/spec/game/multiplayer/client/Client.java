@@ -111,12 +111,15 @@ public class Client {
     protected DatagramReceiverRunnable run;
 
     protected String nickname;
+    
+    protected boolean running;
 
     public void close() throws IOException
     {
         run.stop();
         udpSock.close();
         init.close();
+        running = false;
     }
 
     /**
@@ -126,12 +129,14 @@ public class Client {
     {
         udpSock = new DatagramSocket();//INIT_LISTEN_PORT);
         nickname = name;
+        running = true;
     }
 
     public Client() throws SocketException
     {
         udpSock = new DatagramSocket();//INIT_LISTEN_PORT);
         nickname = "JeMoeder";
+        running = true;
     }
 
 
@@ -198,7 +203,7 @@ public class Client {
             init();
         }
 
-        while (true) {
+        while (running) {
             // get the next token and give it to the TokenChangeListener
             Token token = tokenChangeListener.tokenChanged(getToken());
 
@@ -233,7 +238,7 @@ public class Client {
         while ((packet = run.buffer.poll()) != null) {
             peers.add(new PeerInfo(PORT, packet.getAddress(), false));
         }
-
+        run.stop();
         return peers;
     }
 

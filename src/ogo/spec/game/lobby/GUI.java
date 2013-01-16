@@ -151,6 +151,9 @@ public class GUI implements ActionListener, ListSelectionListener{
     public void stop(){
         frame.setVisible(false);
         frame.dispose();
+        if(lobbyChecker != null){
+            lobbyChecker.stop();
+        }
     }
 
     private void startLobby() throws Exception{
