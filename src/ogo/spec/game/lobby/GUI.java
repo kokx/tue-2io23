@@ -10,8 +10,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 public class GUI implements ActionListener, ListSelectionListener{
-    protected Lobby lobby;
-
     protected JFrame frame;
 
     protected JList lobbyList;
@@ -40,8 +38,7 @@ public class GUI implements ActionListener, ListSelectionListener{
     
     String nickname;
 
-    public GUI(Lobby l) throws Exception{
-        lobby = l;
+    public GUI() throws Exception{
 
         nickname = JOptionPane.showInputDialog(null, "Enter your Nickname", null, 1);
         while(nickname.isEmpty()){
@@ -139,7 +136,7 @@ public class GUI implements ActionListener, ListSelectionListener{
 
     String[] serverNames;
     private void findServers() throws Exception{
-        serverNames = lobby.getServerNames();
+        serverNames = Lobby.getServerNames();
         lobbyAmount = serverNames.length;
         if(lobbyAmount > 0){
             lobbyList.setModel(getListModel(serverNames));
@@ -151,10 +148,13 @@ public class GUI implements ActionListener, ListSelectionListener{
     public void stop(){
         frame.setVisible(false);
         frame.dispose();
+        if(lobbyChecker != null){
+            lobbyChecker.stop();
+        }
     }
 
     private void startLobby() throws Exception{
-        if(lobby.openLobby()){
+        if(Lobby.openLobby()){
             switchPanels(true);
 
             startLobbyChecker();
@@ -162,9 +162,9 @@ public class GUI implements ActionListener, ListSelectionListener{
     }
 
     public void updateLobbyOutput(){
-        int clients = lobby.getClientCount();
+        int clients = Lobby.getClientCount();
         lobbyOutput.setText("There are now " + clients + " clients in the Lobby");
-        if(lobby.canStartGame() && clients > 1){
+        if(Lobby.canStartGame() && clients > 1){
             startGame.setEnabled(true);
         }else{
             startGame.setEnabled(false);
@@ -177,16 +177,15 @@ public class GUI implements ActionListener, ListSelectionListener{
     }
 
     class JoinLobbyRunnable implements Runnable{
-        Lobby lobby;
         int selectedLobby;
-        public JoinLobbyRunnable(Lobby l, int selected){
-            lobby = l;
+        public JoinLobbyRunnable(int selected){
+
             selectedLobby = selected;
         }
 
         public void run(){
             try{
-                lobby.joinLobby(selectedLobby);
+                Lobby.joinLobby(selectedLobby);
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -209,7 +208,7 @@ public class GUI implements ActionListener, ListSelectionListener{
         startGame.setText("Ready!");
         startGame.setEnabled(true);
 
-        new Thread(new JoinLobbyRunnable(lobby, selectedLobby)).start();
+        new Thread(new JoinLobbyRunnable(selectedLobby)).start();
 
         switchPanels(true);
 
@@ -220,11 +219,11 @@ public class GUI implements ActionListener, ListSelectionListener{
 
     private void startGame() throws Exception{
         startGame.setEnabled(false);
-        if(lobby.isHost){
-            lobby.startGame();
+        if(Lobby.isHost){
+            Lobby.startGame();
         }else{
-            lobby.setReady();
-            lobby.finishConnection();
+            Lobby.setReady();
+            Lobby.finishConnection();
         }
     }
 

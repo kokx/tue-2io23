@@ -24,15 +24,18 @@ public class AirCreature extends Creature {
         super.tick(tick);
     }
 
+    public void setEnergyNoChange(int e)
+    {
+        energy = e;
+    }
+
     private void setEnergy(int e)
     {
-        this.energy = e;
-        /*
+        setEnergyNoChange(e);
         Change c = super.getChange();
         c.type = Change.ChangeType.ENERGY;
         c.newValue = e;
         Game.globalGameObject.addChange(c);
-        */
     }
 
     private void energyTick() {
@@ -73,7 +76,7 @@ public class AirCreature extends Creature {
             return 5;
         }
         if (creature instanceof SeaCreature) {
-            return 6;
+            return 5;
         }
         return 0;
     }

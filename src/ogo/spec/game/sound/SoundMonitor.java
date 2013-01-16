@@ -62,6 +62,10 @@ public class SoundMonitor {
             soundLevel = 0;
         }
     }
+    
+    public void close() {
+        stopCapture = true;
+    }
 
     /**
      * In order to do a direct conversion for the audio bytes to calculate sound level we need

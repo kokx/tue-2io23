@@ -41,12 +41,17 @@ public class GUI extends Base {
     Vector vViewChange = null;
     Creature currentCreature;
     Timer timer = new Timer(30);
+    Thread timerThread;
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
     Wavefront models;
+    
+    boolean gameStarted;
     float[][] materials = {Materials.BLUE_PLASTIC, Materials.RED_PLASTIC, Materials.YELLOW_PLASTIC, Materials.GREEN_PLASTIC, Materials.ORANGE_PLASTIC, Materials.BROWN_PLASTIC};
 
     public GUI() {
         super();
+        
+        this.gameStarted = false;
     }
 
     /**
@@ -56,6 +61,13 @@ public class GUI extends Base {
         super();
         this.game = game;
         this.player = player;
+        
+        this.gameStarted = false;
+    }
+    
+    public void close(){
+        super.close();
+        timerThread.stop();
     }
 
     /**
@@ -184,9 +196,12 @@ public class GUI extends Base {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-
-        new Thread(timer).start();
-        game.start();
+        if(!gameStarted){
+            timerThread = new Thread(timer);
+            timerThread.start();
+            game.start();
+            gameStarted = true;
+        }
     }
 
     /**
@@ -258,7 +273,10 @@ public class GUI extends Base {
 
     private void draw() {
         // Background color.
-        gl.glClearColor(1f, 1f, 1f, 0f);
+        //gl.glClearColor(1f, 1f, 1f, 0f);
+        float[] player_color = materials[player.getId()];
+        gl.glClearColor(player_color[4], player_color[5], player_color[6],
+                player_color[7]);
 
         // Clear background.
         gl.glClear(GL_COLOR_BUFFER_BIT);
@@ -585,7 +603,7 @@ public class GUI extends Base {
         gl.glPushMatrix();
         gl.glLoadIdentity();
         glu.gluPickMatrix(x, y, 1.0, 1.0, view);
-        float height = gs.vWidth / (gs.w / gs.h);
+        float height = gs.vWidth / ((float)gs.w / gs.h);
         gl.glOrtho(-0.5 * gs.vWidth, 0.5 * gs.vWidth, -0.5 * height, 0.5 * height, 0.1, 1000);
         gl.glMatrixMode(GL_MODELVIEW);
         gl.glPushMatrix();

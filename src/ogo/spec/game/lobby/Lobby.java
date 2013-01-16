@@ -15,8 +15,10 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import ogo.spec.game.model.*;
 import ogo.spec.game.multiplayer.PeerInfo;
 import ogo.spec.game.multiplayer.client.Client;
@@ -28,24 +30,28 @@ import ogo.spec.game.multiplayer.GameProto;
  * @author florian
  */
 public class Lobby {
-    GameRun game;
+    static GameRun game;
 
-    GUI theGui;
+    static GUI theGui;
 
-    Client client;
-    ChatServer initServer;
+    static Client client;
+    static ChatServer initServer;
 
-    List<PeerInfo> serverList;
+    static List<PeerInfo> serverList;
 
-    boolean isHost;
+    static boolean isHost = false;
     
     public final static String mapImagePath = "src/ogo/spec/game/lobby/Map.bmp";
-
-    public Lobby(){
-        isHost = false;
+    
+    public static void stopGame(){
+        try{
+            client.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     
-    private int[] loadMapImage(){
+    private static int[] loadMapImage(){
         BufferedImage img = null;
         try {
             img = ImageIO.read(new File(mapImagePath));
@@ -61,7 +67,7 @@ public class Lobby {
         return newData;
     }
     
-    private GameMap generateMap(){
+    private static GameMap generateMap(){
         int[] data = loadMapImage();
         TileType[][] types = new TileType[50][50];
         for(int i = 0; i < 50; i++){
@@ -79,7 +85,7 @@ public class Lobby {
         return new GameMap(types);
     }
 
-    private void initGame(int[][] data, String[] names, int id){
+    private static void initGame(int[][] data, String[] names, int id){
         Player[] players = new Player[names.length];
         for (int i = 0; i < names.length; i++) {
             players[i] = new Player(names[i], i);
@@ -109,12 +115,12 @@ public class Lobby {
         client.setTokenChangeListener(game);
     }
 
-    public void runGUI() throws Exception{
-        theGui = new GUI(this);
+    public static void runGUI() throws Exception{
+        theGui = new GUI();
         theGui.init();
     }
 
-    private String[] convertServerList(List<PeerInfo> l){
+    private static String[] convertServerList(List<PeerInfo> l){
         /* Moet nog wat descriptiever worden.. */
         String[] names = new String[l.size()];
         for(int i = 0; i < l.size(); i++){
@@ -123,13 +129,13 @@ public class Lobby {
         return names;
     }
 
-    public String[] getServerNames() throws Exception{
+    public static String[] getServerNames() throws Exception{
         client = new Client();
         serverList = client.findServers();
         return convertServerList(serverList);
     }
 
-    class DatagramReceiverRunnable implements Runnable
+    static class DatagramReceiverRunnable implements Runnable
     {
         DatagramSocket sock;
 
@@ -176,7 +182,7 @@ public class Lobby {
     
     public final static int MAX_CONNECTION_TRIES = 20;
 
-    public boolean openLobby() throws Exception{
+    public static boolean openLobby() throws Exception{
         isHost = true;
 
         /* Start new Server to connect to */
@@ -234,12 +240,12 @@ public class Lobby {
         return done;
     }
 
-    public void joinLobby(int serverNum) throws Exception{
+    public static void joinLobby(int serverNum) throws Exception{
         isHost = false;
         client.connectToInitServer(serverList.get(serverNum));
     }
 
-    private GameProto.IsReady.Builder parseReadyInfo(){
+    private static GameProto.IsReady.Builder parseReadyInfo(){
         int[] creatures = theGui.getCreatureInfo();
         return  GameProto.IsReady.newBuilder()
                 .setCreature1(creatures[0])
@@ -247,7 +253,7 @@ public class Lobby {
                 .setCreature3(creatures[2]);
     }
 
-    class TokenRingRunnable implements Runnable
+    static class TokenRingRunnable implements Runnable
     {
         Client client;
         public TokenRingRunnable(Client c){
@@ -258,23 +264,15 @@ public class Lobby {
             try{
                 client.startTokenRing();
             }catch (Exception e){
-                if(e instanceof EOFException){
-                    try{
-                        client.close();
-                        System.out.println("Closed Connection To Next Person");
-                        game.close();
-                        new Lobby().runGUI();
-                    }catch (Exception ex){
-                        ex.printStackTrace();
-                    }
-                }else{
-                    e.printStackTrace();
-                }
+                e.printStackTrace();
+            } finally {
+                System.out.println("Closed Connection To Next Person");
+                System.exit(0);
             }
         }
     }
 
-    public void finishConnection() throws Exception
+    public static void finishConnection() throws Exception
     {
         GameProto.InitialGameState data = client.receiveInitialGameState();
         
@@ -299,12 +297,12 @@ public class Lobby {
         new Thread(new TokenRingRunnable(client)).start();
     }
 
-    public void setReady() throws Exception{
+    public static void setReady() throws Exception{
         GameProto.IsReady.Builder ready = parseReadyInfo();
         client.setReady(ready.setName(theGui.nickname).build());
     }
 
-    class InitConnectionRunnable implements Runnable{
+    static class InitConnectionRunnable implements Runnable{
         ChatServer init;
         int[][] data;
         String[] names;
@@ -325,7 +323,7 @@ public class Lobby {
         }
     }
 
-    public void startGame() throws Exception{
+    public static void startGame() throws Exception{
         assert(isHost && canStartGame());
         
         setReady();
@@ -342,17 +340,19 @@ public class Lobby {
         new Thread(new InitConnectionRunnable(initServer, creatureData, names)).start();
 
         finishConnection();
+        
+        initServer.close();
     }
 
-    public int getClientCount(){
+    public static int getClientCount(){
         return initServer.getClientCount();
     }
 
-    public boolean canStartGame(){
+    public static boolean canStartGame(){
         return initServer.canStartGame();
     }
 
     public static void main(String[] args) throws Exception{
-        new Lobby().runGUI();
+        runGUI();
     }
 }

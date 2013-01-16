@@ -5,9 +5,27 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import ogo.spec.game.lobby.Lobby;
 import ogo.spec.game.sound.SoundMonitor;
 
 public class Game implements Iterable<Player> {
+
+    public class TickTimerTask extends TimerTask
+    {
+        public boolean pause = false;
+
+        @Override
+        public void run()
+        {
+            if (!pause) {
+                tick();
+            }
+            
+            if(getWinner() != null){
+                Lobby.stopGame();
+            }
+        }
+    }
 
     public static Game globalGameObject;
     /*
@@ -22,6 +40,7 @@ public class Game implements Iterable<Player> {
     public static final int TICK_TIME_IN_MS = 50;
     private long tick = 0;
     private Timer timer;
+    public TickTimerTask tickTimerTask = new TickTimerTask();
     private Player[] players;
     private GameMap map;
     private SoundMonitor sm;
@@ -40,13 +59,13 @@ public class Game implements Iterable<Player> {
         this.sm = new SoundMonitor();
         this.sm.run();
         globalGameObject = this;
-        this.timer.schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-                tick();
-            }
-        }, 0, Game.TICK_TIME_IN_MS);
+        this.timer.schedule(tickTimerTask, 0, Game.TICK_TIME_IN_MS);
+    }
+    
+    public void close(){
+        sm.close();
+        timer.cancel();
+        timer.purge();
     }
 
     private void tick() {
@@ -64,6 +83,28 @@ public class Game implements Iterable<Player> {
                 //System.out.println("Player " + String.valueOf(i) + ", creature " + String.valueOf(j) + ":" + c[j].toString());
             }
         }
+    }
+
+    public Player getWinner()
+    {
+        int playersWith0 = 0;
+        Player playerWithAliveCreatures = null;
+        for(int i = 0;i<players.length;i++)
+        {
+            boolean alldead = true;
+            for(int j = 0;j<players[i].getCreatures().length;j++)
+            {
+                if(players[i].getCreatures()[j].isAlive())
+                    alldead=false;
+            }
+            if(alldead)
+                playersWith0++;
+            else
+                playerWithAliveCreatures = players[i];
+        }
+        if(playersWith0 + 1 == players.length)
+            return playerWithAliveCreatures;
+        return null;
     }
 
     /**
