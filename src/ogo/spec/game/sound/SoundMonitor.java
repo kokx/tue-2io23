@@ -62,7 +62,10 @@ public class SoundMonitor {
             soundLevel = 0;
         }
     }
-    
+
+    /**
+     * Stop monitoring audio input from a microphone, close the data line and thread.
+     */
     public void close() {
         stopCapture = true;
     }
