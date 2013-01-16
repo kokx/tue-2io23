@@ -296,7 +296,6 @@ public abstract class Creature extends Inhabitant {
     public void setLifeNoChange(int life)
     {
         this.life = life;
-        System.err.println("Life: " + life + " c: " + id);
     }
 
     protected void setLife(int life) {
