@@ -184,6 +184,9 @@ public class GameRun implements TokenChangeListener
                     case MOVE_CREATURE:
                         System.err.println("move (" + ch.x + ", " + ch.y + ") tick: " + ch.tick);
                         break;
+                    case ENERGY:
+                        System.err.println("energy creature: " + ch.creatureId + " val: " + ch.newValue + " tick: " + ch.tick);
+                        break;
                     default:
                         System.err.println("other change (" + ch.type.name() + ") tick: " + ch.tick);
                         break;
