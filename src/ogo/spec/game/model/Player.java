@@ -23,6 +23,10 @@ public class Player implements Iterable<Creature>
     public int getId(){
         return id;
     }
+    
+    public String getName(){
+        return name;
+    }
 
     @Override
     public Iterator<Creature> iterator() {
