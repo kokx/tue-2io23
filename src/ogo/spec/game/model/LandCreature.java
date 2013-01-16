@@ -12,7 +12,7 @@ public class LandCreature extends Creature
     }
 
     @Override
-    protected int getMoveSpeed(TileType tileType) {
+    public int getMoveSpeed(TileType tileType) {
         assert (tileType != TileType.DEEP_WATER);
         if(tileType == TileType.LAND)
         {

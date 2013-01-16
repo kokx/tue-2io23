@@ -63,7 +63,7 @@ public class AirCreature extends Creature {
     }
 
     @Override
-    protected int getMoveSpeed(TileType tileType) {
+    public int getMoveSpeed(TileType tileType) {
         return Creature.TICKS_PER_TILE_AVG;
     }
 
