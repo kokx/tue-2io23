@@ -196,11 +196,12 @@ public class GUI extends Base {
     public void setView() {
         // Select part of window.
         gl.glViewport(0, 0, gs.w, gs.h);
+        System.out.println(gs.w + "," + gs.h);
 
         // Set projection matrix.
         gl.glMatrixMode(GL_PROJECTION);
         gl.glLoadIdentity();
-        float height = gs.vWidth / (gs.w / gs.h);
+        float height = gs.vWidth / ((float)gs.w / gs.h);
         gl.glOrtho(-0.5 * gs.vWidth, 0.5 * gs.vWidth, -0.5 * height, 0.5 * height, 0.1, 1000);
         // Set camera.
         gl.glMatrixMode(GL_MODELVIEW);
