@@ -35,7 +35,7 @@ public class Game implements Iterable<Player> {
     public static final int TICK_TIME_IN_MS = 50;
     private long tick = 0;
     private Timer timer;
-    public TickTimerTask tickTimerTask;
+    public TickTimerTask tickTimerTask = new TickTimerTask();
     private Player[] players;
     private GameMap map;
     private SoundMonitor sm;
@@ -54,7 +54,6 @@ public class Game implements Iterable<Player> {
         this.sm = new SoundMonitor();
         this.sm.run();
         globalGameObject = this;
-        tickTimerTask = new TickTimerTask();
         this.timer.schedule(tickTimerTask, 0, Game.TICK_TIME_IN_MS);
     }
 
