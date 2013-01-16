@@ -121,7 +121,6 @@ public class GUI extends Base {
             Creature[] p1c = {a1, s1, l1};
             p1.setCreatures(p1c);
             Player p2 = new Player("2",1);
-            
             Creature[] p2c = {a2, s2, l2};
             p2.setCreatures(p2c);
             player = p1;
@@ -130,7 +129,7 @@ public class GUI extends Base {
             players[0] = p1;
             players[1] = p2;
             try {
-                game = new Game(players, map, 0);
+                game = new Game(players, map);
             } catch (Exception ex) {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
             }

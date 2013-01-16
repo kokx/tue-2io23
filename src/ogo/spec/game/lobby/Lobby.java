@@ -78,11 +78,6 @@ public class Lobby {
         
         return new GameMap(types);
     }
-    
-    private int[][] getStartingLocations(){
-        int[][] data = new int[6][3];
-        return null;
-    }
 
     private void initGame(int[][] data, String[] names, int id){
         Player[] players = new Player[names.length];
@@ -109,7 +104,7 @@ public class Lobby {
             players[i].setCreatures(creatures);
         }
         
-        Game game2 = new Game(players, map, id);
+        Game game2 = new Game(players, map);
         game = new GameRun(game2, id);
         client.setTokenChangeListener(game);
     }

@@ -108,7 +108,7 @@ public class SoundMonitor {
 
         int rms = (int) (Math.pow(averageMeanSquare, 0.5));
 
-//        System.out.println("RMS: " + rms);
+        System.out.println("RMS: " + rms);
         soundLevel = rms;
     }
 

@@ -148,15 +148,8 @@ public abstract class Creature extends Inhabitant {
      */
     private void strike() {
         int soundLevel = Game.globalGameObject.getSoundLevel();
-        int damage;
-        if (soundLevel < 40) {
-            damage = 3;
-        } else if (soundLevel < 100) {
-            damage = 4;
-        } else {
-            damage = 5;
-        }
-        System.out.println(damage);
+        System.out.println(soundLevel);
+        int damage = soundLevel;
         //TODO: listen to mic for damage
         if (this.attackingCreature.dealDamage(damage)) {
             //he dead, lets eat it
@@ -199,7 +192,6 @@ public abstract class Creature extends Inhabitant {
      * @param tile
      */
     private void doMove(Tile tile) {
-        this.attackingCreature = null;
         Tile oldTile = super.currentTile;
         super.currentTile.setInhabitant(null);
         tile.setInhabitant(this);
@@ -215,7 +207,7 @@ public abstract class Creature extends Inhabitant {
         Game.globalGameObject.addChange(c);
     }
     
-    protected Change getChange()
+    private Change getChange()
     {
         
         Change c = new Change();
@@ -265,8 +257,7 @@ public abstract class Creature extends Inhabitant {
      * Returns true if this creature dies.
      */
     public boolean dealDamage(int damage) {
-        int life = this.life - damage;
-        this.setLife(life);
+        this.life -= damage;
         if (this.life <= 0) {
             this.die();
             return true;
