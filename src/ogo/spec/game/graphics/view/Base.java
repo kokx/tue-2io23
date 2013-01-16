@@ -66,7 +66,7 @@ abstract public class Base {
     private long startTime;
     // Textures.
     protected Texture land, shallowWater, deepWater, empty, red, warning;
-    MainFrame frame;
+    public MainFrame frame;
 
     /**
      * Constructs base class.
@@ -123,7 +123,7 @@ abstract public class Base {
         // Show frame.
         frame.setVisible(true);
     }
-    
+
     /**
      * Called upon the start of the application. Primarily used to configure
      * OpenGL.
@@ -369,5 +369,9 @@ abstract public class Base {
         @Override
         public void keyReleased(KeyEvent e) {
         }
+    }
+
+    public void close() {
+        frame.dispose();
     }
 }
