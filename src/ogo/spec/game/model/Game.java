@@ -66,6 +66,28 @@ public class Game implements Iterable<Player> {
         }
     }
 
+    public Player getWinner()
+    {
+        int playersWith0 = 0;
+        Player playerWithAliveCreatures = null;
+        for(int i = 0;i<players.length;i++)
+        {
+            boolean alldead = true;
+            for(int j = 0;j<players[i].getCreatures().length;j++)
+            {
+                if(players[i].getCreatures()[j].isAlive())
+                    alldead=false;
+            }
+            if(alldead)
+                playersWith0++;
+            else
+                playerWithAliveCreatures = players[i];
+        }
+        if(playersWith0 + 1 == players.length)
+            return playerWithAliveCreatures;
+        return null;
+    }
+    
     /**
      * Add a change.
      */
