@@ -108,7 +108,7 @@ public class Lobby {
         data[5][2][0] = 43;
         data[5][2][1] = 24;
         
-        return null;
+        return data;
     }
     
     private static GameMap generateMap(){
