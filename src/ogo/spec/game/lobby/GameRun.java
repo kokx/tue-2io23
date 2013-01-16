@@ -195,6 +195,9 @@ public class GameRun implements TokenChangeListener
                     case ENERGY:
                         System.err.println("energy creature: " + ch.creatureId + " val: " + ch.newValue);
                         break;
+                    case HEALTH:
+                        System.err.println("health creature: " + ch.creatureId + " val: " + ch.newValue);
+                        break;
                     default:
                         System.err.println("other change (" + ch.type.name() + ")");
                         break;
@@ -233,6 +236,11 @@ public class GameRun implements TokenChangeListener
                 a.creature.getPath().setNextTile(t);
                 a.creature.getCurrentTile().setInhabitant(null);
                 t.setInhabitant(a.creature);
+                break;
+            case ENERGY:
+                // apply an energy change
+            case HEALTH:
+                // apply a health change
                 break;
         }
     }
