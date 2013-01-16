@@ -184,7 +184,7 @@ public class GameRun implements TokenChangeListener
         }
         // remove changes from token, they will be added again by the
         // mergeInfo() method if they need to be
-        builder.clearMessage();
+        token.clearMessage();
 
         if (changes.size() > 0) {
             System.err.println("RECEIVED " + changes.size() + " changes, lastId: " + lastId);
