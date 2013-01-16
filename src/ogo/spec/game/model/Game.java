@@ -28,7 +28,7 @@ public class Game implements Iterable<Player> {
     private ConcurrentLinkedQueue<Change> changes = new ConcurrentLinkedQueue<Change>();
 
     private int myPlayerId;
-    
+
     public Game(Player[] players, GameMap map, int myPlayerId) {
         this.myPlayerId = myPlayerId;
         this.players = players;
@@ -51,6 +51,9 @@ public class Game implements Iterable<Player> {
 
     private void tick() {
         tick++;
+        if (tick % 50 == 0) {
+            System.err.println("Tick: " + tick);
+        }
         for (int i = 0; i < players.length; i++) {
             if (this.myPlayerId != players[i].getId()) {
                 continue;//only call tick for my own creatures

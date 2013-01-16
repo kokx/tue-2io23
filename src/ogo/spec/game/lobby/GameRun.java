@@ -27,6 +27,7 @@ public class GameRun implements TokenChangeListener
     protected Game game;
     protected long lastId = 0;
     protected long nextLastId = 0;
+    protected GUI gui;
 
     /**
      * Run the game.
@@ -44,7 +45,11 @@ public class GameRun implements TokenChangeListener
      */
     void startGraphics()
     {
-        new GUI(game, game.getPlayer(playerId)); // TODO: replace null reference with player object
+        gui = new GUI(game, game.getPlayer(playerId)); // TODO: replace null reference with player object
+    }
+    
+    void close(){
+        gui.close();
     }
 
     // other methods
@@ -157,7 +162,24 @@ public class GameRun implements TokenChangeListener
 
         /*
         if (changes.size() > 0) {
-            System.err.println("CHANGES YAY!!!!! " + changes.size());
+            System.err.println("SENT " + changes.size() + " changes");
+            for (Change ch : changes) {
+                System.err.print("- ");
+                switch (ch.type) {
+                    case MOVE_CREATURE:
+                        System.err.println("move (" + ch.x + ", " + ch.y + ") creature: " + ch.creatureId);
+                        break;
+                    case ENERGY:
+                        System.err.println("energy creature: " + ch.creatureId + " val: " + ch.newValue);
+                        break;
+                    case HEALTH:
+                        System.err.println("health creature: " + ch.creatureId + " val: " + ch.newValue);
+                        break;
+                    default:
+                        System.err.println("other change (" + ch.type.name() + ")");
+                        break;
+                }
+            }
         }
         */
 
@@ -186,6 +208,7 @@ public class GameRun implements TokenChangeListener
         // mergeInfo() method if they need to be
         token.clearMessage();
 
+        /*
         if (changes.size() > 0) {
             System.err.println("RECEIVED " + changes.size() + " changes, lastId: " + lastId);
             for (Change ch : changes) {
@@ -206,6 +229,7 @@ public class GameRun implements TokenChangeListener
                 }
             }
         }
+        */
 
         return changes;
     }
@@ -321,11 +345,12 @@ public class GameRun implements TokenChangeListener
      */
     void runStats()
     {
+
         counter++;
         long time = System.currentTimeMillis();
         if(lastMessage == -1 || time - lastMessage >  1000){
             long diff = time - lastMessage;
-            System.out.println("TPS: " + counter + "/" + diff + " = " + 1000.0*counter/diff);
+            //System.out.println("TPS: " + counter + "/" + diff + " = " + 1000.0*counter/diff);
             lastMessage = time;
             counter = 0;
         }
