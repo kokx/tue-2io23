@@ -243,6 +243,7 @@ public class GameRun implements TokenChangeListener
                 // apply an energy change
             case HEALTH:
                 // apply a health change
+                a.creature.setLifeNoChange(a.newValue);
                 break;
         }
     }
