@@ -23,7 +23,7 @@ public abstract class Creature extends Inhabitant {
     protected int moveCooldown;
     protected int attackCooldown;
     protected int lifeCooldown;
-    
+
     protected long tick;
 
     /**
@@ -199,17 +199,17 @@ public abstract class Creature extends Inhabitant {
 
         //creature is moved, calculate moveCooldown
         this.moveCooldown = this.calculateMoveSpeed(oldTile, tile);
-        
+
         Change c = this.getChange();
         c.type = Change.ChangeType.MOVE_CREATURE;
         c.x = tile.x;
         c.y = tile.y;
         Game.globalGameObject.addChange(c);
     }
-    
-    private Change getChange()
+
+    protected Change getChange()
     {
-        
+
         Change c = new Change();
         c.tick = this.tick;
         c.player = Game.globalGameObject.getPlayer(this);
@@ -285,7 +285,7 @@ public abstract class Creature extends Inhabitant {
         }
         this.setLife(life);
     }
-    
+
     protected void setLife(int life)
     {
         this.life = life;
