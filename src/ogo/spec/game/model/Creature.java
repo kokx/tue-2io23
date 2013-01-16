@@ -292,8 +292,13 @@ public abstract class Creature extends Inhabitant {
         this.setLife(life);
     }
 
-    protected void setLife(int life) {
+    public void setLifeNoChange(int life)
+    {
         this.life = life;
+    }
+
+    protected void setLife(int life) {
+        setLifeNoChange(life);
         Change c = this.getChange();
         c.type = Change.ChangeType.HEALTH;
         c.newValue = life;
