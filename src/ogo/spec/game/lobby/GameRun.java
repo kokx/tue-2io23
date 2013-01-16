@@ -160,6 +160,7 @@ public class GameRun implements TokenChangeListener
             changes.add(change);
         }
 
+        /*
         if (changes.size() > 0) {
             System.err.println("SENT " + changes.size() + " changes");
             for (Change ch : changes) {
@@ -180,6 +181,7 @@ public class GameRun implements TokenChangeListener
                 }
             }
         }
+        */
 
         return changes;
     }
@@ -206,6 +208,7 @@ public class GameRun implements TokenChangeListener
         // mergeInfo() method if they need to be
         token.clearMessage();
 
+        /*
         if (changes.size() > 0) {
             System.err.println("RECEIVED " + changes.size() + " changes, lastId: " + lastId);
             for (Change ch : changes) {
@@ -226,6 +229,7 @@ public class GameRun implements TokenChangeListener
                 }
             }
         }
+        */
 
         return changes;
     }
