@@ -269,7 +269,8 @@ public class GameRun implements TokenChangeListener
             case ENERGY:
                 // apply an energy change
                 if (a.creature instanceof AirCreature) {
-                    a.creature.setEnergyNoChange(a.newValue);
+                    AirCreature creature = (AirCreature) a.creature;
+                    creature.setEnergyNoChange(a.newValue);
                 }
                 break;
             case HEALTH:
