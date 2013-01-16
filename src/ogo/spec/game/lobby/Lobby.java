@@ -342,7 +342,7 @@ public class Lobby {
             }catch (Exception e){
                 e.printStackTrace();
             } finally {
-                System.out.println("Closed Connection To Next Person");
+                JOptionPane.showMessageDialog(null, "Someone dropped, the connection was lost");
                 System.exit(0);
             }
         }
