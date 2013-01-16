@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class GameRun implements TokenChangeListener
 {
-    public final static long MAX_TICK_DIFF = 3;
+    public final static long MAX_TICK_DIFF = 10;
 
     protected long lastMessage = -1;
     protected int counter = 0;
