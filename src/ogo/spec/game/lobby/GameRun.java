@@ -178,8 +178,6 @@ public class GameRun implements TokenChangeListener
         for (Token.Change change : tokenChanges) {
             if (change.getId() > lastId) {
                 changes.add(createChangeFromTokenChange(change));
-            } else {
-                System.err.println("OH NOESS!!!!!! " + change.getId());
             }
         }
         // remove changes from token, they will be added again by the
