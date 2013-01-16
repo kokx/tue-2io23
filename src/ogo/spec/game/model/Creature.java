@@ -263,7 +263,8 @@ public abstract class Creature extends Inhabitant {
      * Returns true if this creature dies.
      */
     public boolean dealDamage(int damage) {
-        this.life -= damage;
+        int newLife = this.life - damage;
+        this.setLife(newLife);
         if (this.life <= 0) {
             this.die();
             return true;
@@ -285,11 +286,11 @@ public abstract class Creature extends Inhabitant {
      * @param life
      */
     protected void addLife(int inc) {
-        int life = this.life + inc;
-        if (life > MAX_LIFE) {
-            life = MAX_LIFE;
+        int newLife = this.life + inc;
+        if (newLife > MAX_LIFE) {
+            newLife = MAX_LIFE;
         }
-        this.setLife(life);
+        this.setLife(newLife);
     }
 
     public void setLifeNoChange(int life)
