@@ -155,11 +155,9 @@ public class GameRun implements TokenChangeListener
             changes.add(change);
         }
 
-        /*
         if (changes.size() > 0) {
             System.err.println("CHANGES YAY!!!!! " + changes.size());
         }
-        */
 
         return changes;
     }
@@ -180,8 +178,14 @@ public class GameRun implements TokenChangeListener
         for (Token.Change change : tokenChanges) {
             if (change.getId() > lastId) {
                 changes.add(createChangeFromTokenChange(change));
+            } else {
+                System.err.println("OH NOESS!!!!!! " + change.getId());
             }
         }
+        // remove changes from token, they will be added again by the
+        // mergeInfo() method if they need to be
+        builder.clearMessage();
+
         if (changes.size() > 0) {
             System.err.println("RECEIVED " + changes.size() + " changes, lastId: " + lastId);
             for (Change ch : changes) {
@@ -297,7 +301,6 @@ public class GameRun implements TokenChangeListener
         Token.Builder builder = Token.newBuilder();
 
         builder.mergeFrom(token);
-        builder.clearMessage();
 
         return builder;
     }
