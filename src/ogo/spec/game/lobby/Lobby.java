@@ -262,7 +262,8 @@ public class Lobby {
                     try{
                         client.close();
                         System.out.println("Closed Connection To Next Person");
-                        System.exit(0);
+                        game.close();
+                        new Lobby().runGUI();
                     }catch (Exception ex){
                         ex.printStackTrace();
                     }

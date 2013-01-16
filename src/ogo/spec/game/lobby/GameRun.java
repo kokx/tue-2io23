@@ -27,6 +27,7 @@ public class GameRun implements TokenChangeListener
     protected Game game;
     protected long lastId = 0;
     protected long nextLastId = 0;
+    protected GUI gui;
 
     /**
      * Run the game.
@@ -44,7 +45,11 @@ public class GameRun implements TokenChangeListener
      */
     void startGraphics()
     {
-        new GUI(game, game.getPlayer(playerId)); // TODO: replace null reference with player object
+        gui = new GUI(game, game.getPlayer(playerId)); // TODO: replace null reference with player object
+    }
+    
+    void close(){
+        gui.close();
     }
 
     // other methods
