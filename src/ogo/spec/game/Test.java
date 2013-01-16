@@ -9,7 +9,7 @@ import ogo.spec.game.model.TileType;
 public class Test {
 
     private void run() {
-        testTileIsAdjacent();
+        //testCreatureEatFood();
     }
 
     private void testTileIsAdjacent() {
@@ -33,6 +33,29 @@ public class Test {
         System.out.println("Tile.isAdjacent test case (e): " + testE);
         System.out.println("Tile.isAdjacent test case (f): " + testF);
     }
+
+    /*private void testCreatureEatFood() {
+        // create an air creature
+        AirCreature airCreature = new AirCreature();
+        // set air creature's life points to 20
+        airCreature.setLifeNoChange(20);
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+        // eat food
+        airCreature.doEat(new Food(0));
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+        // set air creature's life points to 13
+        airCreature.setLifeNoChange(13);
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+        // eat food
+        airCreature.doEat(new Food(0));
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+        // set air creature's life points to 19
+        airCreature.setLifeNoChange(19);
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+        // eat food
+        airCreature.doEat(new Food(0));
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+    }*/
 
     public static void main(String args[]) {
         new Test().run();
