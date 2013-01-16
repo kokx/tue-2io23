@@ -129,7 +129,7 @@ public class GameRun implements TokenChangeListener
         newChange.player = game.getPlayer(change.getPlayerId());
         newChange.playerId = change.getPlayerId();
         newChange.creature = game.getCreature(change.getCreatureId());
-        newChange.creatureId = change.getPlayerId();
+        newChange.creatureId = change.getCreatureId();
 
         return newChange;
     }
@@ -149,9 +149,11 @@ public class GameRun implements TokenChangeListener
             changes.add(change);
         }
 
+        /*
         if (changes.size() > 0) {
             System.err.println("CHANGES YAY!!!!! " + changes.size());
         }
+        */
 
         return changes;
     }
@@ -175,7 +177,18 @@ public class GameRun implements TokenChangeListener
             }
         }
         if (changes.size() > 0) {
-            System.err.println("TOKEN CHANGES YAY!!!!! " + changes.size());
+            System.err.println("RECEIVED " + changes.size() + " changes");
+            for (Change ch : changes) {
+                System.err.print("- ");
+                switch (ch.type) {
+                    case MOVE_CREATURE:
+                        System.err.println("move (" + ch.x + ", " + ch.y + ") tick: " + ch.tick);
+                        break;
+                    default:
+                        System.err.println("other change () tick: " + ch.tick);
+                        break;
+                }
+            }
         }
 
         return changes;
