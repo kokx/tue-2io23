@@ -2373,12 +2373,14 @@ public final class GameProto {
       HEALTH(1, 1),
       ENERGY(2, 2),
       ATTACKING_CREATURE(3, 3),
+      PING(4, 4),
       ;
       
       public static final int MOVE_CREATURE_VALUE = 0;
       public static final int HEALTH_VALUE = 1;
       public static final int ENERGY_VALUE = 2;
       public static final int ATTACKING_CREATURE_VALUE = 3;
+      public static final int PING_VALUE = 4;
       
       
       public final int getNumber() { return value; }
@@ -2389,6 +2391,7 @@ public final class GameProto {
           case 1: return HEALTH;
           case 2: return ENERGY;
           case 3: return ATTACKING_CREATURE;
+          case 4: return PING;
           default: return null;
         }
       }
@@ -2419,7 +2422,7 @@ public final class GameProto {
       }
       
       private static final ChangeType[] VALUES = {
-        MOVE_CREATURE, HEALTH, ENERGY, ATTACKING_CREATURE, 
+        MOVE_CREATURE, HEALTH, ENERGY, ATTACKING_CREATURE, PING, 
       };
       
       public static ChangeType valueOf(
@@ -3922,16 +3925,17 @@ public final class GameProto {
       "ameState\022\014\n\004data\030\001 \003(\005\022\r\n\005names\030\002 \003(\t\022\n\n" +
       "\002id\030\003 \002(\005\"\025\n\005Reply\022\014\n\004done\030\001 \002(\010\"3\n\tConn" +
       "ectTo\022\n\n\002ip\030\001 \002(\014\022\014\n\004port\030\002 \002(\005\022\014\n\004init\030" +
-      "\003 \002(\010\"\351\002\n\005Token\0228\n\007message\030\001 \003(\0132\'.ogo.s" +
+      "\003 \002(\010\"\363\002\n\005Token\0228\n\007message\030\001 \003(\0132\'.ogo.s" +
       "pec.game.multiplayer.Token.Change\022\016\n\006las" +
       "tId\030\002 \002(\003\032\304\001\n\006Change\022\n\n\002id\030\001 \002(\003\022\014\n\004tick",
       "\030\002 \002(\003\022\020\n\010playerId\030\003 \002(\005\0229\n\004type\030\004 \002(\0162+" +
       ".ogo.spec.game.multiplayer.Token.ChangeT" +
       "ype\022\022\n\ncreatureId\030\005 \002(\005\022\t\n\001x\030\006 \001(\005\022\t\n\001y\030" +
       "\007 \001(\005\022\020\n\010newValue\030\010 \001(\005\022\027\n\017otherCreature" +
-      "Id\030\t \001(\005\"O\n\nChangeType\022\021\n\rMOVE_CREATURE\020" +
+      "Id\030\t \001(\005\"Y\n\nChangeType\022\021\n\rMOVE_CREATURE\020" +
       "\000\022\n\n\006HEALTH\020\001\022\n\n\006ENERGY\020\002\022\026\n\022ATTACKING_C" +
-      "REATURE\020\003B\033\n\031ogo.spec.game.multiplayer"
+      "REATURE\020\003\022\010\n\004PING\020\004B\033\n\031ogo.spec.game.mul" +
+      "tiplayer"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

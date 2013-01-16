@@ -4,7 +4,7 @@ public class Change implements Comparable<Change>
 {
 
     public enum ChangeType {
-        MOVE_CREATURE, HEALTH, ENERGY, ATTACKING_CREATURE
+        MOVE_CREATURE, HEALTH, ENERGY, ATTACKING_CREATURE, PING
     }
 
     public long id = -1;
