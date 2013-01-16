@@ -24,7 +24,7 @@ public class GlobalState {
 
         cnt = Vector.O;
         vDist = 60f;
-        vWidth = 10;
+        vWidth = 20;
         phi = (float) ((float) 1.25 * Math.PI);
         theta = 0.25f * Base.THETA_MAX;
     }
