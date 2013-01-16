@@ -367,8 +367,10 @@ public class GameRun implements TokenChangeListener
     {
         if (game.getTick() - tick > MAX_TICK_DIFF) {
             // we are running too fast, pause ticks
+            if (!game.tickTimerTask.pause) {
+                System.err.println("WARNING: You have been detected to use dope. Just like Lance Armstrong. The fucker. STOP THAT!");
+            }
             game.tickTimerTask.pause = true;
-            System.err.println("WARNING: You have been detected to use dope. Just like Lance Armstrong. The fucker. STOP THAT!");
             return tick;
         } else {
             // unpause ticks
