@@ -196,7 +196,6 @@ public class GUI extends Base {
     public void setView() {
         // Select part of window.
         gl.glViewport(0, 0, gs.w, gs.h);
-        System.out.println(gs.w + "," + gs.h);
 
         // Set projection matrix.
         gl.glMatrixMode(GL_PROJECTION);
@@ -414,7 +413,7 @@ public class GUI extends Base {
                 Tile currentTile = c.getPath().getCurrentTile();
                 gl.glLoadName(currentTile.getY() * map.getHeight() + currentTile.getX() + 1);
                 //System.out.println(currentLocation);
-                if (c == currentCreature) {
+                if (c == currentCreature && !debug) {
                     gs.cnt = currentLocation;
                 }
                 if (c.isAlive()) {
