@@ -71,7 +71,7 @@ public class AirCreature extends Creature {
             return 5;
         }
         if (creature instanceof SeaCreature) {
-            return 6;
+            return 5;
         }
         return 0;
     }
