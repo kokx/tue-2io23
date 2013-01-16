@@ -7,6 +7,7 @@ public class Change implements Comparable<Change>
         MOVE_CREATURE, HEALTH, ENERGY, ATTACKING_CREATURE
     }
 
+    public long id = -1;
     public long tick;
     public Player player;
     public int playerId;

@@ -25,8 +25,8 @@ public class GameRun implements TokenChangeListener
     protected int counter = 0;
     protected int playerId; // the ID of the player behind this computer
     protected Game game;
-    protected long lastTick = 0;
-    protected long nextLastTick = 0;
+    protected long lastId = 0;
+    protected long nextLastId = 0;
 
     /**
      * Run the game.
@@ -85,6 +85,11 @@ public class GameRun implements TokenChangeListener
         }
 
         newChange.setTick(change.tick);
+        if (change.id >= 0) {
+            newChange.setId(change.id);
+        } else {
+            newChange.setId(++nextLastId);
+        }
 
         // TODO: get the player from the game
         newChange.setPlayerId(change.playerId);
@@ -124,6 +129,7 @@ public class GameRun implements TokenChangeListener
         }
 
         newChange.tick = change.getTick();
+        newChange.id = change.getId();
 
         // TODO: get the player from the game
         newChange.player = game.getPlayer(change.getPlayerId());
@@ -172,23 +178,23 @@ public class GameRun implements TokenChangeListener
         List<Token.Change> tokenChanges = token.getMessageList();
 
         for (Token.Change change : tokenChanges) {
-            if (change.getTick() > lastTick) {
+            if (change.getId() > lastId) {
                 changes.add(createChangeFromTokenChange(change));
             }
         }
         if (changes.size() > 0) {
-            System.err.println("RECEIVED " + changes.size() + " changes, lastTick: " + lastTick);
+            System.err.println("RECEIVED " + changes.size() + " changes, lastId: " + lastId);
             for (Change ch : changes) {
                 System.err.print("- ");
                 switch (ch.type) {
                     case MOVE_CREATURE:
-                        System.err.println("move (" + ch.x + ", " + ch.y + ") creature: " + ch.creatureId + " tick: " + ch.tick);
+                        System.err.println("move (" + ch.x + ", " + ch.y + ") creature: " + ch.creatureId);
                         break;
                     case ENERGY:
-                        System.err.println("energy creature: " + ch.creatureId + " val: " + ch.newValue + " tick: " + ch.tick);
+                        System.err.println("energy creature: " + ch.creatureId + " val: " + ch.newValue);
                         break;
                     default:
-                        System.err.println("other change (" + ch.type.name() + ") tick: " + ch.tick);
+                        System.err.println("other change (" + ch.type.name() + ")");
                         break;
                 }
             }
@@ -268,6 +274,7 @@ public class GameRun implements TokenChangeListener
         }
         // now, add the token changes
         while ((gameChange = tokenChanges.poll()) != null) {
+            newChanges.add(gameChange);
             applyChange(gameChange);
         }
 
@@ -290,6 +297,7 @@ public class GameRun implements TokenChangeListener
         Token.Builder builder = Token.newBuilder();
 
         builder.mergeFrom(token);
+        builder.clearMessage();
 
         return builder;
     }
@@ -322,9 +330,9 @@ public class GameRun implements TokenChangeListener
         // first copy the token
         Token.Builder builder = copyToken(token);
 
-        nextLastTick = game.getTick();
+        nextLastId = token.getLastId();
         mergeInfo(builder);
-        lastTick = nextLastTick;
+        lastId = nextLastId;
 
         return builder.build();
     }
