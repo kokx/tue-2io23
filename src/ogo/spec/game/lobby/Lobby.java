@@ -43,12 +43,16 @@ public class Lobby {
     
     public final static String mapImagePath = "src/ogo/spec/game/lobby/Map.bmp";
     
-    public static void stopGame(){
-        try{
-            client.close();
+    public static void stopGame(Player winner){
+        game.close();
+        JOptionPane.showMessageDialog(null, winner.getName() + " has won the game");
+        
+        /*try{
+            Thread.sleep(2000);
         }catch (Exception e){
             e.printStackTrace();
-        }
+        }*/
+        System.exit(0);
     }
     
     private static int[] loadMapImage(){
@@ -379,9 +383,6 @@ public class Lobby {
         int[][] creatureData = initServer.getCreatureTypes();
         
         String[] names = initServer.getNames();
-        for(int i = 0; i < names.length; i++){
-            names[i] = i + "-" + names[i];
-        }
         
         new Thread(new InitConnectionRunnable(initServer, creatureData, names)).start();
 
