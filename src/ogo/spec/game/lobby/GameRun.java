@@ -155,9 +155,11 @@ public class GameRun implements TokenChangeListener
             changes.add(change);
         }
 
+        /*
         if (changes.size() > 0) {
             System.err.println("CHANGES YAY!!!!! " + changes.size());
         }
+        */
 
         return changes;
     }
