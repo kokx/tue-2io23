@@ -43,12 +43,16 @@ public class Lobby {
     
     public final static String mapImagePath = "src/ogo/spec/game/lobby/Map.bmp";
     
-    public static void stopGame(){
-        try{
-            client.close();
+    public static void stopGame(Player winner){
+        game.close();
+        JOptionPane.showMessageDialog(null, winner.getName() + " has won the game");
+        
+        /*try{
+            Thread.sleep(2000);
         }catch (Exception e){
             e.printStackTrace();
-        }
+        }*/
+        System.exit(0);
     }
     
     private static int[] loadMapImage(){
@@ -76,24 +80,28 @@ public class Lobby {
         data[0][1][1] = 26;
         data[0][2][0] = 9;
         data[0][2][1] = 25;
+        
         data[1][0][0] = 34;
         data[1][0][1] = 12;
         data[1][1][0] = 35;
         data[1][1][1] = 11;
         data[1][2][0] = 36;
         data[1][2][1] = 10;
+        
         data[2][0][0] = 33;
         data[2][0][1] = 39;
         data[2][1][0] = 34;
         data[2][1][1] = 38;
         data[2][2][0] = 35;
         data[2][2][1] = 37;
+        
         data[3][0][0] = 16;
         data[3][0][1] = 40;
         data[3][1][0] = 17;
         data[3][1][1] = 39;
         data[3][2][0] = 18;
         data[3][2][1] = 38;
+        
         data[4][0][0] = 15;
         data[4][0][1] = 11;
         data[4][1][0] = 16;
@@ -128,6 +136,20 @@ public class Lobby {
         
         return new GameMap(types);
     }
+    
+    private static Tile getFreeTile(GameMap map){
+        Random r = new Random();
+        int x = r.nextInt(map.getWidth());
+        int y = r.nextInt(map.getHeight());
+        while(map.getTile(x, y).getInhabitant() != null){
+            x = r.nextInt(map.getWidth());
+            y = r.nextInt(map.getHeight());
+        }
+        
+        return map.getTile(x, y);
+    }
+    
+    public static final int FOOD_MAX = 50;
 
     private static void initGame(int[][] data, String[] names, int id){
         Player[] players = new Player[names.length];
@@ -137,6 +159,8 @@ public class Lobby {
         GameMap map = generateMap();
         
         int[][][] startingLocs = getStartingLocations();
+        
+        int inhID = 0;
         
         for(int i = 0; i < data.length; i++){
             Creature[] creatures = new Creature[3];
@@ -152,10 +176,16 @@ public class Lobby {
                 map.getTile(startingLocs[i][j][0],startingLocs[i][j][1]).setInhabitant(inh);
                 
                 creatures[j] = inh;
+                inhID++;
             }
             players[i].setCreatures(creatures);
         }
         
+        for(int i = 0; i < FOOD_MAX; i++){
+            Tile t = getFreeTile(map);
+            t.setInhabitant(new Food(inhID));
+            inhID++;
+        }
         Game game2 = new Game(players, map, id);
         game = new GameRun(game2, id);
         client.setTokenChangeListener(game);
@@ -312,7 +342,7 @@ public class Lobby {
             }catch (Exception e){
                 e.printStackTrace();
             } finally {
-                System.out.println("Closed Connection To Next Person");
+                JOptionPane.showMessageDialog(null, "Someone dropped, the connection was lost");
                 System.exit(0);
             }
         }
@@ -379,9 +409,6 @@ public class Lobby {
         int[][] creatureData = initServer.getCreatureTypes();
         
         String[] names = initServer.getNames();
-        for(int i = 0; i < names.length; i++){
-            names[i] = i + "-" + names[i];
-        }
         
         new Thread(new InitConnectionRunnable(initServer, creatureData, names)).start();
 

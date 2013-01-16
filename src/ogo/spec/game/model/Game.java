@@ -21,8 +21,9 @@ public class Game implements Iterable<Player> {
                 tick();
             }
             
-            if(getWinner() != null){
-                Lobby.stopGame();
+            Player winner = getWinner();
+            if(winner != null){
+                Lobby.stopGame(winner);
             }
         }
     }
