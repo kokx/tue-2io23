@@ -196,7 +196,6 @@ public class GUI extends Base {
     public void setView() {
         // Select part of window.
         gl.glViewport(0, 0, gs.w, gs.h);
-        System.out.println(gs.w + "," + gs.h);
 
         // Set projection matrix.
         gl.glMatrixMode(GL_PROJECTION);
