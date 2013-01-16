@@ -129,7 +129,7 @@ public class GameRun implements TokenChangeListener
         newChange.player = game.getPlayer(change.getPlayerId());
         newChange.playerId = change.getPlayerId();
         newChange.creature = game.getCreature(change.getCreatureId());
-        newChange.creatureId = change.getPlayerId();
+        newChange.creatureId = change.getCreatureId();
 
         return newChange;
     }
