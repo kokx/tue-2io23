@@ -264,6 +264,7 @@ public class Client {
     {
         Token token = Token.newBuilder()
             .setLastId(0)
+            .setTick(0)
             .build();
         sendToken(token);
     }

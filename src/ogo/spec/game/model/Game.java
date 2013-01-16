@@ -9,7 +9,7 @@ import ogo.spec.game.sound.SoundMonitor;
 
 public class Game implements Iterable<Player> {
 
-    public class TickTimerTask extends TimerTask()
+    public class TickTimerTask extends TimerTask
     {
         public boolean pause = false;
 
@@ -96,7 +96,7 @@ public class Game implements Iterable<Player> {
             return playerWithAliveCreatures;
         return null;
     }
-    
+
     /**
      * Add a change.
      */
