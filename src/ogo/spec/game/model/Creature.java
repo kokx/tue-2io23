@@ -23,7 +23,6 @@ public abstract class Creature extends Inhabitant {
     protected int moveCooldown;
     protected int attackCooldown;
     protected int lifeCooldown;
-
     protected long tick;
 
     /**
@@ -148,8 +147,16 @@ public abstract class Creature extends Inhabitant {
      */
     private void strike() {
         int soundLevel = Game.globalGameObject.getSoundLevel();
-        System.out.println(soundLevel);
-        int damage = soundLevel;
+        int damage;
+        if (soundLevel < 40) {
+            damage = 3;
+        } else if (soundLevel < 100) {
+            damage = 4;
+        } else {
+            damage = 5;
+        }
+
+        System.out.println(damage);
         //TODO: listen to mic for damage
         if (this.attackingCreature.dealDamage(damage)) {
             //he dead, lets eat it
@@ -207,8 +214,7 @@ public abstract class Creature extends Inhabitant {
         Game.globalGameObject.addChange(c);
     }
 
-    protected Change getChange()
-    {
+    protected Change getChange() {
 
         Change c = new Change();
         c.tick = this.tick;
@@ -286,8 +292,7 @@ public abstract class Creature extends Inhabitant {
         this.setLife(life);
     }
 
-    protected void setLife(int life)
-    {
+    protected void setLife(int life) {
         this.life = life;
         Change c = this.getChange();
         c.type = Change.ChangeType.HEALTH;

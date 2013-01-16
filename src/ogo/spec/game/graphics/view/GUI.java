@@ -129,7 +129,7 @@ public class GUI extends Base {
             players[0] = p1;
             players[1] = p2;
             try {
-                game = new Game(players, map);
+                game = new Game(players, map, 0);
             } catch (Exception ex) {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
             }

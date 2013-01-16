@@ -8,27 +8,29 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import ogo.spec.game.sound.SoundMonitor;
 
 public class Game implements Iterable<Player> {
+
     public static Game globalGameObject;
     /*
     public static void main(String[] args)
     {
-        Player p = new Player("jan");
-        p.setCreatures(new Creature[]{new LandCreature(new Tile(TileType.LAND, 1, 1), null)});
-        Game g = new Game(new Player[]{p},null);
-        g.start();
+    Player p = new Player("jan");
+    p.setCreatures(new Creature[]{new LandCreature(new Tile(TileType.LAND, 1, 1), null)});
+    Game g = new Game(new Player[]{p},null);
+    g.start();
     }
-    */
-
+     */
     public static final int TICK_TIME_IN_MS = 50;
     private long tick = 0;
     private Timer timer;
     private Player[] players;
     private GameMap map;
     private SoundMonitor sm;
-
     private ConcurrentLinkedQueue<Change> changes = new ConcurrentLinkedQueue<Change>();
 
-    public Game(Player[] players, GameMap map) {
+    private int myPlayerId;
+    
+    public Game(Player[] players, GameMap map, int myPlayerId) {
+        this.myPlayerId = myPlayerId;
         this.players = players;
         this.map = map;
         this.timer = new Timer();
@@ -39,6 +41,7 @@ public class Game implements Iterable<Player> {
         this.sm.run();
         globalGameObject = this;
         this.timer.schedule(new TimerTask() {
+
             @Override
             public void run() {
                 tick();
@@ -49,6 +52,9 @@ public class Game implements Iterable<Player> {
     private void tick() {
         tick++;
         for (int i = 0; i < players.length; i++) {
+            if (this.myPlayerId != players[i].getId()) {
+                continue;//only call tick for my own creatures
+            }
             Creature[] c = players[i].getCreatures();
             for (int j = 0; j < c.length; j++) {
                 c[j].tick(tick);
@@ -60,8 +66,7 @@ public class Game implements Iterable<Player> {
     /**
      * Add a change.
      */
-    public void addChange(Change change)
-    {
+    public void addChange(Change change) {
         changes.add(change);
     }
 
@@ -70,16 +75,14 @@ public class Game implements Iterable<Player> {
      *
      * @return the next change, or null if none exists
      */
-    public Change poll()
-    {
+    public Change poll() {
         return changes.poll();
     }
 
     /**
      * Get the current tick.
      */
-    public long getTick()
-    {
+    public long getTick() {
         return tick;
     }
 
@@ -101,22 +104,21 @@ public class Game implements Iterable<Player> {
         return players;
     }
 
-    public Player getPlayer(Creature c)
-    {
-        for(int i = 0;i<this.players.length;i++){
-            for(int j = 0;j<this.players[i].getCreatures().length;j++)
-            {
-                if(this.players[i].getCreatures()[j].equals(c))
+    public Player getPlayer(Creature c) {
+        for (int i = 0; i < this.players.length; i++) {
+            for (int j = 0; j < this.players[i].getCreatures().length; j++) {
+                if (this.players[i].getCreatures()[j].equals(c)) {
                     return this.players[i];
+                }
             }
         }
         return null;
     }
 
-    public int getSoundLevel()
-    {
+    public int getSoundLevel() {
         return this.sm.getSoundLevel();
     }
+
     @Override
     public Iterator<Player> iterator() {
         return Arrays.asList(players).iterator();
