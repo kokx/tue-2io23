@@ -184,6 +184,7 @@ public class Lobby {
         for(int i = 0; i < FOOD_MAX; i++){
             Tile t = getFreeTile(map);
             t.setInhabitant(new Food(inhID));
+            inhID++;
         }
         Game game2 = new Game(players, map, id);
         game = new GameRun(game2, id);
