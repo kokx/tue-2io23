@@ -231,6 +231,8 @@ public class GameRun implements TokenChangeListener
             case MOVE_CREATURE:
                 Tile t = game.getMap().getTile(a.y, a.x);
                 a.creature.getPath().setNextTile(t);
+                a.creature.getCurrentTile().setInhabitant(null);
+                t.setInhabitant(a.creature);
                 break;
         }
     }
