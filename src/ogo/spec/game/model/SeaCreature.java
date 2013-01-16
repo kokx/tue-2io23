@@ -12,7 +12,7 @@ public class SeaCreature extends Creature
     }
 
     @Override
-    protected int getMoveSpeed(TileType tileType) {
+    public int getMoveSpeed(TileType tileType) {
         assert (tileType != TileType.LAND);
         return Creature.TICKS_PER_TILE_AVG;
     }
