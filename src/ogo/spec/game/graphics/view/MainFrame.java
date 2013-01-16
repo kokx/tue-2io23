@@ -9,6 +9,7 @@ public final class MainFrame extends javax.swing.JFrame {
 
     // Global state of scene.
     private GlobalState gs;
+    final static private int width = 1400, height = 800;
 
     /**
      * Creates new form MainFrame.
@@ -37,7 +38,7 @@ public final class MainFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Game");
 
-        glPanel.setPreferredSize(new java.awt.Dimension(800, 800));
+        glPanel.setPreferredSize(new java.awt.Dimension(width, height));
         glPanel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 glPanelMouseClicked(evt);
