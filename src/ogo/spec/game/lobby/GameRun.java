@@ -205,7 +205,7 @@ public class GameRun implements TokenChangeListener
     {
         switch (a.type) {
             case MOVE_CREATURE:
-                Tile t = game.getMap().getTile(a.x, a.y);
+                Tile t = game.getMap().getTile(a.y, a.x);
                 a.creature.getPath().setNextTile(t);
                 break;
         }
