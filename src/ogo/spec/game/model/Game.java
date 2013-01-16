@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import ogo.spec.game.lobby.Lobby;
 import ogo.spec.game.sound.SoundMonitor;
 
 public class Game implements Iterable<Player> {
@@ -18,6 +19,10 @@ public class Game implements Iterable<Player> {
         {
             if (!pause) {
                 tick();
+            }
+            System.out.println(getWinner());
+            if(getWinner() != null){
+                Lobby.stopGame();
             }
         }
     }
