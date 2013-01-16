@@ -27,12 +27,10 @@ public class AirCreature extends Creature {
     private void setEnergy(int e)
     {
         this.energy = e;
-        /*
         Change c = super.getChange();
         c.type = Change.ChangeType.ENERGY;
         c.newValue = e;
         Game.globalGameObject.addChange(c);
-        */
     }
 
     private void energyTick() {
