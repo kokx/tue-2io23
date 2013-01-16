@@ -20,6 +20,7 @@ import java.util.List;
  */
 public class GameRun implements TokenChangeListener
 {
+    public final static long MAX_TICK_DIFF = 10;
 
     protected long lastMessage = -1;
     protected int counter = 0;
@@ -47,7 +48,7 @@ public class GameRun implements TokenChangeListener
     {
         gui = new GUI(game, game.getPlayer(playerId)); // TODO: replace null reference with player object
     }
-    
+
     void close(){
         gui.close();
     }
@@ -357,6 +358,24 @@ public class GameRun implements TokenChangeListener
     }
 
     /**
+     * Check the current tick.
+     *
+     * @return current tick
+     */
+    public long checkTick(long tick)
+    {
+        if (game.getTick() - tick > MAX_TICK_DIFF) {
+            // we are running too fast, pause ticks
+            game.tickTimerTask.pause = true;
+            return tick;
+        } else {
+            // unpause ticks
+            game.tickTimerTask.pause = false;
+            return game.getTick();
+        }
+    }
+
+    /**
      * Called when the token has changed.
      *
      * Note that this will be called from the network layer. Which runs in a
@@ -373,6 +392,9 @@ public class GameRun implements TokenChangeListener
         mergeInfo(builder);
         lastId = nextLastId;
         builder.setLastId(lastId);
+
+        // check and set the tick
+        builder.setTick(checkTick(builder.getTick()));
 
         return builder.build();
     }
