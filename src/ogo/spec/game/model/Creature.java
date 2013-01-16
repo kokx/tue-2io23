@@ -148,15 +148,8 @@ public abstract class Creature extends Inhabitant {
      */
     private void strike() {
         int soundLevel = Game.globalGameObject.getSoundLevel();
-        int damage;
-        if (soundLevel < 40) {
-            damage = 3;
-        } else if (soundLevel < 100) {
-            damage = 4;
-        } else {
-            damage = 5;
-        }
-        System.out.println(damage);
+        System.out.println(soundLevel);
+        int damage = soundLevel;
         //TODO: listen to mic for damage
         if (this.attackingCreature.dealDamage(damage)) {
             //he dead, lets eat it
@@ -285,11 +278,21 @@ public abstract class Creature extends Inhabitant {
      * add life, max life at 20
      * @param life
      */
-    protected void addLife(int life) {
-        this.life += life;
-        if (this.life > MAX_LIFE) {
-            this.life = MAX_LIFE;
+    protected void addLife(int inc) {
+        int life = this.life + inc;
+        if (life > MAX_LIFE) {
+            life = MAX_LIFE;
         }
+        this.setLife(life);
+    }
+    
+    protected void setLife(int life)
+    {
+        this.life = life;
+        Change c = this.getChange();
+        c.type = Change.ChangeType.HEALTH;
+        c.newValue = life;
+        Game.globalGameObject.addChange(c);
     }
 
     protected abstract int getMoveSpeed(TileType tileType);

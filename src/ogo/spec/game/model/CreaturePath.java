@@ -75,6 +75,15 @@ public class CreaturePath
     }
 
     /**
+     * Add a next tile.
+     */
+    public void setNextTile(Tile next)
+    {
+        previous = current;
+        current = next;
+    }
+
+    /**
      * Calculate a path to the given tile.
      *
      * This method uses the A* algorithm.

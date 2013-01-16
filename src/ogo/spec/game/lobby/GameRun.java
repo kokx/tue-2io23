@@ -7,6 +7,7 @@ package ogo.spec.game.lobby;
 import ogo.spec.game.multiplayer.GameProto.Token;
 import ogo.spec.game.multiplayer.client.TokenChangeListener;
 import ogo.spec.game.model.Game;
+import ogo.spec.game.model.Tile;
 import ogo.spec.game.model.Change;
 import ogo.spec.game.graphics.view.GUI;
 
@@ -148,6 +149,10 @@ public class GameRun implements TokenChangeListener
             changes.add(change);
         }
 
+        if (changes.size() > 0) {
+            System.err.println("CHANGES YAY!!!!! " + changes.size());
+        }
+
         return changes;
     }
 
@@ -168,6 +173,9 @@ public class GameRun implements TokenChangeListener
             if (change.getTick() > lastTick) {
                 changes.add(createChangeFromTokenChange(change));
             }
+        }
+        if (changes.size() > 0) {
+            System.err.println("TOKEN CHANGES YAY!!!!! " + changes.size());
         }
 
         return changes;
@@ -195,7 +203,12 @@ public class GameRun implements TokenChangeListener
      */
     void applyChange(Change a)
     {
-        // undo the change
+        switch (a.type) {
+            case MOVE_CREATURE:
+                Tile t = game.getMap().getTile(a.y, a.x);
+                a.creature.getPath().setNextTile(t);
+                break;
+        }
     }
 
     /**

@@ -63,7 +63,7 @@ public class CreatureView {
                 currentLocation = new Vector(creature.getPath().getCurrentTile().getX(),
                         creature.getPath().getCurrentTile().getY(),
                         0);
-                
+
             }
         }
         return currentLocation;
