@@ -1,7 +1,6 @@
 package ogo.spec.game;
 
-import ogo.spec.game.model.Tile;
-import ogo.spec.game.model.TileType;
+import ogo.spec.game.model.*;
 
 /**
  * Test class to test various methods.
@@ -9,7 +8,7 @@ import ogo.spec.game.model.TileType;
 public class Test {
 
     private void run() {
-        //testCreatureEatFood();
+        //testCreatureEatCreature();
     }
 
     private void testTileIsAdjacent() {
@@ -38,23 +37,58 @@ public class Test {
         // create an air creature
         AirCreature airCreature = new AirCreature();
         // set air creature's life points to 20
-        airCreature.setLifeNoChange(20);
+        airCreature.setLife(20);
         System.out.println("AirCreature's life points: " + airCreature.getLife());
         // eat food
         airCreature.doEat(new Food(0));
         System.out.println("AirCreature's life points: " + airCreature.getLife());
         // set air creature's life points to 13
-        airCreature.setLifeNoChange(13);
+        airCreature.setLife(13);
         System.out.println("AirCreature's life points: " + airCreature.getLife());
         // eat food
         airCreature.doEat(new Food(0));
         System.out.println("AirCreature's life points: " + airCreature.getLife());
         // set air creature's life points to 19
-        airCreature.setLifeNoChange(19);
+        airCreature.setLife(19);
         System.out.println("AirCreature's life points: " + airCreature.getLife());
         // eat food
         airCreature.doEat(new Food(0));
         System.out.println("AirCreature's life points: " + airCreature.getLife());
+    }*/
+
+    /*private void testCreatureEatCreature() {
+        // create an air creature
+        AirCreature airCreature = new AirCreature();
+        airCreature.setLife(15);
+        // create a land creature
+        LandCreature landCreature = new LandCreature();
+        // print eat value for a land creature
+        System.out.println("LandCreature's eat value for an AirCreature: " + airCreature.getEatValue(landCreature));
+        // let the air creature eat the land creature
+        airCreature.eatCreature(landCreature);
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+
+        // create a land creature
+        LandCreature landCreatureTwo = new LandCreature();
+        landCreatureTwo.setLife(20);
+        // create an air creature
+        AirCreature airCreatureTwo = new AirCreature();
+        // print eat value for an air creature
+        System.out.println("AirCreature's eat value for a LandCreature: " + landCreatureTwo.getEatValue(airCreatureTwo));
+        // let the land creature eat the air creature
+        landCreatureTwo.eatCreature(airCreatureTwo);
+        System.out.println("LandcreatureTwo's life points: " + landCreatureTwo.getLife());
+
+        // create an air creature
+        AirCreature airCreatureThree = new AirCreature();
+        airCreatureThree.setLife(2);
+        // create a land creature
+        LandCreature landCreatureThree = new LandCreature();
+        // print eat value for a land creature
+        System.out.println("LandCreature's eat value for an AirCreature: " + airCreatureThree.getEatValue(landCreatureThree));
+        // let the air creature eat the land creature
+        airCreatureThree.eatCreature(landCreatureThree);
+        System.out.println("AirCreatureThree's life points: " + airCreatureThree.getLife());
     }*/
 
     public static void main(String args[]) {
