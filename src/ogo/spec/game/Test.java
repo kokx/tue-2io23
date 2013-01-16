@@ -10,7 +10,7 @@ import ogo.spec.game.model.TileType;
 public class Test {
 
     private void run() {
-        //testCreatureDealDamage();
+        //testAirCreatureCanMove();
     }
 
     private void testTileIsAdjacent() {
@@ -117,6 +117,21 @@ public class Test {
         // deal 1 damage to the air creature
         airCreature.dealDamage(1);
         System.out.println("AirCreature's life points: " + airCreature.getLife());
+    }*/
+
+    /*private void testAirCreatureCanMove() {
+        // create an air creature
+        AirCreature airCreature = new AirCreature();
+
+        // set energy to 0
+        airCreature.setEnergy(0);
+        // print if the air creature can move
+        System.out.println("AirCreature can move: " + airCreature.canMove());
+
+        // set energy to 10
+        airCreature.setEnergy(10);
+        // print if the air creature can move
+        System.out.println("AirCreature can move: " + airCreature.canMove());
     }*/
 
     public static void main(String args[]) {
