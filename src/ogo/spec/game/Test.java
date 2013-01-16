@@ -1,6 +1,8 @@
 package ogo.spec.game;
 
-import ogo.spec.game.model.*;
+import ogo.spec.game.model.AirCreature;
+import ogo.spec.game.model.Tile;
+import ogo.spec.game.model.TileType;
 
 /**
  * Test class to test various methods.
@@ -8,7 +10,7 @@ import ogo.spec.game.model.*;
 public class Test {
 
     private void run() {
-        //testCreatureEatCreature();
+        //testCreatureDealDamage();
     }
 
     private void testTileIsAdjacent() {
@@ -89,6 +91,32 @@ public class Test {
         // let the air creature eat the land creature
         airCreatureThree.eatCreature(landCreatureThree);
         System.out.println("AirCreatureThree's life points: " + airCreatureThree.getLife());
+    }*/
+
+    /*private void testCreatureDealDamage() {
+        // create an air creature
+        AirCreature airCreature = new AirCreature();
+
+        // set air creature's life points to 15
+        airCreature.setLife(15);
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+        // deal 2 damage to the air creature
+        airCreature.dealDamage(2);
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+
+        // set air creature's life points to 1
+        airCreature.setLife(1);
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+        // deal 2 damage to the air creature
+        airCreature.dealDamage(2);
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+
+        // set air creature's life points to 1
+        airCreature.setLife(1);
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
+        // deal 1 damage to the air creature
+        airCreature.dealDamage(1);
+        System.out.println("AirCreature's life points: " + airCreature.getLife());
     }*/
 
     public static void main(String args[]) {
