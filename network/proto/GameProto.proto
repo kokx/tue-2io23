@@ -33,7 +33,6 @@ message Token {
         HEALTH = 1;
         ENERGY = 2; // only for air creatures
         ATTACKING_CREATURE = 3;
-        PING = 4;
     }
     message Change {
         // basic info
@@ -58,4 +57,5 @@ message Token {
     }
     repeated Change message = 1;
     required int64 lastId = 2;
+    required int64 tick = 3;
 }
