@@ -250,7 +250,7 @@ public class GUI extends Base {
             //System.out.println(game.getMap().getTile(clicki, clickj).getX() + "," + game.getMap().getTile(clicki, clickj).getY());
             if (clicki != -1) {
                 currentCreature.select(game.getMap().getTile(clicki, clickj));
-                creatureViews.get(currentCreature).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
+                creatureViews.get(currentCreature).move(currentCreature.calculateMoveSpeed(currentCreature.getPath().getPreviousTile(), currentCreature.getPath().getCurrentTile()) * Game.TICK_TIME_IN_MS);
             }
 
             //gs.cnt = vViewChange.add(new Vector(clickj, clicki, 0));
@@ -423,7 +423,7 @@ public class GUI extends Base {
             setMaterial(materials[i]);
             for (Creature c : p) {
                 if (c.getMoveCooldown() == 0) {
-                    creatureViews.get(c).move(Creature.TICKS_PER_TILE_AVG * Game.TICK_TIME_IN_MS);
+                    creatureViews.get(c).move(c.calculateMoveSpeed(c.getPath().getPreviousTile(), c.getPath().getCurrentTile()) * Game.TICK_TIME_IN_MS);
                 }
                 gl.glPushMatrix();
                 double angle = creatureViews.get(c).getCurrentAngle();

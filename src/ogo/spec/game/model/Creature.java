@@ -225,7 +225,7 @@ public abstract class Creature extends Inhabitant {
         return c;
     }
 
-    private int calculateMoveSpeed(Tile oldTile, Tile tile) {
+    public int calculateMoveSpeed(Tile oldTile, Tile tile) {
 
         double moveCooldown = this.getMoveSpeed(tile.getType());
 
@@ -306,7 +306,7 @@ public abstract class Creature extends Inhabitant {
         Game.globalGameObject.addChange(c);
     }
 
-    protected abstract int getMoveSpeed(TileType tileType);
+    public abstract int getMoveSpeed(TileType tileType);
 
     protected abstract int getEatValue(Creature creature);
 
