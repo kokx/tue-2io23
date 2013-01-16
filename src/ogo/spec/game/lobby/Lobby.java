@@ -15,6 +15,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.imageio.ImageIO;
 import ogo.spec.game.model.*;
@@ -263,7 +264,8 @@ public class Lobby {
                         client.close();
                         System.out.println("Closed Connection To Next Person");
                         game.close();
-                        new Lobby().runGUI();
+                        
+                        System.exit(0);
                     }catch (Exception ex){
                         ex.printStackTrace();
                     }
@@ -342,6 +344,8 @@ public class Lobby {
         new Thread(new InitConnectionRunnable(initServer, creatureData, names)).start();
 
         finishConnection();
+        
+        initServer.close();
     }
 
     public int getClientCount(){

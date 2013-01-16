@@ -41,6 +41,7 @@ public class GUI extends Base {
     Vector vViewChange = null;
     Creature currentCreature;
     Timer timer = new Timer(30);
+    Thread timerThread;
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
     Wavefront models;
     float[][] materials = {Materials.BLUE_PLASTIC, Materials.RED_PLASTIC, Materials.YELLOW_PLASTIC, Materials.GREEN_PLASTIC, Materials.ORANGE_PLASTIC, Materials.BROWN_PLASTIC};
@@ -56,6 +57,11 @@ public class GUI extends Base {
         super();
         this.game = game;
         this.player = player;
+    }
+    
+    public void close(){
+        super.close();
+        timerThread.stop();
     }
 
     /**
@@ -185,7 +191,8 @@ public class GUI extends Base {
         }
 
 
-        new Thread(timer).start();
+        timerThread = new Thread(timer);
+        timerThread.start();
         game.start();
     }
 

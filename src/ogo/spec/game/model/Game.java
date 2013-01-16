@@ -56,6 +56,12 @@ public class Game implements Iterable<Player> {
         globalGameObject = this;
         this.timer.schedule(tickTimerTask, 0, Game.TICK_TIME_IN_MS);
     }
+    
+    public void close(){
+        sm.close();
+        timer.cancel();
+        timer.purge();
+    }
 
     private void tick() {
         tick++;
