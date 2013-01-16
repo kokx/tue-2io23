@@ -7,6 +7,7 @@ package ogo.spec.game.lobby;
 import ogo.spec.game.multiplayer.GameProto.Token;
 import ogo.spec.game.multiplayer.client.TokenChangeListener;
 import ogo.spec.game.model.Game;
+import ogo.spec.game.model.AirCreature;
 import ogo.spec.game.model.Tile;
 import ogo.spec.game.model.Change;
 import ogo.spec.game.graphics.view.GUI;
@@ -267,6 +268,10 @@ public class GameRun implements TokenChangeListener
                 break;
             case ENERGY:
                 // apply an energy change
+                if (a.creature instanceof AirCreature) {
+                    a.creature.setEnergyNoChange(a.newValue);
+                }
+                break;
             case HEALTH:
                 // apply a health change
                 a.creature.setLifeNoChange(a.newValue);
