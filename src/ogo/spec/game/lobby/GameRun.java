@@ -336,6 +336,7 @@ public class GameRun implements TokenChangeListener
         nextLastId = token.getLastId();
         mergeInfo(builder);
         lastId = nextLastId;
+        builder.setLastId(lastId);
 
         return builder.build();
     }
