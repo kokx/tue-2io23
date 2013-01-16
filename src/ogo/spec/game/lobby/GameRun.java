@@ -185,7 +185,7 @@ public class GameRun implements TokenChangeListener
                         System.err.println("move (" + ch.x + ", " + ch.y + ") tick: " + ch.tick);
                         break;
                     default:
-                        System.err.println("other change () tick: " + ch.tick);
+                        System.err.println("other change (" + ch.type.name() + ") " + tick: " + ch.tick);
                         break;
                 }
             }

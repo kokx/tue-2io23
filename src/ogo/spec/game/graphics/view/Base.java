@@ -52,7 +52,7 @@ abstract public class Base {
     // Extent of center point change based on key input.
     static public float CENTER_POINT_CHANGE = 1f;
     // How many control options are enabled.
-    static public boolean DEBUG = false;
+    static public boolean DEBUG = true;
     // Desired frames per second.
     static public int FPS = 30;
     // Global state, created at startup.
@@ -123,7 +123,7 @@ abstract public class Base {
         // Show frame.
         frame.setVisible(true);
     }
-    
+
     /**
      * Called upon the start of the application. Primarily used to configure
      * OpenGL.
