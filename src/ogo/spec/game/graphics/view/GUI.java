@@ -44,10 +44,14 @@ public class GUI extends Base {
     Thread timerThread;
     Map<Creature, CreatureView> creatureViews = new HashMap<Creature, CreatureView>();
     Wavefront models;
+    
+    boolean gameStarted;
     float[][] materials = {Materials.BLUE_PLASTIC, Materials.RED_PLASTIC, Materials.YELLOW_PLASTIC, Materials.GREEN_PLASTIC, Materials.ORANGE_PLASTIC, Materials.BROWN_PLASTIC};
 
     public GUI() {
         super();
+        
+        this.gameStarted = false;
     }
 
     /**
@@ -57,6 +61,8 @@ public class GUI extends Base {
         super();
         this.game = game;
         this.player = player;
+        
+        this.gameStarted = false;
     }
     
     public void close(){
@@ -190,10 +196,12 @@ public class GUI extends Base {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-
-        timerThread = new Thread(timer);
-        timerThread.start();
-        game.start();
+        if(!gameStarted){
+            timerThread = new Thread(timer);
+            timerThread.start();
+            game.start();
+            gameStarted = true;
+        }
     }
 
     /**
