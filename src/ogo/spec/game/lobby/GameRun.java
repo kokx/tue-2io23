@@ -321,11 +321,12 @@ public class GameRun implements TokenChangeListener
      */
     void runStats()
     {
+
         counter++;
         long time = System.currentTimeMillis();
         if(lastMessage == -1 || time - lastMessage >  1000){
             long diff = time - lastMessage;
-            System.out.println("TPS: " + counter + "/" + diff + " = " + 1000.0*counter/diff);
+            //System.out.println("TPS: " + counter + "/" + diff + " = " + 1000.0*counter/diff);
             lastMessage = time;
             counter = 0;
         }
