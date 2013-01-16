@@ -258,7 +258,10 @@ public class GUI extends Base {
 
     private void draw() {
         // Background color.
-        gl.glClearColor(1f, 1f, 1f, 0f);
+        //gl.glClearColor(1f, 1f, 1f, 0f);
+        float[] player_color = materials[player.getId()];
+        gl.glClearColor(player_color[4], player_color[5], player_color[6],
+                player_color[7]);
 
         // Clear background.
         gl.glClear(GL_COLOR_BUFFER_BIT);
